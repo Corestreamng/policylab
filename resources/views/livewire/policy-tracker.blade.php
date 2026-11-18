@@ -47,11 +47,20 @@
                     </div>
                 </div>
 
-                <!-- Key Data Assurance Notes -->
-                <div class="pt-2 flex flex-wrap items-center gap-4 text-xs text-ink-600">
-                    <span class="inline-flex items-center gap-1.5"><i class="fas fa-check-double text-emerald-700"></i> Evidence-backed records</span>
-                    <span class="inline-flex items-center gap-1.5"><i class="fas fa-certificate text-brand-teal"></i> Certified True Copies (CTCs)</span>
-                    <span class="inline-flex items-center gap-1.5"><i class="fas fa-code text-brand-violet"></i> Public REST API</span>
+                <!-- Key Data Assurance Notes & Quick Resource Links -->
+                <div class="pt-2 flex flex-wrap items-center gap-4 text-xs text-ink-600 font-medium">
+                    <a href="#coverage" class="inline-flex items-center gap-1.5 hover:text-emerald-900 transition">
+                        <i class="fas fa-check-double text-emerald-700"></i> Evidence-backed records
+                    </a>
+                    <a href="/documents" class="inline-flex items-center gap-1.5 hover:text-emerald-900 transition">
+                        <i class="fas fa-certificate text-brand-teal"></i> Certified True Copies (CTCs)
+                    </a>
+                    <a href="/api/docs" class="inline-flex items-center gap-1.5 hover:text-emerald-900 transition">
+                        <i class="fas fa-code text-brand-violet"></i> Public REST API
+                    </a>
+                    <a href="/api/v1/export/csv" class="inline-flex items-center gap-1.5 hover:text-emerald-900 transition">
+                        <i class="fas fa-file-csv text-brand-emerald"></i> Download CSV
+                    </a>
                 </div>
             </div>
         </div>
@@ -309,6 +318,39 @@
                         @endif
                     </div>
                 @endif
+            </div>
+
+            <!-- Interactive Stage Legend Filter Strip (Global Benchmark Feature) -->
+            <div class="bg-ink-50/80 rounded-lg p-3 border border-ink-200">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                    <span class="text-2xs font-bold uppercase tracking-wider text-ink-600 flex items-center gap-1.5">
+                        <i class="fas fa-layer-group text-brand-emerald"></i> Quick Filter Map By Lifecycle Stage:
+                    </span>
+                    @if($selectedStage !== '')
+                        <button
+                            type="button"
+                            wire:click="$set('selectedStage', '')"
+                            class="text-2xs text-rose-600 hover:text-rose-800 font-semibold underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-rose-500 rounded-xs"
+                        >
+                            Reset Stage Highlight
+                        </button>
+                    @endif
+                </div>
+
+                <div class="flex flex-wrap items-center gap-1.5">
+                    @foreach($stages as $st)
+                        <button
+                            type="button"
+                            wire:click="$set('selectedStage', '{{ (string)$st->sequence_order === (string)$selectedStage ? '' : $st->sequence_order }}')"
+                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-2xs font-semibold transition border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald {{ (string)$st->sequence_order === (string)$selectedStage ? 'ring-2 ring-brand-emerald shadow-2xs font-extrabold scale-[1.02] bg-white' : 'hover:bg-white hover:shadow-2xs opacity-90 hover:opacity-100' }}"
+                            style="background-color: {{ (string)$st->sequence_order === (string)$selectedStage ? '#FFFFFF' : $st->bg_color_hex }}; color: {{ $st->text_color_hex }}; border-color: {{ $st->border_color_hex ?? $st->color_hex }};"
+                            aria-label="Filter by stage {{ $st->name }}"
+                        >
+                            <span class="w-2 h-2 rounded-full shrink-0" style="background-color: {{ $st->color_hex }};"></span>
+                            <span>{{ $st->sequence_order }}: {{ $st->name }}</span>
+                        </button>
+                    @endforeach
+                </div>
             </div>
 
             <!-- National Map Visual Anchor -->

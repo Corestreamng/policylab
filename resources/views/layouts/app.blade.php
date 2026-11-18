@@ -46,7 +46,7 @@
     </div>
 
     <!-- Main Navigation Header -->
-    <header class="bg-ink-900 text-white sticky top-0 z-40 border-b border-ink-800 shadow-sm" x-data="{ mobileMenuOpen: false, langOpen: false }">
+    <header class="bg-ink-900 text-white sticky top-0 z-40 border-b border-ink-800 shadow-sm" x-data="{ mobileMenuOpen: false, langOpen: false, megaOpen: false, mobileZonesOpen: false, mobileStagesOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Brand / Logo -->
@@ -64,7 +64,7 @@
 
                 <!-- Desktop Navigation Links -->
                 <nav class="hidden md:flex items-center space-x-1" aria-label="Main Navigation">
-                    <a href="/" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('/') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
+                    <a href="/" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('/') && !request()->has('view') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
                         <i class="fas fa-map-location-dot mr-1.5 text-brand-blue"></i> {{ __('tracker.nav_map') }}
                     </a>
                     <a href="/dashboard" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('dashboard*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
@@ -76,6 +76,221 @@
                     <a href="/api/docs" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('api*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
                         <i class="fas fa-code mr-1.5 text-brand-violet"></i> {{ __('tracker.nav_api') }}
                     </a>
+
+                    <!-- Mega Menu Dropdown Trigger -->
+                    <div class="relative" @keydown.escape="megaOpen = false">
+                        <button
+                            type="button"
+                            @click="megaOpen = !megaOpen"
+                            @click.outside="megaOpen = false"
+                            class="px-3 py-2 rounded text-sm font-medium transition flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald"
+                            :class="megaOpen ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800'"
+                            :aria-expanded="megaOpen.toString()"
+                            aria-haspopup="true"
+                            aria-label="Explore Tracker Mega Menu"
+                        >
+                            <i class="fas fa-bars-staggered text-brand-emerald"></i>
+                            <span>Explore Tracker</span>
+                            <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" :class="megaOpen ? 'rotate-180 text-brand-emerald' : 'text-ink-400'"></i>
+                        </button>
+
+                        <!-- Mega Menu Panel -->
+                        <div
+                            x-show="megaOpen"
+                            x-cloak
+                            x-transition:enter="transition ease-out duration-150"
+                            x-transition:enter-start="transform opacity-0 -translate-y-2"
+                            x-transition:enter-end="transform opacity-100 translate-y-0"
+                            x-transition:leave="transition ease-in duration-100"
+                            x-transition:leave-start="transform opacity-100 translate-y-0"
+                            x-transition:leave-end="transform opacity-0 -translate-y-2"
+                            class="absolute right-0 mt-3 w-[880px] max-w-[94vw] bg-ink-950 border border-ink-800 rounded-xl shadow-2xl p-6 z-50 text-xs text-ink-300"
+                        >
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                <!-- Column 1: Geopolitical Zones -->
+                                <div class="space-y-3">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-white flex items-center gap-1.5 pb-2 border-b border-ink-800">
+                                        <i class="fas fa-map-location-dot text-brand-blue"></i> Geopolitical Zones
+                                    </span>
+                                    <ul class="space-y-1 font-medium">
+                                        <li>
+                                            <a href="/?zone=North+Central#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="font-bold text-ink-100 block">North Central</span>
+                                                <span class="text-[10px] text-ink-400">Benue, FCT, Kogi, Kwara, Niger...</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/?zone=North+East#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="font-bold text-ink-100 block">North East</span>
+                                                <span class="text-[10px] text-ink-400">Adamawa, Bauchi, Borno, Gombe...</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/?zone=North+West#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="font-bold text-ink-100 block">North West</span>
+                                                <span class="text-[10px] text-ink-400">Jigawa, Kaduna, Kano, Sokoto...</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/?zone=South+East#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="font-bold text-ink-100 block">South East</span>
+                                                <span class="text-[10px] text-ink-400">Abia, Anambra, Ebonyi, Enugu, Imo</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/?zone=South+South#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="font-bold text-ink-100 block">South South</span>
+                                                <span class="text-[10px] text-ink-400">Akwa Ibom, Delta, Edo, Rivers...</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/?zone=South+West#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="font-bold text-ink-100 block">South West</span>
+                                                <span class="text-[10px] text-ink-400">Ekiti, Lagos, Ogun, Osun, Oyo...</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Column 2: Policy Lifecycle Stages -->
+                                <div class="space-y-3">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-white flex items-center gap-1.5 pb-2 border-b border-ink-800">
+                                        <i class="fas fa-stairs text-brand-emerald"></i> Lifecycle Stages
+                                    </span>
+                                    <ul class="space-y-1">
+                                        <li>
+                                            <a href="/?stage=6#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-brand-orange shrink-0"></span>
+                                                <div>
+                                                    <span class="font-bold text-ink-100 block">Stage 6: Signed</span>
+                                                    <span class="text-[10px] text-ink-400">Legislative assent</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/?stage=7#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-brand-emerald shrink-0"></span>
+                                                <div>
+                                                    <span class="font-bold text-ink-100 block">Stage 7: Implementing</span>
+                                                    <span class="text-[10px] text-ink-400">Active programs</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/?stage=5#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-brand-violet shrink-0"></span>
+                                                <div>
+                                                    <span class="font-bold text-ink-100 block">Stage 5: Validated</span>
+                                                    <span class="text-[10px] text-ink-400">Stakeholder approval</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/?stage=4#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-brand-teal shrink-0"></span>
+                                                <div>
+                                                    <span class="font-bold text-ink-100 block">Stage 4: Validating</span>
+                                                    <span class="text-[10px] text-ink-400">Review sessions</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/?stage=3#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-brand-blue shrink-0"></span>
+                                                <div>
+                                                    <span class="font-bold text-ink-100 block">Stage 3: Developing</span>
+                                                    <span class="text-[10px] text-ink-400">Technical drafting</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/?stage=2#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-brand-sunflower shrink-0"></span>
+                                                <div>
+                                                    <span class="font-bold text-ink-100 block">Stage 2: Consultation</span>
+                                                    <span class="text-[10px] text-ink-400">Youth dialogues</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/?stage=0#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-brand-slate shrink-0"></span>
+                                                <div>
+                                                    <span class="font-bold text-ink-100 block">Stage 0: No Data</span>
+                                                    <span class="text-[10px] text-ink-400">Awaiting evidence</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Column 3: Data & Evidence Hubs -->
+                                <div class="space-y-3">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-white flex items-center gap-1.5 pb-2 border-b border-ink-800">
+                                        <i class="fas fa-database text-brand-orange"></i> Data &amp; Research Hub
+                                    </span>
+                                    <ul class="space-y-2 font-medium">
+                                        <li>
+                                            <a href="/dashboard" @click="megaOpen = false" class="block p-2 rounded bg-ink-900 border border-ink-800 hover:border-brand-emerald hover:text-white transition">
+                                                <span class="font-bold text-ink-100 flex items-center gap-1.5">
+                                                    <i class="fas fa-chart-pie text-brand-orange text-xs"></i> Analytics Dashboard
+                                                </span>
+                                                <span class="text-[10px] text-ink-400 block mt-0.5">Macro distributions, zones, and stakeholder charts.</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/documents" @click="megaOpen = false" class="block p-2 rounded bg-ink-900 border border-ink-800 hover:border-brand-emerald hover:text-white transition">
+                                                <span class="font-bold text-ink-100 flex items-center gap-1.5">
+                                                    <i class="fas fa-box-archive text-brand-teal text-xs"></i> Document Vault (CTCs)
+                                                </span>
+                                                <span class="text-[10px] text-ink-400 block mt-0.5">Certified True Copies of state gazettes and policy drafts.</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/api/docs" @click="megaOpen = false" class="block p-2 rounded bg-ink-900 border border-ink-800 hover:border-brand-emerald hover:text-white transition">
+                                                <span class="font-bold text-ink-100 flex items-center gap-1.5">
+                                                    <i class="fas fa-code text-brand-violet text-xs"></i> Public REST API (v1)
+                                                </span>
+                                                <span class="text-[10px] text-ink-400 block mt-0.5">Interactive query console, endpoints &amp; cURL snippets.</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/api/v1/export/csv" class="block p-2 rounded bg-ink-900 border border-ink-800 hover:border-brand-emerald hover:text-white transition">
+                                                <span class="font-bold text-ink-100 flex items-center gap-1.5">
+                                                    <i class="fas fa-file-csv text-brand-emerald text-xs"></i> Download Dataset (CSV)
+                                                </span>
+                                                <span class="text-[10px] text-ink-400 block mt-0.5">Full streaming tabular export for Excel and Stata.</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Column 4: Institutional Trust & Governance -->
+                                <div class="space-y-3">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-white flex items-center gap-1.5 pb-2 border-b border-ink-800">
+                                        <i class="fas fa-shield-halved text-brand-teal"></i> Institutional Trust
+                                    </span>
+                                    <div class="p-3.5 rounded-lg bg-ink-900 border border-ink-800 space-y-2.5">
+                                        <span class="text-[10px] font-bold uppercase text-brand-emerald block">Civic Data Trust</span>
+                                        <p class="text-[11px] text-ink-300 leading-relaxed">
+                                            Operated by <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="text-white underline font-semibold">Glowing Minds Initiatives</a> to provide independent, verifiable monitoring of youth policy commitments.
+                                        </p>
+                                        <div class="pt-2 border-t border-ink-800 space-y-1.5 font-medium">
+                                            <a href="/privacy-policy" @click="megaOpen = false" class="block text-ink-300 hover:text-white transition">
+                                                &bull; Privacy &amp; Data Governance
+                                            </a>
+                                            <a href="/api/docs" @click="megaOpen = false" class="block text-ink-300 hover:text-white transition">
+                                                &bull; Citation &amp; License (PDDL)
+                                            </a>
+                                            <a href="/admin" @click="megaOpen = false" class="block text-ink-300 hover:text-white transition">
+                                                &bull; Administrator Portal
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </nav>
 
                 <!-- Actions / Language Switcher & Admin Button -->
@@ -137,7 +352,7 @@
         </div>
 
         <!-- Mobile Menu Dropdown -->
-        <div x-show="mobileMenuOpen" x-cloak class="md:hidden bg-ink-950 border-b border-ink-800 px-4 pt-2 pb-4 space-y-1">
+        <div x-show="mobileMenuOpen" x-cloak class="md:hidden bg-ink-950 border-b border-ink-800 px-4 pt-2 pb-4 space-y-2">
             <a href="/" class="block px-3 py-2 rounded text-base font-medium {{ request()->is('/') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:bg-ink-800' }}">
                 <i class="fas fa-map-location-dot mr-2 text-brand-blue"></i> Policy Map
             </a>
@@ -150,9 +365,57 @@
             <a href="/api/docs" class="block px-3 py-2 rounded text-base font-medium {{ request()->is('api*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:bg-ink-800' }}">
                 <i class="fas fa-code mr-2 text-brand-violet"></i> Open API
             </a>
-            <a href="/admin" class="block px-3 py-2 rounded text-base font-medium bg-ink-800 text-ink-200 mt-2">
-                <i class="fas fa-lock mr-2"></i> Admin Portal
-            </a>
+
+            <!-- Mobile Geopolitical Zones Accordion -->
+            <div class="border-t border-ink-800 pt-2">
+                <button
+                    type="button"
+                    @click="mobileZonesOpen = !mobileZonesOpen"
+                    class="w-full flex items-center justify-between px-3 py-2 rounded text-sm font-semibold text-ink-200 hover:bg-ink-800"
+                >
+                    <span class="flex items-center gap-2">
+                        <i class="fas fa-map-location-dot text-brand-blue"></i> Browse by Zone (6)
+                    </span>
+                    <i class="fas text-xs" :class="mobileZonesOpen ? 'fa-chevron-up text-brand-emerald' : 'fa-chevron-down text-ink-500'"></i>
+                </button>
+                <div x-show="mobileZonesOpen" x-cloak class="pl-6 pr-2 py-1 space-y-1 text-xs">
+                    <a href="/?zone=North+Central#coverage" class="block py-1 text-ink-300 hover:text-white">North Central</a>
+                    <a href="/?zone=North+East#coverage" class="block py-1 text-ink-300 hover:text-white">North East</a>
+                    <a href="/?zone=North+West#coverage" class="block py-1 text-ink-300 hover:text-white">North West</a>
+                    <a href="/?zone=South+East#coverage" class="block py-1 text-ink-300 hover:text-white">South East</a>
+                    <a href="/?zone=South+South#coverage" class="block py-1 text-ink-300 hover:text-white">South South</a>
+                    <a href="/?zone=South+West#coverage" class="block py-1 text-ink-300 hover:text-white">South West</a>
+                </div>
+            </div>
+
+            <!-- Mobile Stages Accordion -->
+            <div class="border-t border-ink-800 pt-1">
+                <button
+                    type="button"
+                    @click="mobileStagesOpen = !mobileStagesOpen"
+                    class="w-full flex items-center justify-between px-3 py-2 rounded text-sm font-semibold text-ink-200 hover:bg-ink-800"
+                >
+                    <span class="flex items-center gap-2">
+                        <i class="fas fa-stairs text-brand-emerald"></i> Lifecycle Stages (8)
+                    </span>
+                    <i class="fas text-xs" :class="mobileStagesOpen ? 'fa-chevron-up text-brand-emerald' : 'fa-chevron-down text-ink-500'"></i>
+                </button>
+                <div x-show="mobileStagesOpen" x-cloak class="pl-6 pr-2 py-1 space-y-1 text-xs">
+                    <a href="/?stage=6#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-orange"></span> Stage 6: Signed</a>
+                    <a href="/?stage=7#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-emerald"></span> Stage 7: Implementing</a>
+                    <a href="/?stage=5#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-violet"></span> Stage 5: Validated</a>
+                    <a href="/?stage=4#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-teal"></span> Stage 4: Validating</a>
+                    <a href="/?stage=3#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-blue"></span> Stage 3: Developing</a>
+                    <a href="/?stage=2#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-sunflower"></span> Stage 2: Consultation</a>
+                    <a href="/?stage=0#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-slate"></span> Stage 0: No Data</a>
+                </div>
+            </div>
+
+            <div class="border-t border-ink-800 pt-2">
+                <a href="/admin" class="block px-3 py-2 rounded text-base font-medium bg-ink-800 text-ink-200">
+                    <i class="fas fa-lock mr-2"></i> Admin Portal
+                </a>
+            </div>
         </div>
     </header>
 
