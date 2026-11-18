@@ -261,6 +261,13 @@ class PolicyTracker extends Component
             ])->where('slug', $this->stateDrawerSlug)->first();
         }
 
+        // Recent verified policy milestones from the database
+        $recentActivities = PolicyStatus::with(['region', 'stage', 'region.leadingOrganizations'])
+            ->whereNotNull('data_verified_at')
+            ->orderByDesc('data_verified_at')
+            ->take(3)
+            ->get();
+
         return view('livewire.policy-tracker', [
             'kpis' => $kpis,
             'stages' => $stages,
@@ -270,6 +277,7 @@ class PolicyTracker extends Component
             'filteredStates' => $filteredStates,
             'paginatedStates' => $paginatedStates,
             'selectedRegion' => $selectedRegion,
+            'recentActivities' => $recentActivities,
             'hasActiveFilters' => !empty($this->search) || !empty($this->selectedZone) || $this->selectedStage !== '' || !empty($this->selectedOrg) || !empty($this->selectedFunder) || !empty($this->hasCtc) || $this->stalledOnly || $this->expiredOnly,
         ]);
     }

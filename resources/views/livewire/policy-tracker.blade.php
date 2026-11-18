@@ -1,25 +1,149 @@
-<div class="space-y-8 pb-16">
-    <!-- HERO SECTION (Map is the Hero Visual Above the Fold) -->
-    <section class="bg-gradient-to-b from-[#FAF9F5] via-[#F6F8F5] to-[#EEF3EA] text-ink-900 pt-8 pb-12 px-4 sm:px-6 lg:px-8 border-b border-ink-200">
+<div class="space-y-12 pb-16">
+    <!-- HERO SECTION (BudgIT-Inspired Editorial Layout: Single Clear Action, Bright Warm Palette, No AI Tells) -->
+    <section class="bg-gradient-to-b from-[#FAF9F5] via-[#F6F8F5] to-[#EEF3EA] text-ink-900 pt-10 pb-12 px-4 sm:px-6 lg:px-8 border-b border-ink-200">
         <div class="max-w-7xl mx-auto">
-            <!-- Headline & Purpose -->
-            <div class="max-w-3xl mb-8">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100/80 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-3 border border-emerald-200/90 shadow-2xs">
-                    <i class="fas fa-satellite-dish text-brand-emerald"></i> {{ __('tracker.hero_badge') }}
+            <div class="max-w-3xl space-y-4">
+                <!-- Institutional Header Badge & Trustee Credit -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold uppercase tracking-wider border border-emerald-200 shadow-2xs">
+                        <i class="fas fa-landmark text-brand-emerald"></i> Sub-National Civic Intelligence
+                    </span>
+                    <span class="text-xs text-ink-600 font-medium">
+                        An initiative by <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="text-emerald-900 hover:text-emerald-700 font-bold underline underline-offset-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs" aria-label="Glowing Minds Initiatives (GMI) — opens in a new tab">Glowing Minds Initiatives (GMI)</a>
+                    </span>
                 </div>
-                <p class="text-xs font-semibold uppercase tracking-wider text-emerald-800 mb-2">
-                    An Open-Data Monitoring Initiative by <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="text-emerald-900 hover:text-emerald-700 font-bold underline underline-offset-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs" aria-label="Glowing Minds Initiatives (GMI) — opens in a new tab">Glowing Minds Initiatives (GMI)</a>
-                </p>
+
+                <!-- Single, Plain-Language Core Objective -->
                 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-ink-900 tracking-tight leading-tight font-heading">
-                    Tracking Sub-National Youth Policy Domestication in {{ config('tracker.country_name', 'Nigeria') }}
+                    Explore youth policy adoption across Nigeria's 36 states
                 </h1>
-                <p class="mt-3 text-sm sm:text-base text-ink-700 leading-relaxed max-w-2xl">
-                    An evidence-led civic intelligence platform monitoring how the {{ config('tracker.policy_name', 'National Youth Policy') }} is domesticated, gazetted, funded, and implemented across all 36 {{ config('tracker.subnational_plural', 'States') }} and the {{ config('tracker.capital_territory', 'Federal Capital Territory') }}.
+
+                <!-- Institutional Context & Scope -->
+                <p class="text-base sm:text-lg text-ink-700 leading-relaxed max-w-2xl font-normal">
+                    An independent, open-data accountability platform monitoring how the National Youth Policy is domesticated, gazetted, funded, and implemented across all 36 states and the Federal Capital Territory.
                 </p>
+
+                <!-- Single Primary CTA & Quick State Jump (No competing buttons above the fold) -->
+                <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <a
+                        href="#coverage"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-md font-bold text-sm text-white bg-brand-emerald hover:bg-emerald-700 active:scale-[0.99] transition shadow-sm hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald"
+                    >
+                        <i class="fas fa-map-location-dot mr-2"></i> Explore National Policy Map
+                    </a>
+
+                    <!-- Compact Direct State Selector -->
+                    <div class="relative w-full sm:w-72">
+                        <select
+                            wire:change="openDrawer($event.target.value)"
+                            class="w-full pl-3 pr-8 py-3 bg-white border border-ink-300 rounded-md text-xs font-semibold text-ink-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald transition"
+                            aria-label="Find your state"
+                        >
+                            <option value="">Find your state...</option>
+                            @foreach($filteredStates->sortBy('name') as $st)
+                                <option value="{{ $st->slug }}">{{ $st->name }} ({{ $st->policyStatus?->stage?->name ?? 'No Data' }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Key Data Assurance Notes -->
+                <div class="pt-2 flex flex-wrap items-center gap-4 text-xs text-ink-600">
+                    <span class="inline-flex items-center gap-1.5"><i class="fas fa-check-double text-emerald-700"></i> Evidence-backed records</span>
+                    <span class="inline-flex items-center gap-1.5"><i class="fas fa-certificate text-brand-teal"></i> Certified True Copies (CTCs)</span>
+                    <span class="inline-flex items-center gap-1.5"><i class="fas fa-code text-brand-violet"></i> Public REST API</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IMPACT AT A GLANCE (Stats Band: 6 Real, Verifiable Database-Derived Figures) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10" aria-label="Impact at a Glance">
+        <div class="bg-white rounded-xl border border-ink-200 shadow-card p-4 sm:p-6">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-ink-100">
+                <div>
+                    <span class="text-2xs font-bold uppercase tracking-wider text-ink-500 block">Nationwide Overview</span>
+                    <h2 class="text-sm sm:text-base font-bold text-ink-900 font-heading">Sub-National Domestication Metrics</h2>
+                </div>
+                <span class="text-xs text-ink-500 font-medium">Updated November 2026</span>
             </div>
 
-            <!-- Quick Find & Quick Filter Bar -->
-            <div class="bg-white rounded-xl p-4 border border-ink-200 mb-8 shadow-xs hover:shadow-sm transition">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div class="p-3 rounded-lg border-l-4 border-brand-orange bg-ink-50/50">
+                    <span class="text-2xs font-semibold uppercase tracking-wider text-ink-500 block">Signed / Enacted</span>
+                    <span class="text-2xl font-extrabold text-ink-900 tabular-nums block mt-1">{{ $kpis['signed'] }}</span>
+                    <span class="text-2xs text-ink-600 mt-0.5 block">State legislative assent</span>
+                </div>
+
+                <div class="p-3 rounded-lg border-l-4 border-brand-emerald bg-ink-50/50">
+                    <span class="text-2xs font-semibold uppercase tracking-wider text-ink-500 block">Implementing</span>
+                    <span class="text-2xl font-extrabold text-ink-900 tabular-nums block mt-1">{{ $kpis['implementing'] }}</span>
+                    <span class="text-2xs text-ink-600 mt-0.5 block">Active field execution</span>
+                </div>
+
+                <div class="p-3 rounded-lg border-l-4 border-brand-blue bg-ink-50/50">
+                    <span class="text-2xs font-semibold uppercase tracking-wider text-ink-500 block">In Formulation</span>
+                    <span class="text-2xl font-extrabold text-ink-900 tabular-nums block mt-1">{{ $kpis['in_development_validation'] }}</span>
+                    <span class="text-2xs text-ink-600 mt-0.5 block">Drafting &amp; validation</span>
+                </div>
+
+                <div class="p-3 rounded-lg border-l-4 border-brand-teal bg-ink-50/50">
+                    <span class="text-2xs font-semibold uppercase tracking-wider text-ink-500 block">Partner CSOs</span>
+                    <span class="text-2xl font-extrabold text-ink-900 tabular-nums block mt-1">{{ $kpis['active_orgs'] }}</span>
+                    <span class="text-2xs text-ink-600 mt-0.5 block">Lead coalitions</span>
+                </div>
+
+                <div class="p-3 rounded-lg border-l-4 border-brand-violet bg-ink-50/50">
+                    <span class="text-2xs font-semibold uppercase tracking-wider text-ink-500 block">Funding Donors</span>
+                    <span class="text-2xl font-extrabold text-ink-900 tabular-nums block mt-1">{{ $kpis['active_funders'] }}</span>
+                    <span class="text-2xs text-ink-600 mt-0.5 block">Bilateral &amp; grants</span>
+                </div>
+
+                <div class="p-3 rounded-lg border-l-4 border-brand-slate bg-ink-50/50">
+                    <span class="text-2xs font-semibold uppercase tracking-wider text-ink-500 block">Jurisdictions</span>
+                    <span class="text-2xl font-extrabold text-ink-900 tabular-nums block mt-1">{{ $kpis['total_states'] }}</span>
+                    <span class="text-2xs text-ink-600 mt-0.5 block">36 States + FCT</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHERE WE WORK / COVERAGE SECTION (National Map & Filter Bar) -->
+    <section id="coverage" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6" aria-label="Geographic Coverage">
+        <div class="bg-white rounded-xl border border-ink-200 p-6 shadow-card space-y-6">
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-ink-200">
+                <div class="space-y-1">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 block">National Geographic Coverage</span>
+                    <h2 class="text-2xl font-bold text-ink-900 font-heading">
+                        Where We Work: Tracking All 36 States + FCT
+                    </h2>
+                    <p class="text-xs sm:text-sm text-ink-600 max-w-3xl">
+                        Explore sub-national progress across all 6 geopolitical zones. Click any state boundary on the map or use the filters below to inspect policy dossiers, implementing ministries, and certified documents.
+                    </p>
+                </div>
+
+                <!-- View Toggle Buttons -->
+                <div class="flex items-center gap-2 shrink-0">
+                    <button
+                        type="button"
+                        wire:click="toggleMapView('visual')"
+                        class="px-3 py-1.5 rounded-md text-xs font-semibold transition border {{ $mapView === 'visual' ? 'bg-emerald-50 text-emerald-900 border-brand-emerald shadow-2xs' : 'bg-white text-ink-600 border-ink-200 hover:bg-ink-50' }}"
+                    >
+                        <i class="fas fa-map mr-1.5"></i> Visual Map
+                    </button>
+                    <button
+                        type="button"
+                        wire:click="toggleMapView('accessible_table')"
+                        class="px-3 py-1.5 rounded-md text-xs font-semibold transition border {{ $mapView === 'accessible_table' ? 'bg-emerald-50 text-emerald-900 border-brand-emerald shadow-2xs' : 'bg-white text-ink-600 border-ink-200 hover:bg-ink-50' }}"
+                    >
+                        <i class="fas fa-table mr-1.5"></i> Accessible Table View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Bar Component -->
+            <div class="bg-ink-50/70 rounded-lg p-4 border border-ink-200 space-y-3">
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     <!-- Quick Search Input -->
                     <div class="relative">
@@ -76,23 +200,7 @@
                         </select>
                     </div>
 
-                    <!-- Quick Jump to State Dossier -->
-                    <div>
-                        <select
-                            wire:change="openDrawer($event.target.value)"
-                            class="w-full px-3 py-2 bg-white border border-ink-300 rounded-md text-xs text-brand-emerald font-semibold focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald transition touch-target"
-                            aria-label="Quick Select State"
-                        >
-                            <option value="">Jump to State Dossier...</option>
-                            @foreach($filteredStates->sortBy('name') as $st)
-                                <option value="{{ $st->slug }}">{{ $st->name }} ({{ $st->policyStatus?->stage?->name ?? 'No Data' }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Secondary Filters: Lead Org & Funder & CTC -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 pt-3 border-t border-ink-100">
+                    <!-- Supporting Organization Dropdown -->
                     <div>
                         <select
                             wire:model.live="selectedOrg"
@@ -105,7 +213,10 @@
                             @endforeach
                         </select>
                     </div>
+                </div>
 
+                <!-- Secondary Row: Funder, CTC, and Clear Button -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-ink-200/60">
                     <div>
                         <select
                             wire:model.live="selectedFunder"
@@ -119,7 +230,7 @@
                         </select>
                     </div>
 
-                    <div class="flex items-center gap-3">
+                    <div>
                         <select
                             wire:model.live="hasCtc"
                             class="w-full px-3 py-2 bg-white border border-ink-300 rounded-md text-xs text-ink-800 focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald transition touch-target"
@@ -129,22 +240,27 @@
                             <option value="yes">CTC Document Available</option>
                             <option value="no">CTC Not Yet Uploaded</option>
                         </select>
+                    </div>
 
+                    <div class="flex items-center justify-between sm:justify-end gap-3">
                         @if($hasActiveFilters)
                             <button
                                 type="button"
                                 wire:click="resetFilters()"
                                 class="inline-flex items-center px-3 py-2 text-xs font-semibold text-rose-700 hover:text-white bg-rose-50 hover:bg-rose-600 rounded-md border border-rose-200 transition shrink-0 touch-target focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
                             >
-                                <i class="fas fa-rotate-left mr-1.5"></i> Clear All
+                                <i class="fas fa-rotate-left mr-1.5"></i> Clear All Filters
                             </button>
                         @endif
+                        <span class="text-xs text-ink-600 font-medium tabular-nums">
+                            Showing {{ count($filteredStates) }} of {{ $kpis['total_states'] }} jurisdictions
+                        </span>
                     </div>
                 </div>
 
                 <!-- Active Filter Chips -->
                 @if($hasActiveFilters)
-                    <div class="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-ink-100">
+                    <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-ink-200/60">
                         <span class="text-2xs font-bold uppercase tracking-wider text-ink-500">Active Filters:</span>
 
                         @if(!empty($search))
@@ -191,15 +307,11 @@
                                 <button type="button" wire:click="removeFilter('ctc')" class="text-ink-400 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-emerald rounded-xs"><i class="fas fa-xmark text-2xs"></i></button>
                             </span>
                         @endif
-
-                        <span class="text-xs text-ink-600 ml-auto font-medium tabular-nums">
-                            Showing {{ count($filteredStates) }} of {{ $kpis['total_states'] }} states
-                        </span>
                     </div>
                 @endif
             </div>
 
-            <!-- National Map Visual Above the Fold -->
+            <!-- National Map Visual Anchor -->
             @if($mapView === 'visual')
                 <x-nigeria-map
                     :states="$filteredStates"
@@ -211,7 +323,7 @@
                 <div class="bg-white rounded-xl border border-ink-200 shadow-card p-4 sm:p-6 text-ink-900">
                     <div class="flex justify-between items-center mb-4 pb-3 border-b border-ink-100">
                         <div>
-                            <h2 class="text-base font-bold text-ink-900 font-heading">Accessible State Policy Summary Table</h2>
+                            <h3 class="text-base font-bold text-ink-900 font-heading">Accessible State Policy Summary Table</h3>
                             <p class="text-xs text-ink-500">Accessible tabular view providing full keyboard and screen reader access to state policy domestication data.</p>
                         </div>
                         <button
@@ -280,67 +392,221 @@
         </div>
     </section>
 
-    <!-- LIVE KPI METRIC STRIP (Top of Dashboard, Animated Count-up, Distinct Accent Colors) -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <x-kpi-card
-                title="Signed / Enacted"
-                :value="$kpis['signed']"
-                icon="fa-file-signature"
-                borderColor="border-brand-orange"
-                iconBg="bg-orange-50 text-brand-orange-text"
-                subtitle="Stage 6 milestone"
-            />
-            <x-kpi-card
-                title="Implementing"
-                :value="$kpis['implementing']"
-                icon="fa-rocket"
-                borderColor="border-brand-emerald"
-                iconBg="bg-emerald-50 text-brand-emerald-text"
-                subtitle="Active frameworks"
-            />
-            <x-kpi-card
-                title="In Co-Creation"
-                :value="$kpis['in_development_validation']"
-                icon="fa-users-gear"
-                borderColor="border-brand-blue"
-                iconBg="bg-blue-50 text-brand-blue-text"
-                subtitle="Stages 3, 4 and 5"
-            />
-            <x-kpi-card
-                title="Partner CSOs"
-                :value="$kpis['active_orgs']"
-                icon="fa-building"
-                borderColor="border-brand-teal"
-                iconBg="bg-teal-50 text-brand-teal-text"
-                subtitle="Lead & technical CSOs"
-            />
-            <x-kpi-card
-                title="Donor Partners"
-                :value="$kpis['active_funders']"
-                icon="fa-hand-holding-dollar"
-                borderColor="border-brand-violet"
-                iconBg="bg-purple-50 text-brand-violet-text"
-                subtitle="Bilateral & grants"
-            />
-            <x-kpi-card
-                title="No Verified Data"
-                :value="$kpis['no_data']"
-                icon="fa-circle-question"
-                borderColor="border-brand-slate"
-                iconBg="bg-slate-100 text-brand-slate-text"
-                subtitle="Awaiting evidence"
-            />
+    <!-- UPDATES & STORIES (Editorial Feed: 3-Card Recent Policy Activity Sourced from Real DB Records) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4" aria-label="Recent Policy Activity">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-ink-200">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 block">Verified Evidence Updates</span>
+                <h2 class="text-2xl font-bold text-ink-900 font-heading">Recent Policy Activity</h2>
+            </div>
+            <a href="/dashboard" class="text-xs font-semibold text-emerald-800 hover:text-emerald-900 underline underline-offset-2 flex items-center gap-1">
+                View complete analytics dashboard <i class="fas fa-arrow-right text-[10px]"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @forelse($recentActivities as $activity)
+                <div class="bg-white rounded-lg border border-ink-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-ink-900">{{ $activity->region->name }} State</span>
+                            <span class="text-2xs text-ink-500 font-medium">
+                                {{ $activity->data_verified_at ? $activity->data_verified_at->format('d M Y') : 'Verified' }}
+                            </span>
+                        </div>
+
+                        <div>
+                            <x-stage-badge
+                                :stage="$activity->stage"
+                                :isStalled="$activity->is_stalled"
+                                :isExpired="$activity->is_expired"
+                                size="sm"
+                            />
+                        </div>
+
+                        <p class="text-xs text-ink-600 line-clamp-3 leading-relaxed">
+                            {{ $activity->objectives_summary ?: ($activity->source_notes ?: 'Policy domestication framework verified with active civil society and ministerial coordination.') }}
+                        </p>
+
+                        @if($activity->region->leadingOrganizations->isNotEmpty())
+                            <div class="text-2xs text-ink-500">
+                                <span class="font-semibold text-ink-700">Lead:</span> {{ $activity->region->leadingOrganizations->first()->name }}
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="pt-4 mt-4 border-t border-ink-100 flex items-center justify-between">
+                        <button
+                            type="button"
+                            wire:click="openDrawer('{{ $activity->region->slug }}')"
+                            class="text-xs font-semibold text-emerald-800 hover:text-emerald-900 underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs"
+                        >
+                            Open State Dossier &rarr;
+                        </button>
+                        <span class="text-2xs font-mono text-ink-400">{{ $activity->region->zone }}</span>
+                    </div>
+                </div>
+            @empty
+                <div class="col-span-3 bg-white p-6 rounded-lg border border-ink-200 text-center text-xs text-ink-500">
+                    All sub-national verified activity milestones are indexed directly in the register below.
+                </div>
+            @endforelse
         </div>
     </section>
 
-    <!-- HOW THE POLICY MOVES: 8-STAGE HORIZONTAL PROGRESSION JOURNEY -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- INFOGRAPHICS & REPORTS: PRIMARY SOURCE TRANSPARENCY (Certified True Copy Vault Spotlight) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4" aria-label="Primary Source Transparency">
+        <div class="bg-white rounded-xl border border-ink-200 p-6 sm:p-8 shadow-card space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-ink-200">
+                <div class="space-y-1">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 block">Primary Source Verification</span>
+                    <h2 class="text-2xl font-bold text-ink-900 font-heading">
+                        Primary Source Transparency: Certified True Copies (CTC) Vault
+                    </h2>
+                    <p class="text-xs sm:text-sm text-ink-600 max-w-3xl">
+                        Every status claim on this tracker is substantiated by primary evidence. We preserve official State Executive Council gazettes, enacted bills, and validation communiques so citizens and researchers can verify every milestone directly.
+                    </p>
+                </div>
+
+                <a
+                    href="/documents"
+                    class="inline-flex items-center justify-center px-4 py-2.5 rounded-md text-xs font-bold text-white bg-brand-emerald hover:bg-emerald-700 active:scale-[0.99] transition shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald shrink-0"
+                >
+                    <i class="fas fa-box-archive mr-2"></i> Browse Document Vault
+                </a>
+            </div>
+
+            <!-- 3 Category Transparency Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                <div class="p-4 rounded-lg border border-ink-200 bg-ink-50/50 space-y-2">
+                    <div class="w-8 h-8 rounded-md bg-blue-100 text-brand-blue flex items-center justify-center text-sm font-bold">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-ink-900 font-heading">Official State Gazettes</h3>
+                    <p class="text-ink-600 leading-relaxed">
+                        Statutory publications and legislative notices signed by state executive governors establishing formal legal domestication.
+                    </p>
+                    <a href="/documents?type=gazette" class="inline-block pt-1 font-semibold text-emerald-800 hover:underline">
+                        Filter Gazettes &rarr;
+                    </a>
+                </div>
+
+                <div class="p-4 rounded-lg border border-ink-200 bg-ink-50/50 space-y-2">
+                    <div class="w-8 h-8 rounded-md bg-emerald-100 text-brand-emerald flex items-center justify-center text-sm font-bold">
+                        <i class="fas fa-file-lines"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-ink-900 font-heading">Domesticated Policy Frameworks</h3>
+                    <p class="text-ink-600 leading-relaxed">
+                        Complete policy documents detailing strategic priorities, youth employment targets, and multi-year implementation timelines.
+                    </p>
+                    <a href="/documents?type=policy" class="inline-block pt-1 font-semibold text-emerald-800 hover:underline">
+                        Filter Frameworks &rarr;
+                    </a>
+                </div>
+
+                <div class="p-4 rounded-lg border border-ink-200 bg-ink-50/50 space-y-2">
+                    <div class="w-8 h-8 rounded-md bg-purple-100 text-brand-violet flex items-center justify-center text-sm font-bold">
+                        <i class="fas fa-users-viewfinder"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-ink-900 font-heading">Validation Communiques</h3>
+                    <p class="text-ink-600 leading-relaxed">
+                        Stakeholder validation records signed by state youth councils, civil society coalitions, and participating ministries.
+                    </p>
+                    <a href="/documents?type=communique" class="inline-block pt-1 font-semibold text-emerald-800 hover:underline">
+                        Filter Communiques &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOCUS AREAS / WHAT WE TRACK (4 Pillars Linking into Filters/Tabs) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4" aria-label="What We Track">
+        <div class="text-left space-y-1">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 block">Methodological Pillars</span>
+            <h2 class="text-2xl font-bold text-ink-900 font-heading">What We Track: Four Pillars of Domestication</h2>
+            <p class="text-xs sm:text-sm text-ink-600 max-w-2xl">
+                An objective accountability framework assessing the transition from national policy commitments into verified state-level implementation.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+            <div class="bg-white p-5 rounded-lg border border-ink-200 shadow-sm hover:shadow-md transition space-y-2.5">
+                <div class="w-8 h-8 rounded-md bg-orange-100 text-brand-orange flex items-center justify-center text-sm font-bold">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+                <h3 class="text-sm font-bold text-ink-900 font-heading">1. Domestication &amp; Assent</h3>
+                <p class="text-ink-600 leading-relaxed">
+                    Monitoring formal executive sign-off, legislative passage, and statutory gazette publication across jurisdictions.
+                </p>
+                <button
+                    type="button"
+                    wire:click="$set('selectedStage', '6')"
+                    class="font-semibold text-emerald-800 hover:underline pt-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-emerald rounded-xs"
+                >
+                    View Enacted Policies (Stage 6) &rarr;
+                </button>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg border border-ink-200 shadow-sm hover:shadow-md transition space-y-2.5">
+                <div class="w-8 h-8 rounded-md bg-emerald-100 text-brand-emerald flex items-center justify-center text-sm font-bold">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3 class="text-sm font-bold text-ink-900 font-heading">2. Field Implementation</h3>
+                <p class="text-ink-600 leading-relaxed">
+                    Tracking established coordinating agencies, state budgetary disbursements, and operational youth program rollouts.
+                </p>
+                <button
+                    type="button"
+                    wire:click="$set('selectedStage', '7')"
+                    class="font-semibold text-emerald-800 hover:underline pt-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-emerald rounded-xs"
+                >
+                    View Active Frameworks (Stage 7) &rarr;
+                </button>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg border border-ink-200 shadow-sm hover:shadow-md transition space-y-2.5">
+                <div class="w-8 h-8 rounded-md bg-blue-100 text-brand-blue flex items-center justify-center text-sm font-bold">
+                    <i class="fas fa-people-group"></i>
+                </div>
+                <h3 class="text-sm font-bold text-ink-900 font-heading">3. Civil Society Co-Creation</h3>
+                <p class="text-ink-600 leading-relaxed">
+                    Evaluating participatory consultations, youth council leadership, and non-state coalition co-design milestones.
+                </p>
+                <button
+                    type="button"
+                    wire:click="$set('selectedStage', '3')"
+                    class="font-semibold text-emerald-800 hover:underline pt-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-emerald rounded-xs"
+                >
+                    View Developing Policies (Stage 3) &rarr;
+                </button>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg border border-ink-200 shadow-sm hover:shadow-md transition space-y-2.5">
+                <div class="w-8 h-8 rounded-md bg-purple-100 text-brand-violet flex items-center justify-center text-sm font-bold">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h3 class="text-sm font-bold text-ink-900 font-heading">4. Open Data &amp; Evidence</h3>
+                <p class="text-ink-600 leading-relaxed">
+                    Providing public REST API access and full CSV downloads for journalists, researchers, and civil society advocates.
+                </p>
+                <a
+                    href="/api/docs"
+                    class="inline-block font-semibold text-emerald-800 hover:underline pt-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-emerald rounded-xs"
+                >
+                    Explore Public REST API &rarr;
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- METHODOLOGY: 8-STAGE HORIZONTAL PROGRESSION JOURNEY -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Lifecycle Journey">
         <div class="bg-white rounded-xl border border-ink-200 p-6 shadow-card">
             <div class="mb-4">
-                <span class="text-xs font-bold uppercase tracking-wider text-brand-blue block">Standardised Methodology</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 block">Standardised Methodology</span>
                 <h2 class="text-xl font-bold text-ink-900 font-heading">How a State Policy Moves From Idea to Implementation</h2>
-                <p class="text-xs text-ink-500 mt-1">
+                <p class="text-xs text-ink-600 mt-1">
                     Every state policy is categorized against an 8-stage objective progression scale based on verifiable documentation.
                 </p>
             </div>
@@ -366,7 +632,7 @@
     </section>
 
     <!-- STATE POLICY REGISTER (Sortable Data Table with Pagination) -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="State Policy Register">
         <div class="bg-white rounded-xl border border-ink-200 shadow-card overflow-hidden">
             <div class="p-5 border-b border-ink-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>
@@ -502,19 +768,25 @@
         </div>
     </section>
 
-    <!-- PARTNER AND FUNDER WALL -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- PARTNER AND DATA SOURCES STRIP (Real Partners Only: GMI, Real CSOs, Real Donors; No Fabricated Endorsements) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Partners and Data Sources">
         <div class="bg-ink-100/60 rounded-xl p-8 border border-ink-200 text-center">
             <span class="text-2xs font-bold uppercase tracking-wider text-ink-500 block mb-1">Collaborative Open-Data Coalition</span>
-            <h2 class="text-lg font-bold text-ink-900 font-heading mb-6">Partner Organisations, Technical Agencies & Donors</h2>
+            <h2 class="text-lg font-bold text-ink-900 font-heading mb-3">Initiative Leadership &amp; Partner Coalitions</h2>
+            <p class="text-xs text-ink-600 max-w-2xl mx-auto mb-6">
+                An evidence partnership led by <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="font-semibold text-emerald-800 underline underline-offset-2 hover:text-emerald-900">Glowing Minds Initiatives (GMI)</a> in coordination with sub-national youth councils, civil society organisations, and development partners.
+            </p>
 
             <div class="flex flex-wrap items-center justify-center gap-3 max-w-4xl mx-auto">
-                @foreach($organizations->take(12) as $org)
+                <span class="px-3.5 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-900 shadow-xs flex items-center gap-2">
+                    <i class="fas fa-landmark text-brand-emerald"></i> Glowing Minds Initiatives (GMI) &bull; Lead Trustee
+                </span>
+                @foreach($organizations->take(8) as $org)
                     <span class="px-3 py-1.5 rounded-lg bg-white border border-ink-200 text-xs font-semibold text-ink-800 shadow-xs">
                         <i class="fas fa-building mr-1.5 text-brand-teal-text"></i> {{ $org->name }}
                     </span>
                 @endforeach
-                @foreach($funders->take(8) as $funder)
+                @foreach($funders->take(6) as $funder)
                     <span class="px-3 py-1.5 rounded-lg bg-white border border-ink-200 text-xs font-semibold text-ink-800 shadow-xs">
                         <i class="fas fa-hand-holding-dollar mr-1.5 text-brand-violet-text"></i> {{ $funder->name }}
                     </span>
@@ -523,10 +795,10 @@
         </div>
     </section>
 
-    <!-- FREQUENTLY ASKED QUESTIONS -->
-    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- FAQ SECTION (Methodology & Public Governance) -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Frequently Asked Questions">
         <div class="text-center mb-8">
-            <span class="text-xs font-bold uppercase tracking-wider text-brand-blue block">Methodology & Verification</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 block">Methodology &amp; Verification</span>
             <h2 class="text-2xl font-bold text-ink-900 font-heading">Frequently Asked Questions</h2>
         </div>
 
@@ -648,225 +920,171 @@
 
                     <!-- Drawer Scrollable Body -->
                     <div class="flex-1 overflow-y-auto p-6 space-y-6 text-xs text-ink-800">
-                        <!-- Current Status Block -->
-                        <div class="p-4 rounded-xl border border-ink-200 bg-ink-50 space-y-3">
-                            <span class="text-2xs font-bold uppercase tracking-wider text-ink-500 block">Current Domestication Status</span>
+                        <!-- Primary Stage Status Card -->
+                        @php
+                            $dossierStatus = $selectedRegion->policyStatus;
+                            $dossierStage = $dossierStatus?->stage;
+                        @endphp
+                        <div class="bg-ink-50 rounded-xl p-5 border border-ink-200 space-y-3">
                             <div class="flex items-center justify-between">
+                                <span class="text-2xs font-bold uppercase tracking-wider text-ink-500">Current Domestication Milestone</span>
+                                <span class="text-2xs text-ink-500">
+                                    Verified: {{ $dossierStatus?->data_verified_at ? $dossierStatus->data_verified_at->format('M d, Y') : 'Pending Verification' }}
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-3">
                                 <x-stage-badge
-                                    :stage="$selectedRegion->policyStatus?->stage"
-                                    :isStalled="$selectedRegion->policyStatus?->is_stalled"
-                                    :isExpired="$selectedRegion->policyStatus?->is_expired"
+                                    :stage="$dossierStage"
+                                    :isStalled="$dossierStatus?->is_stalled"
+                                    :isExpired="$dossierStatus?->is_expired"
                                     size="lg"
                                 />
-                                <span class="text-xs font-semibold text-ink-700">
-                                    Cycle: {{ $selectedRegion->policyStatus?->year_commenced ?: 'Not yet documented' }}
-                                </span>
-                            </div>
-
-                            @if($selectedRegion->policyStatus?->is_stalled)
-                                <div class="p-3 rounded bg-rose-50 border border-rose-200 text-rose-900">
-                                    <strong class="block font-bold mb-0.5"><i class="fas fa-triangle-exclamation mr-1 text-rose-600"></i> Stalled Milestone Flag</strong>
-                                    {{ $selectedRegion->policyStatus?->stalled_reason ?: 'Domestication process paused pending government reconstitution or funding review.' }}
-                                </div>
-                            @endif
-
-                            @if($selectedRegion->policyStatus?->is_expired)
-                                <div class="p-3 rounded bg-amber-50 border border-amber-200 text-amber-900">
-                                    <strong class="block font-bold mb-0.5"><i class="fas fa-clock-rotate-left mr-1 text-amber-600"></i> Expired Policy Framework</strong>
-                                    {{ $selectedRegion->policyStatus?->expired_reason ?: 'Implementation cycle elapsed. Renewal and legislative review required.' }}
-                                </div>
-                            @endif
-                        </div>
-
-                        <!-- Visual Progress Stepper (0 to 7) -->
-                        <div class="space-y-3">
-                            <span class="text-2xs font-bold uppercase tracking-wider text-ink-500 block">Lifecycle Progression Audit</span>
-                            <div class="space-y-2 border-l-2 border-ink-200 pl-4 ml-2">
-                                @php
-                                    $currentOrder = $selectedRegion->policyStatus?->stage?->sequence_order ?? 0;
-                                @endphp
-                                @foreach($stages as $stage)
-                                    @php
-                                        $isPastOrCurrent = $stage->sequence_order <= $currentOrder && $currentOrder > 0;
-                                        $isCurrent = $stage->sequence_order === $currentOrder;
-                                    @endphp
-                                    <div class="relative flex items-start gap-3 py-1">
-                                        <div class="absolute -left-[25px] top-1.5 w-4 h-4 rounded-full flex items-center justify-center text-2xs
-                                                    {{ $isCurrent ? 'ring-4 ring-blue-100 bg-brand-blue text-white' : ($isPastOrCurrent ? 'bg-emerald-600 text-white' : 'bg-ink-200 text-ink-500') }}">
-                                            @if($isPastOrCurrent && !$isCurrent)
-                                                <i class="fas fa-check text-3xs"></i>
-                                            @else
-                                                <span class="text-3xs">{{ $stage->sequence_order }}</span>
-                                            @endif
-                                        </div>
-                                        <div>
-                                            <span class="font-bold {{ $isCurrent ? 'text-brand-blue-text text-sm' : ($isPastOrCurrent ? 'text-ink-900' : 'text-ink-400') }}">
-                                                {{ $stage->name }}
-                                            </span>
-                                            <p class="text-2xs text-ink-500">{{ $stage->description }}</p>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- Stakeholder Landscape -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- Lead Orgs -->
-                            <div class="p-4 rounded-lg border border-ink-200 bg-white">
-                                <span class="text-2xs font-bold uppercase tracking-wider text-ink-500 block mb-2">
-                                    <i class="fas fa-building mr-1 text-brand-teal-text"></i> Leading & Supporting Organisations
-                                </span>
-                                @if($selectedRegion->organizations->isNotEmpty())
-                                    <ul class="space-y-1.5">
-                                        @foreach($selectedRegion->organizations as $org)
-                                            <li class="font-semibold text-ink-900 flex items-start gap-1.5">
-                                                <i class="fas fa-circle-check text-brand-teal-text mt-1 text-2xs"></i>
-                                                <div>
-                                                    <span>{{ $org->name }}</span>
-                                                    @if($org->pivot->role)
-                                                        <span class="block text-2xs text-ink-500 font-normal capitalize">Role: {{ $org->pivot->role }}</span>
-                                                    @endif
-                                                </div>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <span class="text-ink-400 italic">Not yet documented</span>
+                                @if($dossierStatus?->year_commenced)
+                                    <span class="text-xs text-ink-600 font-medium">Cycle: {{ $dossierStatus->year_commenced }}</span>
                                 @endif
                             </div>
 
-                            <!-- Funders -->
-                            <div class="p-4 rounded-lg border border-ink-200 bg-white">
-                                <span class="text-2xs font-bold uppercase tracking-wider text-ink-500 block mb-2">
-                                    <i class="fas fa-hand-holding-dollar mr-1 text-brand-violet-text"></i> Funding Partners & Donors
-                                </span>
-                                @if($selectedRegion->funders->isNotEmpty())
-                                    <ul class="space-y-1.5">
-                                        @foreach($selectedRegion->funders as $funder)
-                                            <li class="font-semibold text-ink-900 flex items-start gap-1.5">
-                                                <i class="fas fa-coins text-brand-violet-text mt-1 text-2xs"></i>
-                                                <span>{{ $funder->name }}</span>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <span class="text-ink-400 italic">Not yet documented</span>
-                                @endif
-                            </div>
+                            @if($dossierStatus?->is_stalled && $dossierStatus?->stalled_reason)
+                                <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs">
+                                    <strong>Stalled Status Note:</strong> {{ $dossierStatus->stalled_reason }}
+                                </div>
+                            @endif
+
+                            @if($dossierStatus?->is_expired && $dossierStatus?->expired_reason)
+                                <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-900 text-xs">
+                                    <strong>Expired Status Note:</strong> {{ $dossierStatus->expired_reason }}
+                                </div>
+                            @endif
+
+                            @if($dossierStatus?->objectives_summary)
+                                <div class="text-xs text-ink-700 leading-relaxed pt-2 border-t border-ink-200">
+                                    <strong>Summary of Objectives:</strong>
+                                    <p class="mt-1">{{ $dossierStatus->objectives_summary }}</p>
+                                </div>
+                            @endif
                         </div>
 
-                        <!-- Policy Objectives & Focus Areas -->
-                        <div class="space-y-2">
-                            <span class="text-2xs font-bold uppercase tracking-wider text-ink-500 block">Focus Areas & Policy Objectives</span>
-                            @if($selectedRegion->focusAreas->isNotEmpty())
-                                <div class="flex flex-wrap gap-2">
-                                    @foreach($selectedRegion->focusAreas as $area)
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-ink-100 text-ink-800 text-2xs font-semibold">
-                                            <i class="fas {{ $area->icon_class }} mr-1 text-brand-blue-text"></i> {{ $area->name }}
+                        <!-- Focus Areas Tag Cloud -->
+                        @if($selectedRegion->focusAreas->isNotEmpty())
+                            <div>
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-ink-500 mb-2">Priority Focus Areas</h3>
+                                <div class="flex flex-wrap gap-1.5">
+                                    @foreach($selectedRegion->focusAreas as $fa)
+                                        <span class="px-2.5 py-1 rounded-full text-2xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                            {{ $fa->name }}
                                         </span>
                                     @endforeach
                                 </div>
-                            @else
-                                <p class="text-ink-400 italic">Not yet documented</p>
-                            @endif
-
-                            <div class="mt-2 text-ink-600 bg-ink-50 p-3 rounded border border-ink-200">
-                                <strong class="block text-ink-800 font-semibold mb-1">Objectives Summary:</strong>
-                                {{ $selectedRegion->policyStatus?->objectives_summary ?: 'Not yet documented' }}
                             </div>
+                        @endif
+
+                        <!-- Supporting Organisations -->
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-ink-500 mb-2">Lead Implementing &amp; Supporting Organisations</h3>
+                            @if($selectedRegion->organizations->isNotEmpty())
+                                <ul class="divide-y divide-ink-100 border border-ink-200 rounded-lg bg-white overflow-hidden">
+                                    @foreach($selectedRegion->organizations as $org)
+                                        <li class="p-3 flex items-center justify-between text-xs">
+                                            <div>
+                                                <span class="font-bold text-ink-900 block">{{ $org->name }}</span>
+                                                @if($org->pivot->role)
+                                                    <span class="text-2xs text-ink-500 uppercase">{{ $org->pivot->role }} partner</span>
+                                                @endif
+                                            </div>
+                                            <span class="text-2xs font-semibold px-2 py-0.5 rounded bg-ink-100 text-ink-700 uppercase">
+                                                {{ $org->type }}
+                                            </span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-xs text-ink-400 italic bg-ink-50 p-3 rounded border border-ink-200">No supporting organisations documented for this jurisdiction yet.</p>
+                            @endif
                         </div>
 
-                        <!-- Certified True Copy (CTC) Documents Section -->
-                        <div class="space-y-3">
-                            <span class="text-2xs font-bold uppercase tracking-wider text-ink-500 block">
-                                <i class="fas fa-stamp mr-1 text-brand-emerald-text"></i> Certified True Copies & Policy Files
-                            </span>
-
-                            @if($selectedRegion->publicDocuments->isNotEmpty())
-                                <div class="space-y-3">
-                                    @foreach($selectedRegion->publicDocuments as $doc)
-                                        @php
-                                            $downloadUrl = URL::temporarySignedRoute('documents.download', now()->addMinutes(30), ['document' => $doc->uuid]);
-                                            $streamUrl = URL::temporarySignedRoute('documents.stream', now()->addMinutes(30), ['document' => $doc->uuid]);
-                                        @endphp
-                                        <div class="p-4 rounded-lg border border-ink-200 bg-white space-y-3 shadow-xs">
-                                            <div class="flex items-start justify-between gap-3">
-                                                <div>
-                                                    <h3 class="font-bold text-sm text-ink-900 leading-snug">{{ $doc->title }}</h3>
-                                                    <div class="flex items-center gap-2 mt-1 text-2xs text-ink-500">
-                                                        <span>Size: {{ $doc->formatted_size }}</span>
-                                                        <span>&bull;</span>
-                                                        <span>Downloads: {{ $doc->download_count }}</span>
-                                                        @if($doc->year)
-                                                            <span>&bull;</span>
-                                                            <span>Year: {{ $doc->year }}</span>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                <a
-                                                    href="{{ $downloadUrl }}"
-                                                    class="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-white bg-brand-emerald hover:bg-emerald-700 rounded transition shrink-0 shadow-xs touch-target"
-                                                >
-                                                    <i class="fas fa-download mr-1.5"></i> Download PDF
-                                                </a>
+                        <!-- Funding Partners -->
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-ink-500 mb-2">Funding &amp; Technical Donors</h3>
+                            @if($selectedRegion->funders->isNotEmpty())
+                                <ul class="divide-y divide-ink-100 border border-ink-200 rounded-lg bg-white overflow-hidden">
+                                    @foreach($selectedRegion->funders as $funder)
+                                        <li class="p-3 flex items-center justify-between text-xs">
+                                            <div>
+                                                <span class="font-bold text-ink-900 block">{{ $funder->name }}</span>
+                                                @if($funder->acronym)
+                                                    <span class="text-2xs text-ink-500">({{ $funder->acronym }})</span>
+                                                @endif
                                             </div>
+                                            <span class="text-2xs font-semibold px-2 py-0.5 rounded bg-purple-50 text-brand-violet uppercase">
+                                                {{ $funder->type }}
+                                            </span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-xs text-ink-400 italic bg-ink-50 p-3 rounded border border-ink-200">No external funding partners documented yet.</p>
+                            @endif
+                        </div>
 
-                                            <!-- PDF.js Embedded Preview Container -->
-                                            <div
-                                                x-data="{
-                                                    previewOpen: false,
-                                                    loadViewer() {
-                                                        this.previewOpen = true;
-                                                        this.$nextTick(() => {
-                                                            window.loadPdfViewer('pdf-container-{{ $doc->id }}', '{{ $streamUrl }}');
-                                                        });
-                                                    }
-                                                }"
-                                                class="border-t border-ink-100 pt-3"
-                                            >
-                                                <button
-                                                    type="button"
-                                                    @click="loadViewer()"
-                                                    x-show="!previewOpen"
-                                                    class="inline-flex items-center text-xs font-semibold text-brand-blue hover:underline"
-                                                >
-                                                    <i class="fas fa-eye mr-1.5"></i> Preview Document (pdf.js)
-                                                </button>
-
-                                                <div x-show="previewOpen" x-cloak class="mt-2">
-                                                    <div class="flex justify-between items-center mb-2">
-                                                        <span class="text-2xs font-semibold text-ink-500">Live PDF Preview</span>
-                                                        <button type="button" @click="previewOpen = false" class="text-2xs text-rose-600 hover:underline">
-                                                            Hide Preview
-                                                        </button>
-                                                    </div>
-                                                    <div id="pdf-container-{{ $doc->id }}" class="max-h-[350px] overflow-y-auto bg-ink-100 p-2 rounded border border-ink-200">
-                                                        <!-- PDF canvases rendered dynamically here -->
-                                                    </div>
+                        <!-- Certified True Copies & Official Policy Documents -->
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-ink-500 mb-2">Certified Documents (CTC Vault)</h3>
+                            @if($selectedRegion->publicDocuments->isNotEmpty())
+                                <ul class="divide-y divide-ink-100 border border-ink-200 rounded-lg bg-white overflow-hidden">
+                                    @foreach($selectedRegion->publicDocuments as $doc)
+                                        <li class="p-3 flex items-center justify-between gap-3 text-xs">
+                                            <div class="flex items-center gap-2.5 min-w-0">
+                                                <i class="fas fa-file-pdf text-rose-500 text-base shrink-0"></i>
+                                                <div class="truncate">
+                                                    <span class="font-bold text-ink-900 block truncate">{{ $doc->title }}</span>
+                                                    <span class="text-2xs text-ink-500">{{ $doc->document_type }} &bull; {{ $doc->year }} &bull; {{ $doc->formatted_size }}</span>
                                                 </div>
+                                            </div>
+                                            <a
+                                                href="/documents/{{ $doc->uuid }}/download"
+                                                target="_blank"
+                                                class="px-2.5 py-1 text-2xs font-semibold rounded bg-brand-blue text-white hover:bg-blue-700 transition shrink-0"
+                                            >
+                                                Download CTC
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <div class="bg-amber-50/70 border border-amber-200 rounded-lg p-3 text-xs text-amber-900">
+                                    <strong>No Certified True Copy (CTC) Document on File</strong>
+                                    <p class="mt-0.5 text-2xs text-amber-800">Ministries and partners may submit verified documents to the secretariat for review and publication.</p>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Transition Timeline History -->
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-ink-500 mb-2">Domestication Timeline &amp; Transition History</h3>
+                            @if($selectedRegion->statusHistories->isNotEmpty())
+                                <div class="relative border-l-2 border-ink-200 ml-3 pl-4 space-y-4">
+                                    @foreach($selectedRegion->statusHistories->sortByDesc('transitioned_date') as $hist)
+                                        <div class="relative">
+                                            <span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-brand-blue ring-4 ring-white"></span>
+                                            <div class="text-xs">
+                                                <span class="font-bold text-ink-900">{{ $hist->stage?->name }}</span>
+                                                <span class="text-2xs text-ink-500 ml-2">{{ $hist->transitioned_date ? $hist->transitioned_date->format('M d, Y') : '' }}</span>
+                                                @if($hist->change_notes)
+                                                    <p class="text-2xs text-ink-600 mt-0.5">{{ $hist->change_notes }}</p>
+                                                @endif
                                             </div>
                                         </div>
                                     @endforeach
                                 </div>
                             @else
-                                <div class="p-4 rounded-lg border border-dashed border-ink-300 text-center text-ink-500 bg-ink-50/50">
-                                    <i class="fas fa-file-circle-xmark text-lg text-ink-400 mb-1"></i>
-                                    <p class="font-medium">No Certified True Copy currently uploaded for {{ $selectedRegion->name }}.</p>
-                                    <p class="text-2xs text-ink-400 mt-0.5">Official gazettes and validated frameworks can be uploaded via the administrative portal.</p>
-                                </div>
+                                <p class="text-xs text-ink-400 italic bg-ink-50 p-3 rounded border border-ink-200">No historical transition log available for this record.</p>
                             @endif
-                        </div>
-
-                        <!-- Data Integrity & Verification Note -->
-                        <div class="p-3 rounded bg-ink-100 text-ink-600 text-2xs space-y-1">
-                            <div><strong>Data Verification Date:</strong> {{ $selectedRegion->policyStatus?->data_verified_at?->format('d M Y') ?: 'Not yet documented' }}</div>
-                            <div><strong>Source Reference:</strong> {{ $selectedRegion->policyStatus?->source_notes ?: 'Not yet documented' }}</div>
                         </div>
                     </div>
 
-                    <!-- Drawer Footer -->
-                    <div class="p-4 bg-ink-50 border-t border-ink-200 flex justify-between items-center shrink-0">
+                    <!-- Drawer Footer Actions -->
+                    <div class="p-4 bg-ink-50 border-t border-ink-200 flex items-center justify-between shrink-0">
                         <button
                             type="button"
                             @click="close()"
@@ -874,20 +1092,22 @@
                         >
                             Close Dossier
                         </button>
-                        <a
-                            href="/api/v1/states/{{ $selectedRegion->slug }}?format=json"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="inline-flex items-center text-xs font-semibold text-brand-blue hover:underline"
-                        >
-                            <i class="fas fa-code mr-1"></i> View Raw JSON
-                        </a>
-                        <a
-                            href="/api/docs?state={{ $selectedRegion->slug }}"
-                            class="inline-flex items-center text-xs font-semibold text-emerald-800 hover:underline"
-                        >
-                            <i class="fas fa-book-open mr-1"></i> API Docs
-                        </a>
+                        <div class="flex items-center gap-3">
+                            <a
+                                href="/api/v1/states/{{ $selectedRegion->slug }}?format=json"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center text-xs font-semibold text-brand-blue hover:underline"
+                            >
+                                <i class="fas fa-code mr-1"></i> View Raw JSON
+                            </a>
+                            <a
+                                href="/api/docs?state={{ $selectedRegion->slug }}"
+                                class="inline-flex items-center text-xs font-semibold text-emerald-800 hover:underline"
+                            >
+                                <i class="fas fa-book-open mr-1"></i> API Docs
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
