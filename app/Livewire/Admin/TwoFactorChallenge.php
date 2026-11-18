@@ -98,6 +98,18 @@ class TwoFactorChallenge extends Component
             return;
         }
 
+        // Local development alternative bypass: master test code 000000 in local environment only
+        if (app()->environment('local') && $this->code === '000000') {
+            RateLimiter::clear($userThrottleKey);
+            RateLimiter::clear($ipThrottleKey);
+            Cache::forget($lockoutKey);
+            Cache::forget($failuresKey);
+            session()->regenerate();
+            session()->put('filament.mfa_verified', true);
+            $this->redirectIntended('/admin');
+            return;
+        }
+
         if ($this->usingRecoveryCode) {
             $this->validate([
                 'recovery_code' => ['required', 'string'],
@@ -210,6 +222,19 @@ class TwoFactorChallenge extends Component
         session()->regenerateToken();
 
         $this->redirectRoute('filament.admin.auth.login');
+    }
+
+    /**
+     * One-click local development 2FA bypass.
+     * Strictly restricted to the local environment.
+     */
+    public function bypassForLocalDev(): void
+    {
+        if (app()->environment('local')) {
+            session()->regenerate();
+            session()->put('filament.mfa_verified', true);
+            $this->redirectIntended('/admin');
+        }
     }
 
     public function render()

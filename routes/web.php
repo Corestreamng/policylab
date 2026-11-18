@@ -32,10 +32,12 @@ Route::middleware(['web', 'auth'])->group(function () {
         ->name('filament.admin.auth.two-factor');
 });
 
-// Local development session setup for automated visual audit screenshots
+// Local development session setup for instant admin access
 if (app()->environment('local')) {
     Route::get('/dev-login', function () {
-        $user = \App\Models\User::where('email', 'admin@youthpolicytracker.ng')->first();
+        $user = \App\Models\User::where('email', 'superadmin@youthpolicytracker.ng')->first()
+            ?: \App\Models\User::where('email', 'admin@youthpolicytracker.ng')->first()
+            ?: \App\Models\User::first();
         if ($user) {
             auth()->login($user);
             session(['filament.mfa_verified' => true]);

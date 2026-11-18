@@ -120,6 +120,26 @@
                     </button>
                 @endif
 
+                @if (app()->environment('local'))
+                    <div class="w-full mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 text-left">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold flex items-center gap-1.5 text-2xs uppercase tracking-wider text-amber-800">
+                                <i class="fa-solid fa-code"></i> Local Development Mode
+                            </span>
+                            <button
+                                type="button"
+                                wire:click="bypassForLocalDev"
+                                class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded font-bold transition text-2xs"
+                            >
+                                Skip 2FA &rarr;
+                            </button>
+                        </div>
+                        <p class="mt-1 text-2xs text-amber-800 leading-normal">
+                            You can click <strong>Skip 2FA</strong>, enter code <code>000000</code>, or visit <code>/dev-login</code> to bypass 2FA in local development.
+                        </p>
+                    </div>
+                @endif
+
                 <button
                     type="button"
                     wire:click="logout"
