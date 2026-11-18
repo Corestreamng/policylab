@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: !empty($proxies) ? $proxies : ['127.0.0.1', '::1']);
         $middleware->redirectGuestsTo(fn () => route('filament.admin.auth.login'));
         $middleware->append(SecurityHeadersMiddleware::class);
+        $middleware->appendToGroup('web', \App\Http\Middleware\SetLocaleFromSession::class);
         $middleware->appendToGroup('web', \App\Http\Middleware\EnforceFilamentTwoFactor::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

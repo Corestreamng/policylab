@@ -1,0 +1,50 @@
+<?php
+
+return [
+    'app_name' => 'Observatoire des Politiques de Jeunesse',
+    'tagline' => 'Plateforme de Suivi Sub-National',
+    'country_name' => 'Nigéria',
+    'policy_name' => 'Politique Nationale de la Jeunesse',
+    'subnational_label' => 'État',
+    'subnational_plural' => 'États',
+
+    'nav_map' => 'Carte des Politiques',
+    'nav_analytics' => 'Analytique',
+    'nav_vault' => 'Archives des Documents',
+    'nav_api' => 'API Ouverte',
+    'nav_admin' => 'Administration',
+
+    'hero_badge' => 'Suivi de la Domestication Sub-Nationale',
+    'hero_title' => 'Suivi de la Domestication des Politiques de Jeunesse au :country',
+    'hero_subtitle' => 'Un système de redevabilité citoyenne indépendant et en données ouvertes surveillant la domestication de la :policy à travers :count gouvernements sub-nationaux.',
+    'quick_selector_placeholder' => 'Rechercher votre état...',
+    'view_on_map' => 'Voir sur la Carte',
+    'toggle_table_view' => 'Vue Tableau Accessible',
+    'toggle_map_view' => 'Vue Carte Interactive',
+
+    'filters' => 'Filtres',
+    'search_placeholder' => 'Rechercher par nom d\'état ou mot-clé...',
+    'all_stages' => 'Toutes les Étapes du Cycle',
+    'all_zones' => 'Toutes les Zones Géopolitiques',
+    'all_orgs' => 'Toutes les Organisations Partenaires',
+    'all_funders' => 'Tous les Bailleurs de Fonds',
+    'ctc_available' => 'Document Officiel (CTC) Disponible',
+    'ctc_all' => 'Tous les Statuts Documentaires',
+    'stalled_only' => 'Politiques Bloquées Uniquement',
+    'expired_only' => 'Politiques Expirées Uniquement',
+    'reset_filters' => 'Réinitialiser les Filtres',
+    'active_filters' => 'Filtres Actifs',
+
+    'kpi_total_states' => 'Entités Sub-Nationales',
+    'kpi_domesticated' => 'Domestiquée (Signée / En Vigueur)',
+    'kpi_under_development' => 'En Cours d\'Élaboration',
+    'kpi_no_data' => 'Aucune Donnée Vérifiable',
+    'kpi_stalled_expired' => 'Bloquée ou Expirée',
+    'kpi_verified_documents' => 'Documents Officiels Vérifiés',
+
+    'not_documented' => 'Pas encore documenté',
+    'export_csv' => 'Exporter le Jeu de Données (CSV)',
+    'export_json' => 'Exporter le Jeu de Données (JSON)',
+    'footer_last_updated' => 'Dernière mise à jour de la base de données :',
+    'footer_boundaries' => 'Frontières régionales : geoBoundaries (www.geoboundaries.org), simplifiées pour affichage.',
+];

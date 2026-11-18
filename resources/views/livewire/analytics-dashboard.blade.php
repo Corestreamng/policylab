@@ -12,17 +12,20 @@
                 National Youth Policy Domestication Analytics
             </h1>
             <p class="text-xs sm:text-sm text-ink-600 mt-1">
-                Cross-sectional distribution, geopolitical zone progress, and stakeholder investment metrics across Nigeria.
+                Cross-sectional distribution, geopolitical zone progress, and stakeholder investment metrics across {{ config('tracker.country_name', 'Nigeria') }}.
             </p>
         </div>
 
-        <div class="flex items-center gap-2">
-            <a href="/api/v1/export/csv" class="inline-flex items-center px-3.5 py-2 text-xs font-semibold rounded bg-white hover:bg-ink-50 text-ink-800 border border-ink-300 transition shadow-xs touch-target">
-                <i class="fas fa-file-csv mr-1.5 text-brand-emerald-text"></i> Export Dataset (CSV)
-            </a>
-            <a href="/" class="inline-flex items-center px-3.5 py-2 text-xs font-semibold rounded bg-brand-blue hover:bg-blue-600 text-white transition shadow-xs touch-target">
-                <i class="fas fa-map-location-dot mr-1.5"></i> Interactive Map
-            </a>
+        <div class="flex flex-wrap items-center gap-2">
+            <x-button href="/api/v1/export/csv" variant="secondary" size="sm" icon="fa-file-csv">
+                {{ __('tracker.export_csv') }}
+            </x-button>
+            <x-button href="/api/v1/states" target="_blank" variant="secondary" size="sm" icon="fa-code">
+                {{ __('tracker.export_json') }}
+            </x-button>
+            <x-button href="/" variant="primary" size="sm" icon="fa-map-location-dot">
+                {{ __('tracker.nav_map') }}
+            </x-button>
         </div>
     </div>
 

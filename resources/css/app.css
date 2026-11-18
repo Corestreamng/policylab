@@ -6,6 +6,30 @@
 @source '../views/**/*.blade.php';
 @source '../../app/Livewire/**/*.php';
 
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/display-bold.ttf') format('truetype');
+  font-weight: 700 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Figtree';
+  src: url('/fonts/sans-regular.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Figtree';
+  src: url('/fonts/sans-semibold.ttf') format('truetype');
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --color-ink-50: #F8FAFC;
   --color-ink-100: #F1F5F9;

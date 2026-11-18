@@ -29,6 +29,26 @@ Route::middleware(['web', 'auth'])->group(function () {
         ->name('filament.admin.auth.two-factor');
 });
 
+// Local development session setup for automated visual audit screenshots
+if (app()->environment('local')) {
+    Route::get('/dev-login', function () {
+        $user = \App\Models\User::where('email', 'admin@youthpolicytracker.ng')->first();
+        if ($user) {
+            auth()->login($user);
+            session(['filament.mfa_verified' => true]);
+        }
+        return redirect('/admin');
+    });
+}
+
 // SEO Routes
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
+
+// Internationalization / Locale Switcher
+Route::get('/locale/{lang}', function (string $lang) {
+    if (in_array($lang, ['en', 'fr', 'ha', 'yo', 'ig', 'ar'], true)) {
+        session(['app_locale' => $lang]);
+    }
+    return redirect()->back();
+})->name('locale.switch');

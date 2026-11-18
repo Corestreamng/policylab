@@ -1,21 +1,25 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-ink-50">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="h-full bg-ink-50">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title ?? 'National Youth Policy Tracker | Glowing Minds Initiatives' }}</title>
-    <meta name="description" content="A comprehensive open-data platform tracking, visualising, and documenting how Nigeria's National Youth Policy is domesticated across all 36 States and the FCT.">
+    <meta name="description" content="A comprehensive open-data platform tracking, visualising, and documenting how the National Youth Policy is domesticated across sub-national jurisdictions.">
 
     <!-- Open Graph / Twitter Card Meta -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{ $title ?? 'National Youth Policy Tracker' }}">
-    <meta property="og:description" content="Tracking and visualising sub-national youth policy domestication across Nigeria.">
+    <meta property="og:description" content="Tracking and visualising sub-national youth policy domestication across jurisdictions.">
     <meta property="og:site_name" content="Youth Policy Tracker">
     <meta name="twitter:card" content="summary_large_image">
 
-    <!-- PWA Manifest -->
+    <!-- Favicon & Site Icons Set (Placeholder until client official brand vector is uploaded) -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0F172A">
 
@@ -36,18 +40,18 @@
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
             <div class="flex items-center gap-2">
                 <span class="inline-block w-2 h-2 rounded-full bg-brand-emerald"></span>
-                <span>An Open-Data Monitoring Initiative by <strong class="text-white">Glowing Minds Initiatives (GMI)</strong></span>
+                <span>{{ __('tracker.footer_initiative') }} <strong class="text-white">{{ config('tracker.client_name') }}</strong></span>
             </div>
             <div class="flex items-center gap-4 text-ink-400">
-                <span>Built by <strong class="text-ink-200">Corestream Networks and Robotics Limited</strong></span>
+                <span>{{ __('tracker.footer_built_by') }}</span>
                 <span class="hidden md:inline">|</span>
-                <span class="hidden md:inline">Launch Date: 26 November 2026</span>
+                <span class="hidden md:inline">{{ __('tracker.footer_launch_date') }}</span>
             </div>
         </div>
     </div>
 
     <!-- Main Navigation Header -->
-    <header class="bg-ink-900 text-white sticky top-0 z-40 border-b border-ink-800 shadow-sm" x-data="{ mobileMenuOpen: false }">
+    <header class="bg-ink-900 text-white sticky top-0 z-40 border-b border-ink-800 shadow-sm" x-data="{ mobileMenuOpen: false, langOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Brand / Logo -->
@@ -57,8 +61,8 @@
                             <i class="fas fa-landmark-flag"></i>
                         </div>
                         <div>
-                            <span class="block text-base font-bold tracking-tight text-white font-heading">YOUTH POLICY TRACKER</span>
-                            <span class="block text-2xs uppercase tracking-wider text-ink-400">Sub-National Domestication Hub</span>
+                            <span class="block text-base font-bold tracking-tight text-white font-heading">{{ __('tracker.app_name') }}</span>
+                            <span class="block text-2xs uppercase tracking-wider text-ink-400">{{ __('tracker.tagline') }}</span>
                         </div>
                     </a>
                 </div>
@@ -66,24 +70,63 @@
                 <!-- Desktop Navigation Links -->
                 <nav class="hidden md:flex items-center space-x-1" aria-label="Main Navigation">
                     <a href="/" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('/') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
-                        <i class="fas fa-map-location-dot mr-1.5 text-brand-blue"></i> Policy Map
+                        <i class="fas fa-map-location-dot mr-1.5 text-brand-blue"></i> {{ __('tracker.nav_map') }}
                     </a>
                     <a href="/dashboard" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('dashboard*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
-                        <i class="fas fa-chart-pie mr-1.5 text-brand-orange"></i> Analytics
+                        <i class="fas fa-chart-pie mr-1.5 text-brand-orange"></i> {{ __('tracker.nav_analytics') }}
                     </a>
                     <a href="/documents" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('documents*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
-                        <i class="fas fa-box-archive mr-1.5 text-brand-teal"></i> Document Vault
+                        <i class="fas fa-box-archive mr-1.5 text-brand-teal"></i> {{ __('tracker.nav_vault') }}
                     </a>
                     <a href="/api/v1/states" target="_blank" class="px-3 py-2 rounded text-sm font-medium transition text-ink-300 hover:text-white hover:bg-ink-800">
-                        <i class="fas fa-code mr-1.5 text-brand-violet"></i> Open API
+                        <i class="fas fa-code mr-1.5 text-brand-violet"></i> {{ __('tracker.nav_api') }}
                     </a>
-                </div>
+                </nav>
 
-                <!-- Actions / Admin Button -->
+                <!-- Actions / Language Switcher & Admin Button -->
                 <div class="hidden md:flex items-center gap-3">
-                    <a href="/admin" class="inline-flex items-center px-3.5 py-1.5 text-xs font-semibold rounded bg-ink-800 hover:bg-ink-700 text-ink-100 border border-ink-700 transition focus:outline-none focus:ring-2 focus:ring-brand-blue">
-                        <i class="fas fa-lock mr-1.5"></i> Admin CMS
-                    </a>
+                    <!-- Language Switcher Dropdown -->
+                    <div class="relative" x-data="{ langOpen: false }">
+                        <button
+                            type="button"
+                            @click="langOpen = !langOpen"
+                            @click.outside="langOpen = false"
+                            class="inline-flex items-center px-2.5 py-1.5 text-xs font-semibold rounded bg-ink-800 hover:bg-ink-700 text-ink-200 border border-ink-700 transition focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                            aria-haspopup="true"
+                            :aria-expanded="langOpen.toString()"
+                        >
+                            <i class="fas fa-language mr-1.5 text-brand-blue"></i>
+                            <span class="uppercase font-bold">{{ app()->getLocale() }}</span>
+                            <i class="fas fa-chevron-down ml-1 text-2xs opacity-70"></i>
+                        </button>
+
+                        <div
+                            x-show="langOpen"
+                            x-cloak
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="transform opacity-0 scale-95"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-95"
+                            class="absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-ink-900 border border-ink-700 py-1 ring-1 ring-black ring-opacity-5 z-50 text-xs"
+                        >
+                            @foreach(config('tracker.supported_locales', []) as $code => $loc)
+                                <a
+                                    href="{{ route('locale.switch', $code) }}"
+                                    class="flex items-center justify-between px-3 py-2 text-ink-300 hover:bg-ink-800 hover:text-white transition {{ app()->getLocale() === $code ? 'bg-ink-800 text-brand-blue font-bold' : '' }}"
+                                >
+                                    <span>{{ $loc['native'] }}</span>
+                                    <span class="text-2xs uppercase text-ink-500 font-mono">{{ $code }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Admin CMS Portal Button -->
+                    <x-button href="/admin" variant="outline" size="sm" icon="fa-lock">
+                        {{ __('tracker.nav_admin') }}
+                    </x-button>
                 </div>
 
                 <!-- Mobile Menu Button -->
@@ -132,7 +175,10 @@
                         A rigorous, open-access intelligence system monitoring the domestication, gazetting, and implementation of youth policies across sub-national governments.
                     </p>
                     <div class="pt-2 text-2xs text-ink-500">
-                        Official Release: 26 November 2026
+                        @php
+                            $verifiedDate = \App\Models\PolicyStatus::max('data_verified_at');
+                        @endphp
+                        <span>{{ __('tracker.footer_last_updated') }} <strong>{{ $verifiedDate ? \Carbon\Carbon::parse($verifiedDate)->format('d F Y') : '18 November 2026' }}</strong></span>
                     </div>
                 </div>
 

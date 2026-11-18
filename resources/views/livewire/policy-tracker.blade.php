@@ -5,13 +5,13 @@
             <!-- Headline & Purpose -->
             <div class="max-w-3xl mb-8">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-blue/20 text-blue-300 text-xs font-semibold uppercase tracking-wider mb-3 border border-brand-blue/30">
-                    <i class="fas fa-satellite-dish"></i> Live National Policy Tracking
+                    <i class="fas fa-satellite-dish"></i> {{ __('tracker.hero_badge') }}
                 </div>
                 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight font-heading">
-                    Tracking Sub-National Youth Policy Domestication in Nigeria
+                    Tracking Sub-National Youth Policy Domestication in {{ config('tracker.country_name', 'Nigeria') }}
                 </h1>
                 <p class="mt-3 text-sm sm:text-base text-ink-300 leading-relaxed">
-                    An evidence-led civic intelligence platform monitoring how the National Youth Policy is domesticated, gazetted, funded, and implemented across all 36 States and the Federal Capital Territory.
+                    An evidence-led civic intelligence platform monitoring how the {{ config('tracker.policy_name', 'National Youth Policy') }} is domesticated, gazetted, funded, and implemented across all 36 {{ config('tracker.subnational_plural', 'States') }} and the {{ config('tracker.capital_territory', 'Federal Capital Territory') }}.
                 </p>
             </div>
 
@@ -382,7 +382,7 @@
                             <th scope="col" class="py-3 px-4 cursor-pointer hover:text-brand-blue" wire:click="sortBy('name')">
                                 State
                                 @if($sortField === 'name')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
+                                    <i class="fas {{ $sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} ml-1"></i>
                                 @else
                                     <i class="fas fa-sort text-ink-400 ml-1"></i>
                                 @endif
@@ -390,13 +390,13 @@
                             <th scope="col" class="py-3 px-4 cursor-pointer hover:text-brand-blue" wire:click="sortBy('zone')">
                                 Zone
                                 @if($sortField === 'zone')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
+                                    <i class="fas {{ $sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} ml-1"></i>
                                 @endif
                             </th>
                             <th scope="col" class="py-3 px-4 cursor-pointer hover:text-brand-blue" wire:click="sortBy('stage')">
                                 Domestication Status
                                 @if($sortField === 'stage')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
+                                    <i class="fas {{ $sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} ml-1"></i>
                                 @endif
                             </th>
                             <th scope="col" class="py-3 px-4">Lead Organisation(s)</th>
