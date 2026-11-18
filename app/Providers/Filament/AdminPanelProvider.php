@@ -41,6 +41,7 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => Color::Amber,
             ])
             ->defaultAvatarProvider(\App\Providers\Filament\LocalInitialsAvatarProvider::class)
+            ->userMenuItems([])
             ->renderHook('panels::head.done', fn () => new \Illuminate\Support\HtmlString('<link rel="stylesheet" href="/css/filament/theme.css">'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

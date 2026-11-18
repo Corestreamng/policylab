@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * STATUS: PENDING NATIVE REVIEW
+ * Language: Arabic (العربية) - ar
+ * Note: Must be verified by a native speaker before enabling in production.
+ * Direction: RTL
+ * See REVIEW_CHECKLIST.md for review guidelines and terminology.
+ */
+
 return [
     'app_name' => 'مرصد السياسات الشبابية',
     'tagline' => 'منصة التوطين دون الوطني',

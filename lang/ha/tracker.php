@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * STATUS: PENDING NATIVE REVIEW
+ * Language: Hausa - ha
+ * Note: Must be verified by a native speaker before enabling in production.
+ * See REVIEW_CHECKLIST.md for review guidelines and terminology.
+ */
+
 return [
     'app_name' => 'Bibiyar Manufofin Matasa',
     'tagline' => 'Cibiyar Bibiyar Manufofi a Matakin Jihohi',

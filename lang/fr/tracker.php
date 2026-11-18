@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * STATUS: PENDING NATIVE REVIEW
+ * Language: French (Français) - fr
+ * Note: Must be verified by a native speaker before enabling in production.
+ * See REVIEW_CHECKLIST.md for review guidelines and terminology.
+ */
+
 return [
     'app_name' => 'Observatoire des Politiques de Jeunesse',
     'tagline' => 'Plateforme de Suivi Sub-National',

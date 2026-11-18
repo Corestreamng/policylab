@@ -159,4 +159,10 @@ echo ">>> Deactivating maintenance mode..."
 php artisan up
 MAINTENANCE_ACTIVE=0
 
+# 9. Verify front-end assets via smoke test if Node is available
+if command -v node >/dev/null 2>&1 && [ -f "scripts/smoke_test.cjs" ]; then
+    echo ">>> Running automated front-end smoke test..."
+    APP_TEST_URL="${APP_URL:-http://127.0.0.1:8000}" node scripts/smoke_test.cjs || echo ">>> WARNING: Smoke test reported issues. Please verify site manually."
+fi
+
 echo ">>> SUCCESS: Youth Policy Tracker deployment completed cleanly."

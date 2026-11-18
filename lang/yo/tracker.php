@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * STATUS: PENDING NATIVE REVIEW
+ * Language: Yoruba (Yorùbá) - yo
+ * Note: Must be verified by a native speaker before enabling in production.
+ * See REVIEW_CHECKLIST.md for review guidelines and terminology.
+ */
+
 return [
     'app_name' => 'Atọka Ilana Ọdọ',
     'tagline' => 'Ibùdó Ìtọpinpin Ìpele Ìpínlẹ̀',

@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * STATUS: PENDING NATIVE REVIEW
+ * Language: Igbo (Asụsụ Igbo) - ig
+ * Note: Must be verified by a native speaker before enabling in production.
+ * See REVIEW_CHECKLIST.md for review guidelines and terminology.
+ */
+
 return [
     'app_name' => 'Nchọpụta Amụma Ndị Ntorobịa',
     'tagline' => 'Ebe Nleba Anya n\'Ọkwa Steeti',

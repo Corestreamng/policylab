@@ -83,6 +83,7 @@
 
                 <!-- Actions / Language Switcher & Admin Button -->
                 <div class="hidden md:flex items-center gap-3">
+                    @if(count(config('tracker.supported_locales', [])) > 1)
                     <!-- Language Switcher Dropdown -->
                     <div class="relative" x-data="{ langOpen: false }">
                         <button
@@ -120,6 +121,7 @@
                             @endforeach
                         </div>
                     </div>
+                    @endif
 
                     <!-- Admin CMS Portal Button -->
                     <x-button href="/admin" variant="outline" size="sm" icon="fa-lock">

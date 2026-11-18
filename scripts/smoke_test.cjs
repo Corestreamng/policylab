@@ -1,8 +1,8 @@
 const puppeteer = require('puppeteer-core');
 const assert = require('assert');
 
-const CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const BASE_URL = process.env.APP_TEST_URL || 'http://127.0.0.1:8000';
+const CHROME_PATH = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const BASE_URL = process.env.APP_TEST_URL || process.argv[2] || 'http://127.0.0.1:8000';
 
 const pagesToTest = [
     { name: 'Landing Page', path: '/' },

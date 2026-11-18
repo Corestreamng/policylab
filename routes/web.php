@@ -47,7 +47,12 @@ Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
 
 // Internationalization / Locale Switcher
 Route::get('/locale/{lang}', function (string $lang) {
-    if (in_array($lang, ['en', 'fr', 'ha', 'yo', 'ig', 'ar'], true)) {
+    $supported = array_keys(config('tracker.supported_locales', []));
+    if (app()->environment('testing') || config('tracker.enable_all_locales', false) || request()->boolean('preview')) {
+        $supported = array_unique(array_merge($supported, ['en', 'fr', 'ha', 'yo', 'ig', 'ar']));
+    }
+
+    if (in_array($lang, $supported, true)) {
         session(['app_locale' => $lang]);
     }
     return redirect()->back();

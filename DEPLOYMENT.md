@@ -294,6 +294,28 @@ php artisan tracker:reset-2fa admin@youthpolicytracker.ng
 ```
 This command clears the user's encrypted 2FA secret, wipes stored recovery hashes, and resets all failure rate-limiting and escalating lockout counters. The user will be required to scan a fresh QR code and enroll a new authenticator device upon their next login.
 
+### 3.5 Automated Front-End Smoke Testing & Staging Verification
+To prevent broken asset builds, leaked Alpine script syntax, unstyled pages, oversized icons, or empty analytics charts from reaching production, run the automated browser smoke test prior to every release:
+
+```bash
+# Run locally against local environment:
+npm run test:smoke
+
+# Run against a Staging deployment before switching production traffic:
+APP_TEST_URL=https://staging.youthpolicytracker.ng npm run test:smoke
+
+# Alternative direct invocation:
+node scripts/smoke_test.cjs https://staging.youthpolicytracker.ng
+```
+
+#### What the Smoke Test Verifies:
+1. **HTTP 200 Availability**: All core public routes (`/`, `/dashboard`, `/documents`, `/states/{slug}`) and administrative routes (`/admin/login`, `/admin`, `/admin/bulk-data-import`).
+2. **Zero Failed Asset Requests**: Asserts 0 failed HTTP requests for `.css`, `.js`, font, or Vite manifest bundles.
+3. **Loaded Stylesheets**: Asserts `document.styleSheets.length > 0` on every view.
+4. **No Script Leakage**: Asserts raw JavaScript or Alpine directives (`x-data`, `x-init`, `x-show`) are never rendered as unparsed plain text inside the DOM.
+5. **Icon Sizing Integrity**: Verifies SVG and Font Awesome icons do not exceed standard bounding boxes (caps inline icons at 32px, empty states at 64px).
+6. **Active Analytics Data**: Verifies Chart.js canvas instances on `/dashboard` contain non-empty datasets.
+
 ---
 
 > [!CAUTION]

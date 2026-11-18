@@ -26,12 +26,27 @@ return [
     'engineer_name' => 'Corestream Networks and Robotics Limited',
     'launch_date' => '2026-11-26',
 
-    'supported_locales' => [
+    // Locale configuration: English is the only enabled locale by default.
+    // Non-English locales (fr, ha, yo, ig, ar) remain pending native review.
+    'enable_all_locales' => env('TRACKER_ENABLE_ALL_LOCALES', false),
+
+    'all_locales' => [
+        'en' => ['name' => 'English', 'native' => 'English', 'dir' => 'ltr', 'status' => 'verified'],
+        'fr' => ['name' => 'French', 'native' => 'Français', 'dir' => 'ltr', 'status' => 'pending native review'],
+        'ha' => ['name' => 'Hausa', 'native' => 'Hausa', 'dir' => 'ltr', 'status' => 'pending native review'],
+        'yo' => ['name' => 'Yoruba', 'native' => 'Yorùbá', 'dir' => 'ltr', 'status' => 'pending native review'],
+        'ig' => ['name' => 'Igbo', 'native' => 'Asụsụ Igbo', 'dir' => 'ltr', 'status' => 'pending native review'],
+        'ar' => ['name' => 'Arabic', 'native' => 'العربية', 'dir' => 'rtl', 'status' => 'pending native review'],
+    ],
+
+    'supported_locales' => env('TRACKER_ENABLE_ALL_LOCALES', false) ? [
         'en' => ['name' => 'English', 'native' => 'English', 'dir' => 'ltr'],
         'fr' => ['name' => 'French', 'native' => 'Français', 'dir' => 'ltr'],
         'ha' => ['name' => 'Hausa', 'native' => 'Hausa', 'dir' => 'ltr'],
         'yo' => ['name' => 'Yoruba', 'native' => 'Yorùbá', 'dir' => 'ltr'],
         'ig' => ['name' => 'Igbo', 'native' => 'Asụsụ Igbo', 'dir' => 'ltr'],
         'ar' => ['name' => 'Arabic', 'native' => 'العربية', 'dir' => 'rtl'],
+    ] : [
+        'en' => ['name' => 'English', 'native' => 'English', 'dir' => 'ltr'],
     ],
 ];

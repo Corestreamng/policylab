@@ -31,7 +31,8 @@ class SecurityHeadersMiddleware
             "form-action 'self'",
         ];
 
-        if ($request->isSecure() && app()->environment('production')) {
+        $isHttps = $request->isSecure() || $request->header('X-Forwarded-Proto') === 'https';
+        if ($isHttps) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
             $csp[] = "upgrade-insecure-requests";
         }

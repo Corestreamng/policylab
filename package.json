@@ -4,7 +4,9 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "test:smoke": "node scripts/smoke_test.cjs",
+        "test:keyboard": "node scripts/keyboard_test.cjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
