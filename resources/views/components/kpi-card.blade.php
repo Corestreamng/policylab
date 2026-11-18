@@ -33,7 +33,7 @@
     <div class="flex items-center justify-between">
         <div>
             <span class="block text-xs font-semibold uppercase tracking-wider text-ink-500 mb-1">{{ $title }}</span>
-            <div class="text-3xl font-extrabold text-ink-900 font-heading">
+            <div class="text-3xl font-extrabold text-ink-900 font-heading tabular-nums">
                 <span x-text="currentVal">{{ $value }}</span>
             </div>
             @if($subtitle)

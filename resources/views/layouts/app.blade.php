@@ -37,13 +37,10 @@
 
     <!-- Top Institutional Banner -->
     <div class="bg-ink-950 text-ink-300 text-xs py-2 px-4 border-b border-ink-800">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <span class="inline-block w-2 h-2 rounded-full bg-brand-emerald"></span>
-                <span>{{ __('tracker.footer_initiative') }} <strong class="text-white">{{ config('tracker.client_name') }}</strong></span>
-            </div>
-            <div class="flex items-center gap-4 text-ink-400">
-                <span>{{ __('tracker.footer_built_by') }}</span>
+                <span>{{ __('tracker.footer_initiative') }} <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="text-white hover:text-emerald-400 font-bold underline underline-offset-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs" aria-label="Glowing Minds Initiatives (GMI) — opens in a new tab">{{ config('tracker.client_name') }}</a></span>
             </div>
         </div>
     </div>
@@ -198,8 +195,7 @@
                 <div>
                     <h2 class="text-xs font-semibold text-white uppercase tracking-wider mb-3">Governance & Partners</h2>
                     <ul class="space-y-2 text-xs">
-                        <li><span class="text-ink-300">Client:</span> Glowing Minds Initiatives (GMI)</li>
-                        <li><span class="text-ink-300">Engineering:</span> Corestream Networks and Robotics</li>
+                        <li><span class="text-ink-300">Client:</span> <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="hover:text-white underline underline-offset-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs">Glowing Minds Initiatives (GMI)</a></li>
                         <li><span class="text-ink-300">Scope:</span> 36 States + Federal Capital Territory</li>
                         <li><a href="/privacy-policy" class="hover:text-white transition">Privacy & Data Governance Policy</a></li>
                     </ul>
@@ -219,9 +215,11 @@
                 </div>
             </div>
 
-            <div class="pt-8 border-t border-ink-800 text-xs text-ink-500 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <p>&copy; 2026 Glowing Minds Initiatives (GMI) &amp; Corestream Networks and Robotics Limited. All rights reserved.</p>
-                <p class="text-2xs text-ink-500">State boundaries: geoBoundaries (www.geoboundaries.org), simplified for display. Zero tracking without explicit consent.</p>
+            <div class="pt-8 border-t border-ink-800 text-xs text-ink-400 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p>&copy; 2026 Glowing Minds Initiatives (GMI). All rights reserved.</p>
+                <p class="text-xs text-ink-400" aria-label="Powered by Corestream">
+                    Powered by <a href="https://www.corestream.ng" target="_blank" rel="noopener noreferrer" class="text-ink-200 hover:text-white underline underline-offset-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs">Corestream</a>
+                </p>
             </div>
         </div>
     </footer>

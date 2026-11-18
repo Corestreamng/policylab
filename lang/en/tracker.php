@@ -94,10 +94,10 @@ return [
     // Footer
     'footer_initiative' => 'An Open-Data Monitoring Initiative by',
     'footer_client' => 'Glowing Minds Initiatives (GMI)',
-    'footer_built_by' => 'Built by Corestream Networks and Robotics Limited',
+    'footer_built_by' => 'Powered by Corestream',
     'footer_launch_date' => 'Launch Date: 26 November 2026',
     'footer_last_updated' => 'Dataset Last Verified:',
-    'footer_boundaries' => 'State boundaries: geoBoundaries (www.geoboundaries.org), simplified for display.',
-    'footer_privacy_note' => 'Zero tracking without explicit user consent. Data governed by open-access public charter.',
+    'footer_boundaries' => '',
+    'footer_privacy_note' => 'Data governed by open-access public charter.',
     'footer_rights' => 'All rights reserved.',
 ];

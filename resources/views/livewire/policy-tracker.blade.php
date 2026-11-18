@@ -1,22 +1,25 @@
 <div class="space-y-8 pb-16">
     <!-- HERO SECTION (Map is the Hero Visual Above the Fold) -->
-    <section class="bg-gradient-to-b from-ink-900 to-ink-950 text-white pt-8 pb-12 px-4 sm:px-6 lg:px-8 border-b border-ink-800">
+    <section class="bg-gradient-to-b from-[#FAF9F5] via-[#F6F8F5] to-[#EEF3EA] text-ink-900 pt-8 pb-12 px-4 sm:px-6 lg:px-8 border-b border-ink-200">
         <div class="max-w-7xl mx-auto">
             <!-- Headline & Purpose -->
             <div class="max-w-3xl mb-8">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-blue/20 text-blue-300 text-xs font-semibold uppercase tracking-wider mb-3 border border-brand-blue/30">
-                    <i class="fas fa-satellite-dish"></i> {{ __('tracker.hero_badge') }}
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100/80 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-3 border border-emerald-200/90 shadow-2xs">
+                    <i class="fas fa-satellite-dish text-brand-emerald"></i> {{ __('tracker.hero_badge') }}
                 </div>
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight font-heading">
+                <p class="text-xs font-semibold uppercase tracking-wider text-emerald-800 mb-2">
+                    An Open-Data Monitoring Initiative by <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="text-emerald-900 hover:text-emerald-700 font-bold underline underline-offset-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs" aria-label="Glowing Minds Initiatives (GMI) — opens in a new tab">Glowing Minds Initiatives (GMI)</a>
+                </p>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-ink-900 tracking-tight leading-tight font-heading">
                     Tracking Sub-National Youth Policy Domestication in {{ config('tracker.country_name', 'Nigeria') }}
                 </h1>
-                <p class="mt-3 text-sm sm:text-base text-ink-300 leading-relaxed">
+                <p class="mt-3 text-sm sm:text-base text-ink-700 leading-relaxed max-w-2xl">
                     An evidence-led civic intelligence platform monitoring how the {{ config('tracker.policy_name', 'National Youth Policy') }} is domesticated, gazetted, funded, and implemented across all 36 {{ config('tracker.subnational_plural', 'States') }} and the {{ config('tracker.capital_territory', 'Federal Capital Territory') }}.
                 </p>
             </div>
 
             <!-- Quick Find & Quick Filter Bar -->
-            <div class="bg-ink-800/80 backdrop-blur-md rounded-xl p-4 border border-ink-700 mb-8 shadow-lg">
+            <div class="bg-white rounded-xl p-4 border border-ink-200 mb-8 shadow-xs hover:shadow-sm transition">
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     <!-- Quick Search Input -->
                     <div class="relative">
@@ -27,14 +30,17 @@
                             type="text"
                             wire:model.live.debounce.300ms="search"
                             placeholder="Search state, partner, funder..."
-                            class="w-full pl-9 pr-4 py-2 bg-ink-900 border border-ink-600 rounded text-xs text-white placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent touch-target"
+                            class="w-full pl-9 pr-8 py-2 bg-white border border-ink-300 rounded-md text-xs text-ink-900 placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald transition touch-target"
                             aria-label="Search states, organisations, and funders"
                         />
+                        <span wire:loading.delay wire:target="search,selectedZone,selectedStage,selectedOrg,selectedFunder,hasCtc" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-brand-emerald">
+                            <i class="fas fa-circle-notch fa-spin text-xs"></i>
+                        </span>
                         @if(!empty($search))
                             <button
                                 type="button"
                                 wire:click="$set('search', '')"
-                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-ink-400 hover:text-white"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-ink-400 hover:text-ink-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs"
                                 aria-label="Clear search"
                             >
                                 <i class="fas fa-xmark"></i>
@@ -46,7 +52,7 @@
                     <div>
                         <select
                             wire:model.live="selectedZone"
-                            class="w-full px-3 py-2 bg-ink-900 border border-ink-600 rounded text-xs text-white focus:outline-none focus:ring-2 focus:ring-brand-blue touch-target"
+                            class="w-full px-3 py-2 bg-white border border-ink-300 rounded-md text-xs text-ink-900 focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald transition touch-target"
                             aria-label="Filter by Geopolitical Zone"
                         >
                             <option value="">All Geopolitical Zones (6)</option>
@@ -60,7 +66,7 @@
                     <div>
                         <select
                             wire:model.live="selectedStage"
-                            class="w-full px-3 py-2 bg-ink-900 border border-ink-600 rounded text-xs text-white focus:outline-none focus:ring-2 focus:ring-brand-blue touch-target"
+                            class="w-full px-3 py-2 bg-white border border-ink-300 rounded-md text-xs text-ink-900 focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald transition touch-target"
                             aria-label="Filter by Lifecycle Stage"
                         >
                             <option value="">All Lifecycle Stages (8)</option>
@@ -70,11 +76,11 @@
                         </select>
                     </div>
 
-                    <!-- Quick Jump to State Drawer -->
+                    <!-- Quick Jump to State Dossier -->
                     <div>
                         <select
                             wire:change="openDrawer($event.target.value)"
-                            class="w-full px-3 py-2 bg-ink-900 border border-ink-600 rounded text-xs text-brand-blue font-semibold focus:outline-none focus:ring-2 focus:ring-brand-blue touch-target"
+                            class="w-full px-3 py-2 bg-white border border-ink-300 rounded-md text-xs text-brand-emerald font-semibold focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald transition touch-target"
                             aria-label="Quick Select State"
                         >
                             <option value="">Jump to State Dossier...</option>
@@ -86,11 +92,11 @@
                 </div>
 
                 <!-- Secondary Filters: Lead Org & Funder & CTC -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 pt-3 border-t border-ink-700/60">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 pt-3 border-t border-ink-100">
                     <div>
                         <select
                             wire:model.live="selectedOrg"
-                            class="w-full px-3 py-2 bg-ink-900 border border-ink-600 rounded text-xs text-ink-200 focus:outline-none focus:ring-2 focus:ring-brand-blue touch-target"
+                            class="w-full px-3 py-2 bg-white border border-ink-300 rounded-md text-xs text-ink-800 focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald transition touch-target"
                             aria-label="Filter by Lead Organization"
                         >
                             <option value="">Filter by Lead Organisation...</option>
@@ -103,7 +109,7 @@
                     <div>
                         <select
                             wire:model.live="selectedFunder"
-                            class="w-full px-3 py-2 bg-ink-900 border border-ink-600 rounded text-xs text-ink-200 focus:outline-none focus:ring-2 focus:ring-brand-blue touch-target"
+                            class="w-full px-3 py-2 bg-white border border-ink-300 rounded-md text-xs text-ink-800 focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald transition touch-target"
                             aria-label="Filter by Funding Partner"
                         >
                             <option value="">Filter by Funding Partner...</option>
@@ -116,7 +122,7 @@
                     <div class="flex items-center gap-3">
                         <select
                             wire:model.live="hasCtc"
-                            class="w-full px-3 py-2 bg-ink-900 border border-ink-600 rounded text-xs text-ink-200 focus:outline-none focus:ring-2 focus:ring-brand-blue touch-target"
+                            class="w-full px-3 py-2 bg-white border border-ink-300 rounded-md text-xs text-ink-800 focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald transition touch-target"
                             aria-label="Filter by Document Availability"
                         >
                             <option value="">Document Status (All)</option>
@@ -128,7 +134,7 @@
                             <button
                                 type="button"
                                 wire:click="resetFilters()"
-                                class="inline-flex items-center px-3 py-2 text-xs font-semibold text-rose-300 hover:text-white bg-rose-950/80 hover:bg-rose-900 rounded border border-rose-800 transition shrink-0 touch-target"
+                                class="inline-flex items-center px-3 py-2 text-xs font-semibold text-rose-700 hover:text-white bg-rose-50 hover:bg-rose-600 rounded-md border border-rose-200 transition shrink-0 touch-target focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
                             >
                                 <i class="fas fa-rotate-left mr-1.5"></i> Clear All
                             </button>
@@ -138,20 +144,20 @@
 
                 <!-- Active Filter Chips -->
                 @if($hasActiveFilters)
-                    <div class="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-ink-700/60">
-                        <span class="text-2xs font-bold uppercase tracking-wider text-ink-400">Active Filters:</span>
+                    <div class="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-ink-100">
+                        <span class="text-2xs font-bold uppercase tracking-wider text-ink-500">Active Filters:</span>
 
                         @if(!empty($search))
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-ink-700 text-white text-xs border border-ink-600">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-ink-100 text-ink-800 text-xs border border-ink-200">
                                 Keyword: "{{ $search }}"
-                                <button type="button" wire:click="removeFilter('search')" class="hover:text-rose-300"><i class="fas fa-xmark text-2xs"></i></button>
+                                <button type="button" wire:click="removeFilter('search')" class="text-ink-400 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-emerald rounded-xs"><i class="fas fa-xmark text-2xs"></i></button>
                             </span>
                         @endif
 
                         @if(!empty($selectedZone))
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-ink-700 text-white text-xs border border-ink-600">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-ink-100 text-ink-800 text-xs border border-ink-200">
                                 Zone: {{ $selectedZone }}
-                                <button type="button" wire:click="removeFilter('zone')" class="hover:text-rose-300"><i class="fas fa-xmark text-2xs"></i></button>
+                                <button type="button" wire:click="removeFilter('zone')" class="text-ink-400 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-emerald rounded-xs"><i class="fas fa-xmark text-2xs"></i></button>
                             </span>
                         @endif
 
@@ -159,34 +165,34 @@
                             @php
                                 $activeStageObj = $stages->firstWhere('sequence_order', (int)$selectedStage);
                             @endphp
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-ink-700 text-white text-xs border border-ink-600">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-ink-100 text-ink-800 text-xs border border-ink-200">
                                 Stage: {{ $activeStageObj->name ?? $selectedStage }}
-                                <button type="button" wire:click="removeFilter('stage')" class="hover:text-rose-300"><i class="fas fa-xmark text-2xs"></i></button>
+                                <button type="button" wire:click="removeFilter('stage')" class="text-ink-400 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-emerald rounded-xs"><i class="fas fa-xmark text-2xs"></i></button>
                             </span>
                         @endif
 
                         @if(!empty($selectedOrg))
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-ink-700 text-white text-xs border border-ink-600">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-ink-100 text-ink-800 text-xs border border-ink-200">
                                 Org Filter Active
-                                <button type="button" wire:click="removeFilter('org')" class="hover:text-rose-300"><i class="fas fa-xmark text-2xs"></i></button>
+                                <button type="button" wire:click="removeFilter('org')" class="text-ink-400 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-emerald rounded-xs"><i class="fas fa-xmark text-2xs"></i></button>
                             </span>
                         @endif
 
                         @if(!empty($selectedFunder))
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-ink-700 text-white text-xs border border-ink-600">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-ink-100 text-ink-800 text-xs border border-ink-200">
                                 Funder Filter Active
-                                <button type="button" wire:click="removeFilter('funder')" class="hover:text-rose-300"><i class="fas fa-xmark text-2xs"></i></button>
+                                <button type="button" wire:click="removeFilter('funder')" class="text-ink-400 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-emerald rounded-xs"><i class="fas fa-xmark text-2xs"></i></button>
                             </span>
                         @endif
 
                         @if(!empty($hasCtc))
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-ink-700 text-white text-xs border border-ink-600">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-ink-100 text-ink-800 text-xs border border-ink-200">
                                 CTC: {{ $hasCtc === 'yes' ? 'Available' : 'Missing' }}
-                                <button type="button" wire:click="removeFilter('ctc')" class="hover:text-rose-300"><i class="fas fa-xmark text-2xs"></i></button>
+                                <button type="button" wire:click="removeFilter('ctc')" class="text-ink-400 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-emerald rounded-xs"><i class="fas fa-xmark text-2xs"></i></button>
                             </span>
                         @endif
 
-                        <span class="text-xs text-ink-300 ml-auto font-medium">
+                        <span class="text-xs text-ink-600 ml-auto font-medium tabular-nums">
                             Showing {{ count($filteredStates) }} of {{ $kpis['total_states'] }} states
                         </span>
                     </div>
@@ -568,6 +574,14 @@
             </div>
         </div>
     </section>
+
+    <!-- State Drawer Loading Indicator -->
+    <div wire:loading.flex wire:target="openDrawer" class="fixed inset-0 z-50 items-center justify-center bg-ink-950/40 backdrop-blur-xs">
+        <div class="bg-white rounded-xl p-5 shadow-xl border border-ink-200 flex items-center gap-3">
+            <i class="fas fa-circle-notch fa-spin text-brand-emerald text-lg"></i>
+            <span class="text-sm font-semibold text-ink-800">Loading State Policy Dossier...</span>
+        </div>
+    </div>
 
     <!-- STATE DETAIL DRAWER (Slide-Out Deep-Linkable Panel) -->
     @if($selectedRegion)

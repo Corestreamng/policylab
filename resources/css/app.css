@@ -116,6 +116,59 @@ svg.fi-wi-stats-overview-stat-icon {
   display: block !important;
 }
 
+/* ==========================================================================
+   Design Tokens & Interactive State Normalization (React-Feel Standard)
+   ========================================================================== */
+:root {
+  /* Radius Tokens */
+  --radius-card: 0.75rem;     /* rounded-xl */
+  --radius-element: 0.5rem;   /* rounded-lg */
+  --radius-control: 0.375rem; /* rounded-md */
+  --radius-pill: 9999px;      /* rounded-full */
+
+  /* Elevation Tokens */
+  --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
+  --shadow-card-hover: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+
+  /* Motion Tokens (GPU-accelerated, transform and opacity only) */
+  --ease-standard: cubic-bezier(0, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+}
+
+/* Explicit Focus-Visible Rings (Accessible Keyboard Navigation) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 2px solid transparent !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #059669 !important;
+}
+
+/* Skeleton Loading Shimmer Animation */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite var(--ease-standard);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
 /* Hide unactive wire:loading elements */
 [wire\:loading]:not([wire\:loading\.remove]) {
   display: none !important;
@@ -131,5 +184,9 @@ svg.fi-wi-stats-overview-stat-icon {
     scroll-behavior: auto !important;
     transition-duration: 0s !important;
     transition-delay: 0s !important;
+  }
+  .skeleton-shimmer {
+    animation: none !important;
+    background: #E2E8F0 !important;
   }
 }

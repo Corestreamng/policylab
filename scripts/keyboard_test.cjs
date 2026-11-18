@@ -133,8 +133,43 @@ async function runKeyboardTests() {
         // Reset locale back to English
         await arPage.goto(`${BASE_URL}/locale/en`, { waitUntil: 'networkidle2' });
 
+        // 7. Test GMI & Corestream External Attribution Links
+        console.log('\n7. Testing GMI and Corestream external links and keyboard accessibility...');
+        const linkAudit = await page.evaluate(() => {
+            const gmiLink = document.querySelector('a[href="https://glowingmindsinitiatives.org/"]');
+            const corestreamLink = document.querySelector('a[href="https://www.corestream.ng"]');
+            return {
+                gmi: gmiLink ? {
+                    href: gmiLink.href,
+                    target: gmiLink.target,
+                    rel: gmiLink.rel,
+                    text: gmiLink.textContent.trim(),
+                    tabindex: gmiLink.tabIndex
+                } : null,
+                corestream: corestreamLink ? {
+                    href: corestreamLink.href,
+                    target: corestreamLink.target,
+                    rel: corestreamLink.rel,
+                    text: corestreamLink.textContent.trim(),
+                    tabindex: corestreamLink.tabIndex
+                } : null
+            };
+        });
+
+        assert.ok(linkAudit.gmi, 'GMI attribution link must exist in DOM');
+        assert.strictEqual(linkAudit.gmi.target, '_blank', 'GMI link must open in new tab');
+        assert.ok(linkAudit.gmi.rel.includes('noopener'), 'GMI link must have rel="noopener"');
+        assert.ok(linkAudit.gmi.rel.includes('noreferrer'), 'GMI link must have rel="noreferrer"');
+        console.log(`   GMI link verified: ${linkAudit.gmi.href} [${linkAudit.gmi.text}]`);
+
+        assert.ok(linkAudit.corestream, 'Corestream attribution link must exist in DOM');
+        assert.strictEqual(linkAudit.corestream.target, '_blank', 'Corestream link must open in new tab');
+        assert.ok(linkAudit.corestream.rel.includes('noopener'), 'Corestream link must have rel="noopener"');
+        assert.ok(linkAudit.corestream.rel.includes('noreferrer'), 'Corestream link must have rel="noreferrer"');
+        console.log(`   Corestream link verified: ${linkAudit.corestream.href} [${linkAudit.corestream.text}]`);
+
         console.log('\n======================================================');
-        console.log('ALL KEYBOARD NAVIGATION & RTL TESTS PASSED (6/6)');
+        console.log('ALL KEYBOARD NAVIGATION & RTL TESTS PASSED (7/7)');
         console.log('======================================================');
 
     } finally {

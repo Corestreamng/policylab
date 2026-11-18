@@ -173,9 +173,4 @@
             @endforeach
         </div>
     </div>
-
-    <!-- Attribution Notice -->
-    <div class="mt-4 pt-3 border-t border-ink-100 text-right text-2xs text-ink-500">
-        State boundaries: geoBoundaries (www.geoboundaries.org), simplified for display.
-    </div>
 </div>

@@ -10,7 +10,7 @@
             <section class="space-y-2">
                 <h2 class="text-base font-bold text-ink-900 font-heading">1. Purpose and Mandate</h2>
                 <p>
-                    The Youth Policy Tracker is an open-access public interest platform operated by Glowing Minds Initiatives (GMI) and engineered by Corestream Networks and Robotics Limited. The platform exists to provide transparent, verifiable tracking of sub-national youth policy domestication across Nigeria.
+                    The Youth Policy Tracker is an open-access public interest platform operated by Glowing Minds Initiatives (GMI) and powered by Corestream. The platform exists to provide transparent, verifiable tracking of sub-national youth policy domestication across Nigeria.
                 </p>
             </section>
 

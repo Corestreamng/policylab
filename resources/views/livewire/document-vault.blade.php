@@ -35,8 +35,11 @@
                     type="text"
                     wire:model.live.debounce.300ms="search"
                     placeholder="Search document title or state..."
-                    class="w-full pl-9 pr-3 py-2 bg-ink-50 border border-ink-200 rounded text-xs text-ink-900 focus:outline-none focus:ring-2 focus:ring-brand-blue touch-target"
+                    class="w-full pl-9 pr-8 py-2 bg-ink-50 border border-ink-200 rounded text-xs text-ink-900 focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald touch-target"
                 />
+                <span wire:loading.delay wire:target="search,selectedRegion,selectedType,selectedYear" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-brand-emerald">
+                    <i class="fas fa-circle-notch fa-spin text-xs"></i>
+                </span>
             </div>
 
             <!-- State Filter -->
@@ -82,7 +85,29 @@
         </div>
     </div>
 
+    <!-- Loading Skeleton Placeholder -->
+    <div wire:loading.grid wire:target="search,selectedRegion,selectedType,selectedYear" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for($i = 0; $i < 6; $i++)
+            <div class="bg-white rounded-xl border border-ink-200 p-5 shadow-xs space-y-4">
+                <div class="flex justify-between items-center">
+                    <div class="h-4 w-20 rounded-md skeleton-shimmer"></div>
+                    <div class="h-3 w-12 rounded-md skeleton-shimmer"></div>
+                </div>
+                <div class="h-5 w-3/4 rounded-md skeleton-shimmer"></div>
+                <div class="space-y-2">
+                    <div class="h-3 w-full rounded-md skeleton-shimmer"></div>
+                    <div class="h-3 w-2/3 rounded-md skeleton-shimmer"></div>
+                </div>
+                <div class="pt-3 border-t border-ink-100 flex justify-between">
+                    <div class="h-8 w-24 rounded-md skeleton-shimmer"></div>
+                    <div class="h-8 w-28 rounded-md skeleton-shimmer"></div>
+                </div>
+            </div>
+        @endfor
+    </div>
+
     <!-- Document Grid / List -->
+    <div wire:loading.remove wire:target="search,selectedRegion,selectedType,selectedYear">
     @if($documents->isNotEmpty())
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($documents as $doc)
@@ -145,6 +170,7 @@
             </p>
         </div>
     @endif
+    </div>
 
     <!-- Fast Preview Modal -->
     @if($previewDocUuid && $previewStreamUrl)

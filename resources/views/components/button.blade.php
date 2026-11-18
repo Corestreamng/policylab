@@ -11,10 +11,11 @@
 ])
 
 @php
-    $baseClasses = 'inline-flex items-center justify-center font-semibold rounded transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 min-h-[44px] touch-target select-none';
+    $baseClasses = 'inline-flex items-center justify-center font-semibold rounded-md transition-all duration-150 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 min-h-[44px] touch-target select-none';
 
     $variants = [
         'primary' => 'bg-brand-blue hover:bg-blue-700 active:bg-blue-800 text-white border border-transparent focus-visible:ring-brand-blue shadow-xs',
+        'emerald' => 'bg-brand-emerald hover:bg-emerald-700 active:bg-emerald-800 text-white border border-transparent focus-visible:ring-brand-emerald shadow-xs',
         'secondary' => 'bg-white hover:bg-ink-100 active:bg-ink-200 text-ink-800 border border-ink-300 focus-visible:ring-ink-400 shadow-xs',
         'outline' => 'bg-transparent hover:bg-ink-800 active:bg-ink-900 text-ink-200 border border-ink-700 hover:text-white focus-visible:ring-brand-blue',
         'ghost' => 'bg-transparent hover:bg-ink-100 active:bg-ink-200 text-ink-700 hover:text-ink-900 focus-visible:ring-brand-blue',

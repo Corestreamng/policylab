@@ -202,7 +202,7 @@
                     <div>
                         <div class="flex justify-between items-center text-xs mb-1">
                             <span class="font-bold text-ink-800">{{ $org->name }}</span>
-                            <span class="font-semibold text-ink-600">{{ $org->regions_count }} states ({{ $percentage }}%)</span>
+                            <span class="font-semibold text-ink-600 tabular-nums">{{ $org->regions_count }} states ({{ $percentage }}%)</span>
                         </div>
                         <div class="w-full bg-ink-100 rounded-full h-2 overflow-hidden">
                             <div class="bg-brand-teal h-2 rounded-full" style="width: {{ min($percentage * 3, 100) }}%;"></div>
@@ -228,7 +228,7 @@
                     <div>
                         <div class="flex justify-between items-center text-xs mb-1">
                             <span class="font-bold text-ink-800">{{ $funder->name }}</span>
-                            <span class="font-semibold text-ink-600">{{ $funder->regions_count }} states ({{ $percentage }}%)</span>
+                            <span class="font-semibold text-ink-600 tabular-nums">{{ $funder->regions_count }} states ({{ $percentage }}%)</span>
                         </div>
                         <div class="w-full bg-ink-100 rounded-full h-2 overflow-hidden">
                             <div class="bg-brand-violet h-2 rounded-full" style="width: {{ min($percentage * 3, 100) }}%;"></div>
