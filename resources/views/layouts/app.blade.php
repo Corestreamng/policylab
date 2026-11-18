@@ -84,7 +84,7 @@
                             @click="megaOpen = !megaOpen"
                             @click.outside="megaOpen = false"
                             class="px-3 py-2 rounded text-sm font-medium transition flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald"
-                            :class="megaOpen ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800'"
+                            :class="megaOpen ? 'bg-white text-ink-950 shadow-md' : 'text-ink-300 hover:text-white hover:bg-ink-800'"
                             :aria-expanded="megaOpen.toString()"
                             aria-haspopup="true"
                             aria-label="Explore Tracker Mega Menu"
@@ -94,7 +94,7 @@
                             <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" :class="megaOpen ? 'rotate-180 text-brand-emerald' : 'text-ink-400'"></i>
                         </button>
 
-                        <!-- Mega Menu Panel -->
+                        <!-- Mega Menu Panel (Bright Scheme) -->
                         <div
                             x-show="megaOpen"
                             x-cloak
@@ -104,49 +104,49 @@
                             x-transition:leave="transition ease-in duration-100"
                             x-transition:leave-start="transform opacity-100 translate-y-0"
                             x-transition:leave-end="transform opacity-0 -translate-y-2"
-                            class="absolute right-0 mt-3 w-[880px] max-w-[94vw] bg-ink-950 border border-ink-800 rounded-xl shadow-2xl p-6 z-50 text-xs text-ink-300"
+                            class="absolute right-0 mt-3 w-[880px] max-w-[94vw] bg-white border border-ink-200 border-t-4 border-t-brand-emerald rounded-2xl shadow-2xl ring-1 ring-black/5 p-6 z-50 text-xs text-ink-700"
                         >
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                                 <!-- Column 1: Geopolitical Zones -->
                                 <div class="space-y-3">
-                                    <span class="text-[11px] font-bold uppercase tracking-wider text-white flex items-center gap-1.5 pb-2 border-b border-ink-800">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-ink-900 flex items-center gap-1.5 pb-2 border-b border-ink-100">
                                         <i class="fas fa-map-location-dot text-brand-blue"></i> Geopolitical Zones
                                     </span>
                                     <ul class="space-y-1 font-medium">
                                         <li>
-                                            <a href="/?zone=North+Central#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
-                                                <span class="font-bold text-ink-100 block">North Central</span>
-                                                <span class="text-[10px] text-ink-400">Benue, FCT, Kogi, Kwara, Niger...</span>
+                                            <a href="/?zone=North+Central#coverage" @click="megaOpen = false" class="block p-1.5 rounded-lg hover:bg-slate-50 transition group">
+                                                <span class="font-bold text-ink-900 block group-hover:text-brand-blue transition-colors">North Central</span>
+                                                <span class="text-[10px] text-ink-500">Benue, FCT, Kogi, Kwara, Niger...</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/?zone=North+East#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
-                                                <span class="font-bold text-ink-100 block">North East</span>
-                                                <span class="text-[10px] text-ink-400">Adamawa, Bauchi, Borno, Gombe...</span>
+                                            <a href="/?zone=North+East#coverage" @click="megaOpen = false" class="block p-1.5 rounded-lg hover:bg-slate-50 transition group">
+                                                <span class="font-bold text-ink-900 block group-hover:text-brand-blue transition-colors">North East</span>
+                                                <span class="text-[10px] text-ink-500">Adamawa, Bauchi, Borno, Gombe...</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/?zone=North+West#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
-                                                <span class="font-bold text-ink-100 block">North West</span>
-                                                <span class="text-[10px] text-ink-400">Jigawa, Kaduna, Kano, Sokoto...</span>
+                                            <a href="/?zone=North+West#coverage" @click="megaOpen = false" class="block p-1.5 rounded-lg hover:bg-slate-50 transition group">
+                                                <span class="font-bold text-ink-900 block group-hover:text-brand-blue transition-colors">North West</span>
+                                                <span class="text-[10px] text-ink-500">Jigawa, Kaduna, Kano, Sokoto...</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/?zone=South+East#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
-                                                <span class="font-bold text-ink-100 block">South East</span>
-                                                <span class="text-[10px] text-ink-400">Abia, Anambra, Ebonyi, Enugu, Imo</span>
+                                            <a href="/?zone=South+East#coverage" @click="megaOpen = false" class="block p-1.5 rounded-lg hover:bg-slate-50 transition group">
+                                                <span class="font-bold text-ink-900 block group-hover:text-brand-blue transition-colors">South East</span>
+                                                <span class="text-[10px] text-ink-500">Abia, Anambra, Ebonyi, Enugu, Imo</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/?zone=South+South#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
-                                                <span class="font-bold text-ink-100 block">South South</span>
-                                                <span class="text-[10px] text-ink-400">Akwa Ibom, Delta, Edo, Rivers...</span>
+                                            <a href="/?zone=South+South#coverage" @click="megaOpen = false" class="block p-1.5 rounded-lg hover:bg-slate-50 transition group">
+                                                <span class="font-bold text-ink-900 block group-hover:text-brand-blue transition-colors">South South</span>
+                                                <span class="text-[10px] text-ink-500">Akwa Ibom, Delta, Edo, Rivers...</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/?zone=South+West#coverage" @click="megaOpen = false" class="block p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
-                                                <span class="font-bold text-ink-100 block">South West</span>
-                                                <span class="text-[10px] text-ink-400">Ekiti, Lagos, Ogun, Osun, Oyo...</span>
+                                            <a href="/?zone=South+West#coverage" @click="megaOpen = false" class="block p-1.5 rounded-lg hover:bg-slate-50 transition group">
+                                                <span class="font-bold text-ink-900 block group-hover:text-brand-blue transition-colors">South West</span>
+                                                <span class="text-[10px] text-ink-500">Ekiti, Lagos, Ogun, Osun, Oyo...</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -154,70 +154,70 @@
 
                                 <!-- Column 2: Policy Lifecycle Stages -->
                                 <div class="space-y-3">
-                                    <span class="text-[11px] font-bold uppercase tracking-wider text-white flex items-center gap-1.5 pb-2 border-b border-ink-800">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-ink-900 flex items-center gap-1.5 pb-2 border-b border-ink-100">
                                         <i class="fas fa-stairs text-brand-emerald"></i> Lifecycle Stages
                                     </span>
                                     <ul class="space-y-1">
                                         <li>
-                                            <a href="/?stage=6#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                            <a href="/?stage=6#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 transition group">
                                                 <span class="w-2.5 h-2.5 rounded-full bg-brand-orange shrink-0"></span>
                                                 <div>
-                                                    <span class="font-bold text-ink-100 block">Stage 6: Signed</span>
-                                                    <span class="text-[10px] text-ink-400">Legislative assent</span>
+                                                    <span class="font-bold text-ink-900 block group-hover:text-brand-orange transition-colors">Stage 6: Signed</span>
+                                                    <span class="text-[10px] text-ink-500">Legislative assent</span>
                                                 </div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/?stage=7#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                            <a href="/?stage=7#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 transition group">
                                                 <span class="w-2.5 h-2.5 rounded-full bg-brand-emerald shrink-0"></span>
                                                 <div>
-                                                    <span class="font-bold text-ink-100 block">Stage 7: Implementing</span>
-                                                    <span class="text-[10px] text-ink-400">Active programs</span>
+                                                    <span class="font-bold text-ink-900 block group-hover:text-brand-emerald transition-colors">Stage 7: Implementing</span>
+                                                    <span class="text-[10px] text-ink-500">Active programs</span>
                                                 </div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/?stage=5#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                            <a href="/?stage=5#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 transition group">
                                                 <span class="w-2.5 h-2.5 rounded-full bg-brand-violet shrink-0"></span>
                                                 <div>
-                                                    <span class="font-bold text-ink-100 block">Stage 5: Validated</span>
-                                                    <span class="text-[10px] text-ink-400">Stakeholder approval</span>
+                                                    <span class="font-bold text-ink-900 block group-hover:text-brand-violet transition-colors">Stage 5: Validated</span>
+                                                    <span class="text-[10px] text-ink-500">Stakeholder approval</span>
                                                 </div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/?stage=4#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                            <a href="/?stage=4#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 transition group">
                                                 <span class="w-2.5 h-2.5 rounded-full bg-brand-teal shrink-0"></span>
                                                 <div>
-                                                    <span class="font-bold text-ink-100 block">Stage 4: Validating</span>
-                                                    <span class="text-[10px] text-ink-400">Review sessions</span>
+                                                    <span class="font-bold text-ink-900 block group-hover:text-brand-teal transition-colors">Stage 4: Validating</span>
+                                                    <span class="text-[10px] text-ink-500">Review sessions</span>
                                                 </div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/?stage=3#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                            <a href="/?stage=3#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 transition group">
                                                 <span class="w-2.5 h-2.5 rounded-full bg-brand-blue shrink-0"></span>
                                                 <div>
-                                                    <span class="font-bold text-ink-100 block">Stage 3: Developing</span>
-                                                    <span class="text-[10px] text-ink-400">Technical drafting</span>
+                                                    <span class="font-bold text-ink-900 block group-hover:text-brand-blue transition-colors">Stage 3: Developing</span>
+                                                    <span class="text-[10px] text-ink-500">Technical drafting</span>
                                                 </div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/?stage=2#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                            <a href="/?stage=2#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 transition group">
                                                 <span class="w-2.5 h-2.5 rounded-full bg-brand-sunflower shrink-0"></span>
                                                 <div>
-                                                    <span class="font-bold text-ink-100 block">Stage 2: Consultation</span>
-                                                    <span class="text-[10px] text-ink-400">Youth dialogues</span>
+                                                    <span class="font-bold text-ink-900 block group-hover:text-brand-sunflower transition-colors">Stage 2: Consultation</span>
+                                                    <span class="text-[10px] text-ink-500">Youth dialogues</span>
                                                 </div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/?stage=0#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-800 hover:text-white transition">
+                                            <a href="/?stage=0#coverage" @click="megaOpen = false" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 transition group">
                                                 <span class="w-2.5 h-2.5 rounded-full bg-brand-slate shrink-0"></span>
                                                 <div>
-                                                    <span class="font-bold text-ink-100 block">Stage 0: No Data</span>
-                                                    <span class="text-[10px] text-ink-400">Awaiting evidence</span>
+                                                    <span class="font-bold text-ink-900 block group-hover:text-brand-slate transition-colors">Stage 0: No Data</span>
+                                                    <span class="text-[10px] text-ink-500">Awaiting evidence</span>
                                                 </div>
                                             </a>
                                         </li>
@@ -226,40 +226,40 @@
 
                                 <!-- Column 3: Data & Evidence Hubs -->
                                 <div class="space-y-3">
-                                    <span class="text-[11px] font-bold uppercase tracking-wider text-white flex items-center gap-1.5 pb-2 border-b border-ink-800">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-ink-900 flex items-center gap-1.5 pb-2 border-b border-ink-100">
                                         <i class="fas fa-database text-brand-orange"></i> Data &amp; Research Hub
                                     </span>
                                     <ul class="space-y-2 font-medium">
                                         <li>
-                                            <a href="/dashboard" @click="megaOpen = false" class="block p-2 rounded bg-ink-900 border border-ink-800 hover:border-brand-emerald hover:text-white transition">
-                                                <span class="font-bold text-ink-100 flex items-center gap-1.5">
+                                            <a href="/dashboard" @click="megaOpen = false" class="block p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 hover:bg-emerald-50/50 hover:border-brand-emerald hover:shadow-sm transition group">
+                                                <span class="font-bold text-ink-900 group-hover:text-brand-emerald flex items-center gap-1.5 transition-colors">
                                                     <i class="fas fa-chart-pie text-brand-orange text-xs"></i> Analytics Dashboard
                                                 </span>
-                                                <span class="text-[10px] text-ink-400 block mt-0.5">Macro distributions, zones, and stakeholder charts.</span>
+                                                <span class="text-[10px] text-ink-500 block mt-0.5">Macro distributions, zones, and stakeholder charts.</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/documents" @click="megaOpen = false" class="block p-2 rounded bg-ink-900 border border-ink-800 hover:border-brand-emerald hover:text-white transition">
-                                                <span class="font-bold text-ink-100 flex items-center gap-1.5">
+                                            <a href="/documents" @click="megaOpen = false" class="block p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 hover:bg-emerald-50/50 hover:border-brand-emerald hover:shadow-sm transition group">
+                                                <span class="font-bold text-ink-900 group-hover:text-brand-emerald flex items-center gap-1.5 transition-colors">
                                                     <i class="fas fa-box-archive text-brand-teal text-xs"></i> Document Vault (CTCs)
                                                 </span>
-                                                <span class="text-[10px] text-ink-400 block mt-0.5">Certified True Copies of state gazettes and policy drafts.</span>
+                                                <span class="text-[10px] text-ink-500 block mt-0.5">Certified True Copies of state gazettes and policy drafts.</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/api/docs" @click="megaOpen = false" class="block p-2 rounded bg-ink-900 border border-ink-800 hover:border-brand-emerald hover:text-white transition">
-                                                <span class="font-bold text-ink-100 flex items-center gap-1.5">
+                                            <a href="/api/docs" @click="megaOpen = false" class="block p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 hover:bg-emerald-50/50 hover:border-brand-emerald hover:shadow-sm transition group">
+                                                <span class="font-bold text-ink-900 group-hover:text-brand-emerald flex items-center gap-1.5 transition-colors">
                                                     <i class="fas fa-code text-brand-violet text-xs"></i> Public REST API (v1)
                                                 </span>
-                                                <span class="text-[10px] text-ink-400 block mt-0.5">Interactive query console, endpoints &amp; cURL snippets.</span>
+                                                <span class="text-[10px] text-ink-500 block mt-0.5">Interactive query console, endpoints &amp; cURL snippets.</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/api/v1/export/csv" class="block p-2 rounded bg-ink-900 border border-ink-800 hover:border-brand-emerald hover:text-white transition">
-                                                <span class="font-bold text-ink-100 flex items-center gap-1.5">
+                                            <a href="/api/v1/export/csv" class="block p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 hover:bg-emerald-50/50 hover:border-brand-emerald hover:shadow-sm transition group">
+                                                <span class="font-bold text-ink-900 group-hover:text-brand-emerald flex items-center gap-1.5 transition-colors">
                                                     <i class="fas fa-file-csv text-brand-emerald text-xs"></i> Download Dataset (CSV)
                                                 </span>
-                                                <span class="text-[10px] text-ink-400 block mt-0.5">Full streaming tabular export for Excel and Stata.</span>
+                                                <span class="text-[10px] text-ink-500 block mt-0.5">Full streaming tabular export for Excel and Stata.</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -267,22 +267,22 @@
 
                                 <!-- Column 4: Institutional Trust & Governance -->
                                 <div class="space-y-3">
-                                    <span class="text-[11px] font-bold uppercase tracking-wider text-white flex items-center gap-1.5 pb-2 border-b border-ink-800">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-ink-900 flex items-center gap-1.5 pb-2 border-b border-ink-100">
                                         <i class="fas fa-shield-halved text-brand-teal"></i> Institutional Trust
                                     </span>
-                                    <div class="p-3.5 rounded-lg bg-ink-900 border border-ink-800 space-y-2.5">
-                                        <span class="text-[10px] font-bold uppercase text-brand-emerald block">Civic Data Trust</span>
-                                        <p class="text-[11px] text-ink-300 leading-relaxed">
-                                            Operated by <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="text-white underline font-semibold">Glowing Minds Initiatives</a> to provide independent, verifiable monitoring of youth policy commitments.
+                                    <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200/90 space-y-2.5">
+                                        <span class="text-[10px] font-bold uppercase text-brand-emerald block tracking-wider">Civic Data Trust</span>
+                                        <p class="text-[11px] text-ink-700 leading-relaxed">
+                                            Operated by <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="text-ink-950 underline font-semibold hover:text-brand-emerald">Glowing Minds Initiatives</a> to provide independent, verifiable monitoring of youth policy commitments.
                                         </p>
-                                        <div class="pt-2 border-t border-ink-800 space-y-1.5 font-medium">
-                                            <a href="/privacy-policy" @click="megaOpen = false" class="block text-ink-300 hover:text-white transition">
+                                        <div class="pt-2 border-t border-emerald-200/70 space-y-1.5 font-medium">
+                                            <a href="/privacy-policy" @click="megaOpen = false" class="block text-ink-700 hover:text-brand-emerald transition">
                                                 &bull; Privacy &amp; Data Governance
                                             </a>
-                                            <a href="/api/docs" @click="megaOpen = false" class="block text-ink-300 hover:text-white transition">
+                                            <a href="/api/docs" @click="megaOpen = false" class="block text-ink-700 hover:text-brand-emerald transition">
                                                 &bull; Citation &amp; License (PDDL)
                                             </a>
-                                            <a href="/admin" @click="megaOpen = false" class="block text-ink-300 hover:text-white transition">
+                                            <a href="/admin" @click="megaOpen = false" class="block text-ink-700 hover:text-brand-emerald transition">
                                                 &bull; Administrator Portal
                                             </a>
                                         </div>
