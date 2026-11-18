@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Livewire\Admin\TwoFactorChallenge;
+use App\Livewire\PolicyTracker;
 use App\Models\User;
 use App\Services\TotpService;
 use Database\Seeders\RoleAndPermissionSeeder;
@@ -90,8 +91,17 @@ class FilamentTwoFactorAuthenticationTest extends TestCase
 
     public function test_recovery_codes_are_hashed_and_strictly_single_use(): void
     {
-        $plainCode = '4F2A1B8C9D';
+        $rawCodes = $this->totpService->generateRecoveryCodes(1);
+        $plainCode = $rawCodes[0];
+        // Assert recovery code format is 16 chars (4 groups of 4 separated by hyphens)
+        $this->assertEquals(19, strlen($plainCode));
+        $this->assertEquals(16, strlen(str_replace('-', '', $plainCode)));
+
         $hashedCode = $this->totpService->hashRecoveryCode($plainCode);
+
+        // Verify the hash is HMAC-SHA256 keyed with app.key
+        $expectedHmac = hash_hmac('sha256', strtoupper(str_replace('-', '', $plainCode)), (string) config('app.key'));
+        $this->assertEquals($expectedHmac, $hashedCode);
 
         $this->admin->update([
             'two_factor_secret' => $this->totpService->generateSecret(),
@@ -99,7 +109,7 @@ class FilamentTwoFactorAuthenticationTest extends TestCase
             'two_factor_recovery_codes' => [$hashedCode],
         ]);
 
-        // Raw database column contains the SHA-256 hash, not the plaintext code
+        // Raw database column contains the HMAC hash, not the plaintext code
         $rawRecord = DB::table('users')->where('id', $this->admin->id)->first();
         $this->assertStringNotContainsString($plainCode, $rawRecord->two_factor_recovery_codes);
 
@@ -125,6 +135,79 @@ class FilamentTwoFactorAuthenticationTest extends TestCase
             ->assertHasErrors(['recovery_code']);
     }
 
+    public function test_ip_rate_limiting_and_escalating_lockout_on_2fa_challenge(): void
+    {
+        $this->actingAs($this->admin);
+        $userThrottleKey = '2fa-verify:' . $this->admin->id;
+        $ipThrottleKey = '2fa-ip:' . request()->ip();
+        $lockoutKey = '2fa-lockout-until:' . $this->admin->id;
+        $failuresKey = '2fa-failures:' . $this->admin->id;
+
+        RateLimiter::clear($userThrottleKey);
+        RateLimiter::clear($ipThrottleKey);
+        Cache::forget($lockoutKey);
+        Cache::forget($failuresKey);
+
+        $component = Livewire::test(TwoFactorChallenge::class);
+
+        // Fail 3 times triggers the first escalating lockout tier (60s)
+        for ($i = 0; $i < 3; $i++) {
+            $component->set('code', '000000')->call('verify');
+        }
+
+        $this->assertTrue(Cache::has($lockoutKey));
+
+        // Attempting to submit while locked out shows lockout message
+        $component->set('code', '000000')
+            ->call('verify')
+            ->assertSee('Account temporarily locked');
+    }
+
+    public function test_crafted_livewire_payloads_cannot_bypass_2fa(): void
+    {
+        $this->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class, \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class]);
+        $this->actingAs($this->admin);
+
+        // 1. Crafted payload with administrative Filament resource component
+        $response1 = $this->post('/livewire/update', [
+            'components' => [
+                [
+                    'snapshot' => json_encode(['memo' => ['name' => 'filament.resources.documents.pages.list-documents']]),
+                    'updates' => [],
+                ],
+            ],
+        ]);
+        $response1->assertStatus(403);
+
+        // 2. Crafted payload targeting arbitrary admin namespace
+        $response2 = $this->post('/livewire/update', [
+            'components' => [
+                [
+                    'snapshot' => json_encode(['memo' => ['name' => 'admin.manage-users']]),
+                    'updates' => [],
+                ],
+            ],
+        ]);
+        $response2->assertStatus(403);
+    }
+
+    public function test_public_livewire_components_still_work_for_guests_and_unverified_admins(): void
+    {
+        // 1. Guests can interact with public PolicyTracker component
+        auth()->logout();
+        Livewire::test(PolicyTracker::class)
+            ->set('search', 'Kano')
+            ->assertSee('Kano');
+
+        // 2. Unverified admins browsing the public site can also interact with public PolicyTracker
+        $this->actingAs($this->admin);
+        session()->forget('filament.mfa_verified');
+
+        Livewire::test(PolicyTracker::class)
+            ->set('search', 'Kano')
+            ->assertSee('Kano');
+    }
+
     public function test_rate_limiting_enforced_on_challenge_and_recovery(): void
     {
         $this->actingAs($this->admin);
@@ -138,10 +221,10 @@ class FilamentTwoFactorAuthenticationTest extends TestCase
             $component->set('code', '000000')->call('verify');
         }
 
-        // 6th attempt is throttled
+        // 4th and subsequent attempts trigger escalating lockout
         $component->set('code', '000000')
             ->call('verify')
-            ->assertSee('Too many verification attempts');
+            ->assertSee('Account temporarily locked');
     }
 
     public function test_totp_replay_prevention_within_time_window(): void

@@ -114,7 +114,17 @@ if [ "$DB_CONN" = "mysql" ]; then
     DB_PASS=$(php -r "echo config('database.connections.mysql.password');" 2>/dev/null)
 
     if command -v mysqldump >/dev/null 2>&1 && [ -n "$DB_NAME" ]; then
-        MYSQL_PWD="$DB_PASS" mysqldump -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" "$DB_NAME" | gzip > "$LATEST_BACKUP_FILE"
+        CNF_FILE=$(mktemp "${TMPDIR:-/tmp}/ypt_mysql_XXXXXX.cnf")
+        chmod 600 "$CNF_FILE"
+        cat <<EOF > "$CNF_FILE"
+[client]
+host=${DB_HOST}
+port=${DB_PORT}
+user=${DB_USER}
+password="${DB_PASS}"
+EOF
+        mysqldump --defaults-extra-file="$CNF_FILE" "$DB_NAME" | gzip > "$LATEST_BACKUP_FILE"
+        rm -f "$CNF_FILE"
         echo ">>> Database snapshot created: $LATEST_BACKUP_FILE"
     else
         echo ">>> NOTICE: mysqldump binary not in PATH or database name unset. Proceeding without automated dump."

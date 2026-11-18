@@ -224,7 +224,17 @@ if [ "$DB_CONN" = "mysql" ]; then
     DB_PASS=$(php -r "echo config('database.connections.mysql.password');" 2>/dev/null)
 
     if command -v mysqldump >/dev/null 2>&1 && [ -n "$DB_NAME" ]; then
-        MYSQL_PWD="$DB_PASS" mysqldump -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" "$DB_NAME" | gzip > "$LATEST_BACKUP_FILE"
+        CNF_FILE=$(mktemp "${TMPDIR:-/tmp}/ypt_mysql_XXXXXX.cnf")
+        chmod 600 "$CNF_FILE"
+        cat <<EOF > "$CNF_FILE"
+[client]
+host=${DB_HOST}
+port=${DB_PORT}
+user=${DB_USER}
+password="${DB_PASS}"
+EOF
+        mysqldump --defaults-extra-file="$CNF_FILE" "$DB_NAME" | gzip > "$LATEST_BACKUP_FILE"
+        rm -f "$CNF_FILE"
         echo ">>> Database snapshot created: $LATEST_BACKUP_FILE"
     else
         echo ">>> NOTICE: mysqldump binary not in PATH or database name unset. Proceeding without automated dump."
@@ -297,9 +307,29 @@ SESSION_LIFETIME=120
 SESSION_ENCRYPT=true
 SESSION_SECURE_COOKIE=true
 
-# Reverse Proxy Trust (Nginx / Cloudflare)
-TRUSTED_PROXIES=*
+# Reverse Proxy Trust Configuration
+# Specify exact IP addresses or CIDR blocks of your reverse proxy or load balancer.
+# Examples:
+#   Local Nginx reverse proxy:  "127.0.0.1,::1"
+#   Private AWS / GCP VPC CIDR: "10.0.0.0/16"
+#   Cloudflare IP Ranges:       "173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22"
+TRUSTED_PROXIES="127.0.0.1,::1"
 ```
+
+### 3.5 Delivery of Pre-Built Assets from CI/CD
+When deploying to a minimal production server without Node.js or npm:
+1. **CI/Staging Build**: In your CI pipeline (GitHub Actions / GitLab CI):
+   ```yaml
+   - name: Compile Production Assets
+     run: |
+       npm ci
+       npm run build
+   ```
+2. **Artifact Delivery**: Transfer the compiled `public/build` bundle directly to the production directory via `rsync` or deployment artifact download before triggering `bin/deploy.sh`:
+   ```bash
+   rsync -avz --delete public/build/ deploy@youthpolicytracker.ng:/var/www/youthpolicytracker/public/build/
+   ```
+   `bin/deploy.sh` verifies `public/build/manifest.json` is present and continues deployment without executing npm.
 
 ---
 
@@ -413,6 +443,14 @@ Make executable and add to crontab:
 ```bash
 sudo chmod +x /usr/local/bin/ypt-backup.sh
 echo "0 2 * * * root /usr/local/bin/ypt-backup.sh" | sudo tee /etc/cron.d/ypt-backup
+```
+
+### 6.2 Off-Server Remote Backup Replication
+Local backups protect against application errors, but an infrastructure disaster requires geographically segregated off-server copies. Sync the backup directory nightly to an encrypted S3-compatible cold storage bucket (AWS S3, Cloudflare R2, or Wasabi) using `rclone` or AWS CLI:
+
+```bash
+# Nightly off-server sync cron (/etc/cron.d/ypt-offsite-backup)
+30 2 * * * root aws s3 sync /var/backups/youthpolicytracker s3://gmi-ypt-backups-secure/$(date +\%Y-\%m)/ --sse AES256 >> /var/log/backup_sync.log 2>&1
 ```
 
 ---

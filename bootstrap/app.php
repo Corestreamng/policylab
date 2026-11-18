@@ -14,7 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->trustProxies(at: env('TRUSTED_PROXIES', '*'));
+        $rawProxies = env('TRUSTED_PROXIES', '127.0.0.1,::1');
+        $proxies = array_filter(array_map('trim', explode(',', $rawProxies)));
+        $middleware->trustProxies(at: !empty($proxies) ? $proxies : ['127.0.0.1', '::1']);
         $middleware->redirectGuestsTo(fn () => route('filament.admin.auth.login'));
         $middleware->append(SecurityHeadersMiddleware::class);
         $middleware->appendToGroup('web', \App\Http\Middleware\EnforceFilamentTwoFactor::class);

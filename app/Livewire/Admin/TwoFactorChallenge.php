@@ -62,11 +62,35 @@ class TwoFactorChallenge extends Component
     {
         /** @var User $user */
         $user = Auth::user();
-        $throttleKey = '2fa-verify:' . $user->id;
+        $userThrottleKey = '2fa-verify:' . $user->id;
+        $ipThrottleKey = '2fa-ip:' . request()->ip();
+        $lockoutKey = '2fa-lockout-until:' . $user->id;
+        $failuresKey = '2fa-failures:' . $user->id;
 
-        // Rate limiting: 5 attempts per 60 seconds
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            $seconds = RateLimiter::availableIn($throttleKey);
+        // 1. Check escalating lockout status
+        $lockoutUntil = Cache::get($lockoutKey);
+        if ($lockoutUntil && time() < $lockoutUntil) {
+            $remaining = $lockoutUntil - time();
+            $this->addError(
+                $this->usingRecoveryCode ? 'recovery_code' : 'code',
+                "Account temporarily locked due to multiple failed verification attempts. Please wait {$remaining} seconds before retrying."
+            );
+            return;
+        }
+
+        // 2. IP-based rate limiting (maximum 10 attempts per minute per IP)
+        if (RateLimiter::tooManyAttempts($ipThrottleKey, 10)) {
+            $seconds = RateLimiter::availableIn($ipThrottleKey);
+            $this->addError(
+                $this->usingRecoveryCode ? 'recovery_code' : 'code',
+                "Too many verification attempts from this IP address. Please wait {$seconds} seconds."
+            );
+            return;
+        }
+
+        // 3. User-based rate limiting (maximum 5 attempts per 60 seconds)
+        if (RateLimiter::tooManyAttempts($userThrottleKey, 5)) {
+            $seconds = RateLimiter::availableIn($userThrottleKey);
             $this->addError(
                 $this->usingRecoveryCode ? 'recovery_code' : 'code',
                 "Too many verification attempts. Please wait {$seconds} seconds before trying again."
@@ -83,7 +107,11 @@ class TwoFactorChallenge extends Component
             $matchedIndex = $totpService->verifyRecoveryCode($this->recovery_code, $recoveryCodes);
 
             if ($matchedIndex !== false) {
-                RateLimiter::clear($throttleKey);
+                // Clear rate limiters and failure lockouts upon success
+                RateLimiter::clear($userThrottleKey);
+                RateLimiter::clear($ipThrottleKey);
+                Cache::forget($lockoutKey);
+                Cache::forget($failuresKey);
 
                 // Consume single-use hashed recovery code
                 unset($recoveryCodes[$matchedIndex]);
@@ -97,7 +125,7 @@ class TwoFactorChallenge extends Component
                 return;
             }
 
-            RateLimiter::hit($throttleKey, 60);
+            $this->handleFailedAttempt($userThrottleKey, $ipThrottleKey, $failuresKey, $lockoutKey);
             $this->addError('recovery_code', 'The provided emergency recovery code is invalid.');
             return;
         }
@@ -111,20 +139,25 @@ class TwoFactorChallenge extends Component
         // Replay prevention: verify the code has not already been used within its time window
         $replayKey = 'totp-used:' . $user->id . ':' . $this->code;
         if (Cache::has($replayKey)) {
-            RateLimiter::hit($throttleKey, 60);
+            $this->handleFailedAttempt($userThrottleKey, $ipThrottleKey, $failuresKey, $lockoutKey);
             $this->addError('code', 'This authentication code has already been used. Please wait for the next code.');
             return;
         }
 
         if (!$totpService->verifyCode($secret, $this->code)) {
-            RateLimiter::hit($throttleKey, 60);
+            $this->handleFailedAttempt($userThrottleKey, $ipThrottleKey, $failuresKey, $lockoutKey);
             $this->addError('code', 'The provided 6-digit authentication code is invalid or has expired.');
             return;
         }
 
         // Lock code against reuse for 120 seconds
         Cache::put($replayKey, true, 120);
-        RateLimiter::clear($throttleKey);
+
+        // Clear rate limiters and failure lockouts on success
+        RateLimiter::clear($userThrottleKey);
+        RateLimiter::clear($ipThrottleKey);
+        Cache::forget($lockoutKey);
+        Cache::forget($failuresKey);
 
         if ($this->isSetup) {
             $user->two_factor_confirmed_at = now();
@@ -137,6 +170,30 @@ class TwoFactorChallenge extends Component
         session()->regenerate();
         session()->put('filament.mfa_verified', true);
         $this->redirectIntended('/admin');
+    }
+
+    /**
+     * Increment failure metrics and apply escalating lockout windows.
+     */
+    protected function handleFailedAttempt(string $userThrottleKey, string $ipThrottleKey, string $failuresKey, string $lockoutKey): void
+    {
+        RateLimiter::hit($userThrottleKey, 60);
+        RateLimiter::hit($ipThrottleKey, 60);
+
+        $failures = (int) Cache::increment($failuresKey);
+        Cache::put($failuresKey, $failures, 1800); // Retain count for 30 minutes
+
+        // Escalating lockout schedule:
+        // 3 consecutive failures  -> 60 second lockout
+        // 5 consecutive failures  -> 300 second (5 min) lockout
+        // 10 consecutive failures -> 900 second (15 min) lockout
+        if ($failures >= 10) {
+            Cache::put($lockoutKey, time() + 900, 900);
+        } elseif ($failures >= 5) {
+            Cache::put($lockoutKey, time() + 300, 300);
+        } elseif ($failures >= 3) {
+            Cache::put($lockoutKey, time() + 60, 60);
+        }
     }
 
     public function toggleRecoveryMode(): void

@@ -80,27 +80,32 @@ class TotpService
 
     /**
      * Generate 8 cryptographically secure emergency recovery codes.
+     * Each code is 16 characters (4 blocks of 4 alphanumeric characters).
      */
     public function generateRecoveryCodes(int $count = 8): array
     {
         $codes = [];
         for ($i = 0; $i < $count; $i++) {
-            $codes[] = strtoupper(bin2hex(random_bytes(5))); // 10 chars, e.g. 4F2A1B8C9D
+            $raw = strtoupper(bin2hex(random_bytes(8))); // 16 hexadecimal chars
+            $codes[] = substr($raw, 0, 4) . '-' . substr($raw, 4, 4) . '-' . substr($raw, 8, 4) . '-' . substr($raw, 12, 4);
         }
 
         return $codes;
     }
 
     /**
-     * Hash a recovery code with SHA-256 for secure storage at rest.
+     * Hash a recovery code using HMAC-SHA256 keyed with the application secret key.
      */
     public function hashRecoveryCode(string $code): string
     {
-        return hash('sha256', strtoupper(trim($code)));
+        $normalized = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $code));
+        $appKey = (string) config('app.key');
+
+        return hash_hmac('sha256', $normalized, $appKey);
     }
 
     /**
-     * Verify a recovery code against stored hashes in constant time.
+     * Verify a recovery code against stored HMAC hashes in constant time.
      * Returns matching index or false.
      */
     public function verifyRecoveryCode(string $code, array $storedHashes): int|false

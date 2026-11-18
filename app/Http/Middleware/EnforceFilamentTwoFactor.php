@@ -3,73 +3,81 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnforceFilamentTwoFactor
 {
+    /**
+     * Permitted public Livewire components that any user (guest or unverified admin) may access.
+     */
+    protected const ALLOWED_PUBLIC_COMPONENTS = [
+        'policy-tracker',
+        'document-vault',
+        'analytics-dashboard',
+    ];
+
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
 
-        // If not authenticated, let auth middleware handle redirection
+        // 1. Unauthenticated guests are not subject to admin 2FA
         if (!$user) {
             return $next($request);
         }
 
-        // Only enforce for users with administrative access
-        try {
-            $panel = Filament::getCurrentPanel() ?? Filament::getPanel('admin');
-            if (!$user->canAccessPanel($panel)) {
-                return $next($request);
-            }
-        } catch (\Throwable) {
+        // 2. Decide administrative privilege strictly from the authenticated user model
+        $isAdmin = $user->hasAnyRole(['Super Admin', 'Data Entry Manager', 'Viewer']);
+        if (!$isAdmin) {
             return $next($request);
         }
 
-        // If session already verified for 2FA, allow request
+        // 3. If the administrator has verified 2FA in this session, allow request
         if ($request->session()->get('filament.mfa_verified') === true) {
             return $next($request);
         }
 
-        // Exempt 2FA challenge, setup, and logout routes
+        // 4. Exempt two-factor challenge, setup, and logout routes
         if ($request->is('admin/two-factor*') || $request->is('admin/logout')) {
             return $next($request);
         }
 
-        // Protect Livewire component update requests
+        // 5. Intercept Livewire component updates
         if ($request->is('livewire/update')) {
             $components = $request->input('components', []);
-            $isChallengeComponent = false;
 
             if (is_array($components)) {
                 foreach ($components as $component) {
                     $snapshot = json_decode($component['snapshot'] ?? '{}', true);
-                    $componentName = $snapshot['memo']['name'] ?? '';
-                    if ($componentName === 'admin.two-factor-challenge') {
-                        $isChallengeComponent = true;
-                        break;
+                    $name = $snapshot['memo']['name'] ?? '';
+
+                    // 2FA challenge component is always permitted so user can authenticate
+                    if ($name === 'admin.two-factor-challenge') {
+                        continue;
                     }
+
+                    // Permitted public components are allowed for unverified admins browsing the public site
+                    if (in_array($name, self::ALLOWED_PUBLIC_COMPONENTS, true)) {
+                        continue;
+                    }
+
+                    // Any administrative, Filament, or unrecognized component is blocked with 403
+                    abort(403, 'Two-factor authentication required for administrative components.');
                 }
             }
 
-            if ($isChallengeComponent) {
-                return $next($request);
-            }
-
-            abort(403, 'Two-factor authentication required.');
-        }
-
-        // Only enforce on admin routes
-        if (!$request->is('admin*')) {
             return $next($request);
         }
 
-        if ($request->expectsJson()) {
-            abort(403, 'Two-factor authentication required.');
+        // 6. Filament Admin Panel routes: require verified 2FA
+        if ($request->is('admin*')) {
+            if ($request->expectsJson()) {
+                abort(403, 'Two-factor authentication required.');
+            }
+
+            return redirect()->route('filament.admin.auth.two-factor');
         }
 
-        return redirect()->route('filament.admin.auth.two-factor');
+        return $next($request);
     }
 }
