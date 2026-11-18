@@ -174,8 +174,8 @@
             </div>
 
             <div class="pt-8 border-t border-ink-800 text-xs text-ink-500 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <p>&copy; 2026 Glowing Minds Initiatives (GMI) & Corestream Networks and Robotics Limited. All rights reserved.</p>
-                <p class="text-2xs text-ink-500">Global Standard Reusable Architecture. Zero tracking without explicit consent.</p>
+                <p>&copy; 2026 Glowing Minds Initiatives (GMI) &amp; Corestream Networks and Robotics Limited. All rights reserved.</p>
+                <p class="text-2xs text-ink-500">State boundaries: geoBoundaries (www.geoboundaries.org), simplified for display. Zero tracking without explicit consent.</p>
             </div>
         </div>
     </footer>

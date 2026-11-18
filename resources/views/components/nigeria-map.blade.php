@@ -5,8 +5,32 @@
 ])
 
 @php
-    $customSvgPath = public_path('maps/states.svg');
-    $hasCustomSvg = file_exists($customSvgPath);
+    $svgPath = public_path('maps/states.svg');
+    $hasSvg = file_exists($svgPath);
+    $svgContent = $hasSvg ? file_get_contents($svgPath) : null;
+
+    // Build data dictionary keyed by slug for rapid client lookup
+    $stateMap = [];
+    foreach ($states as $st) {
+        $stage = $st->policyStatus?->stage;
+        $stateMap[$st->slug] = [
+            'slug' => $st->slug,
+            'name' => $st->name,
+            'zone' => $st->zone,
+            'iso' => $st->iso_code,
+            'stage' => $stage->name ?? 'No Verifiable Data',
+            'order' => $stage->sequence_order ?? 0,
+            'color' => $stage->color_hex ?? '#64748B',
+            'textColor' => $stage->text_color_hex ?? '#334155',
+            'bgColor' => $stage->bg_color_hex ?? '#F1F5F9',
+            'stalled' => (bool) $st->policyStatus?->is_stalled,
+            'expired' => (bool) $st->policyStatus?->is_expired,
+            'orgs' => $st->leadingOrganizations->pluck('name')->join(', ') ?: 'Not yet documented',
+            'funders' => $st->funders->pluck('name')->join(', ') ?: 'Not yet documented',
+            'cycle' => $st->policyStatus?->year_commenced ?: 'Not yet documented',
+            'doc_count' => $st->publicDocuments->count(),
+        ];
+    }
 @endphp
 
 <div
@@ -14,14 +38,91 @@
         hoveredState: null,
         tooltipX: 0,
         tooltipY: 0,
+        stateData: @js($stateMap),
+        selectedSlug: @js($selectedSlug),
+        init() {
+            this.hydrateSvg();
+        },
         setHover(state, event) {
             this.hoveredState = state;
-            const rect = this.$el.getBoundingClientRect();
-            this.tooltipX = event.clientX - rect.left;
-            this.tooltipY = event.clientY - rect.top;
+            const container = this.$el.getBoundingClientRect();
+            this.tooltipX = event.clientX - container.left;
+            this.tooltipY = event.clientY - container.top;
         },
         clearHover() {
             this.hoveredState = null;
+        },
+        hydrateSvg() {
+            const svgContainer = this.$refs.svgContainer;
+            if (!svgContainer) return;
+
+            const paths = svgContainer.querySelectorAll('path[id^=\"state-\"]');
+            paths.forEach(path => {
+                const slug = path.id.replace('state-', '');
+                const info = this.stateData[slug];
+
+                if (info) {
+                    path.setAttribute('fill', info.color);
+                    path.setAttribute('stroke', '#FFFFFF');
+                    path.setAttribute('stroke-width', '1.2');
+                    path.style.cursor = 'pointer';
+                    path.style.transition = 'fill 0.15s ease, stroke 0.15s ease, stroke-width 0.15s ease';
+
+                    // Selection highlight
+                    if (this.selectedSlug === slug) {
+                        path.setAttribute('stroke', '#0F172A');
+                        path.setAttribute('stroke-width', '3');
+                    }
+
+                    // Mouse events
+                    path.addEventListener('mouseenter', (e) => {
+                        path.setAttribute('stroke', '#0F172A');
+                        path.setAttribute('stroke-width', '2.5');
+                        path.parentNode.appendChild(path);
+                        this.setHover(info, e);
+                    });
+
+                    path.addEventListener('mousemove', (e) => {
+                        this.setHover(info, e);
+                    });
+
+                    path.addEventListener('mouseleave', () => {
+                        if (this.selectedSlug !== slug) {
+                            path.setAttribute('stroke', '#FFFFFF');
+                            path.setAttribute('stroke-width', '1.2');
+                        }
+                        this.clearHover();
+                    });
+
+                    // Click event to open drawer
+                    path.addEventListener('click', () => {
+                        $wire.openDrawer(slug);
+                    });
+
+                    // Keyboard accessibility
+                    path.addEventListener('focus', (e) => {
+                        path.setAttribute('stroke', '#0F172A');
+                        path.setAttribute('stroke-width', '2.5');
+                        path.parentNode.appendChild(path);
+                        this.setHover(info, e);
+                    });
+
+                    path.addEventListener('blur', () => {
+                        if (this.selectedSlug !== slug) {
+                            path.setAttribute('stroke', '#FFFFFF');
+                            path.setAttribute('stroke-width', '1.2');
+                        }
+                        this.clearHover();
+                    });
+
+                    path.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            $wire.openDrawer(slug);
+                        }
+                    });
+                }
+            });
         }
     }"
     class="relative bg-white rounded-xl border border-ink-200 shadow-card p-4 sm:p-6"
@@ -32,11 +133,11 @@
             <div class="flex items-center gap-2">
                 <h2 class="text-base font-bold text-ink-900 font-heading">Interactive National Map</h2>
                 <span class="inline-flex items-center px-2 py-0.5 rounded text-2xs font-semibold bg-brand-blue/10 text-brand-blue-text">
-                    {{ count($states) }} States Displayed
+                    {{ count($states) }} States Visualised
                 </span>
             </div>
             <p class="text-xs text-ink-500 mt-0.5">
-                Click any state or navigate with keyboard to inspect policy milestones and certified documentation.
+                Hover or use keyboard focus to inspect state milestones. Click any state boundary to open its full policy dossier.
             </p>
         </div>
 
@@ -51,96 +152,46 @@
         </div>
     </div>
 
-    @if($hasCustomSvg)
-        <!-- Custom States SVG (When supplied) -->
-        <div class="w-full overflow-hidden flex items-center justify-center min-h-[380px]">
-            {!! file_get_contents($customSvgPath) !!}
+    @if($hasSvg)
+        <!-- Real Nigeria States Vector SVG -->
+        <div x-ref="svgContainer" class="w-full flex items-center justify-center overflow-hidden min-h-[360px] max-h-[580px]">
+            <div class="w-full max-w-4xl mx-auto [&_svg]:w-full [&_svg]:h-auto [&_svg]:max-h-[560px]">
+                {!! $svgContent !!}
+            </div>
         </div>
     @else
-        <!-- Temporary Geopolitical Tile-Grid Map -->
+        <!-- Fallback only if SVG file is missing -->
         <div class="space-y-3">
             <div class="flex items-center justify-between bg-amber-50 border border-amber-200 rounded p-2.5 text-xs text-amber-900">
                 <div class="flex items-center gap-2">
                     <i class="fas fa-circle-info text-brand-sunflower-text shrink-0"></i>
-                    <span><strong>TEMPORARY TILE-GRID MAP:</strong> Displaying standardized geopolitical cartogram awaiting final <code class="bg-amber-100 px-1 py-0.5 rounded text-2xs font-mono">public/maps/states.svg</code> boundaries.</span>
+                    <span><strong>TEMPORARY TILE-GRID MAP:</strong> Displaying fallback cartogram awaiting SVG restoration.</span>
                 </div>
             </div>
 
-            <!-- Cartogram Tile Matrix (6 columns x 7 rows) -->
             <div class="w-full overflow-x-auto pb-2">
                 <div class="grid grid-cols-6 gap-2 min-w-[580px] max-w-3xl mx-auto p-4 bg-ink-50/70 rounded-lg border border-dashed border-ink-300">
                     @foreach($states as $state)
                         @php
                             $stage = $state->policyStatus?->stage;
-                            $order = $stage->sequence_order ?? 0;
-                            $col = $state->grid_col ?? 0;
-                            $row = $state->grid_row ?? 0;
                             $color = $stage->color_hex ?? '#64748B';
                             $textColor = $stage->text_color_hex ?? '#334155';
                             $bgColor = $stage->bg_color_hex ?? '#F1F5F9';
                             $isSelected = $selectedSlug === $state->slug;
-
-                            $orgCount = $state->leadingOrganizations->count();
-                            $funderCount = $state->funders->count();
-                            $docCount = $state->publicDocuments->count();
                         @endphp
 
                         <button
                             type="button"
                             wire:click="openDrawer('{{ $state->slug }}')"
-                            @mouseenter="setHover({
-                                name: '{{ addslashes($state->name) }}',
-                                zone: '{{ addslashes($state->zone) }}',
-                                stage: '{{ addslashes($stage->name ?? 'No Verifiable Data') }}',
-                                order: {{ $order }},
-                                color: '{{ $color }}',
-                                stalled: {{ $state->policyStatus?->is_stalled ? 'true' : 'false' }},
-                                expired: {{ $state->policyStatus?->is_expired ? 'true' : 'false' }},
-                                orgs: '{{ addslashes($state->leadingOrganizations->pluck('name')->join(', ') ?: 'Not yet documented') }}',
-                                funders: '{{ addslashes($state->funders->pluck('name')->join(', ') ?: 'Not yet documented') }}',
-                                year: '{{ $state->policyStatus?->year_commenced ?: 'Not yet documented' }}'
-                            }, $event)"
-                            @mouseleave="clearHover()"
-                            @focus="setHover({
-                                name: '{{ addslashes($state->name) }}',
-                                zone: '{{ addslashes($state->zone) }}',
-                                stage: '{{ addslashes($stage->name ?? 'No Verifiable Data') }}',
-                                order: {{ $order }},
-                                color: '{{ $color }}',
-                                stalled: {{ $state->policyStatus?->is_stalled ? 'true' : 'false' }},
-                                expired: {{ $state->policyStatus?->is_expired ? 'true' : 'false' }},
-                                orgs: '{{ addslashes($state->leadingOrganizations->pluck('name')->join(', ') ?: 'Not yet documented') }}',
-                                funders: '{{ addslashes($state->funders->pluck('name')->join(', ') ?: 'Not yet documented') }}',
-                                year: '{{ $state->policyStatus?->year_commenced ?: 'Not yet documented' }}'
-                            }, $event)"
-                            @blur="clearHover()"
-                            class="relative p-2.5 rounded-lg border text-left transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue group
-                                   {{ $isSelected ? 'ring-2 ring-ink-900 shadow-md scale-105 z-10' : 'hover:shadow-md hover:scale-102 hover:z-10' }}"
+                            class="p-2.5 rounded-lg border text-left transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-brand-blue"
                             style="background-color: {{ $bgColor }}; border-color: {{ $color }};"
-                            aria-label="{{ $state->name }}: {{ $stage->name ?? 'No Verifiable Data' }}"
                         >
-                            <div class="flex items-center justify-between mb-1">
-                                <span class="text-2xs font-extrabold uppercase tracking-wider" style="color: {{ $textColor }};">
-                                    {{ $state->iso_code ? str_replace('NG-', '', $state->iso_code) : substr($state->name, 0, 3) }}
-                                </span>
-                                <span class="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs" style="background-color: {{ $color }};"></span>
-                            </div>
-
-                            <span class="block text-xs font-bold truncate leading-tight text-ink-900 group-hover:text-black">
+                            <span class="block text-2xs font-extrabold uppercase" style="color: {{ $textColor }};">
+                                {{ $state->iso_code ? str_replace('NG-', '', $state->iso_code) : substr($state->name, 0, 3) }}
+                            </span>
+                            <span class="block text-xs font-bold truncate text-ink-900">
                                 {{ $state->name }}
                             </span>
-
-                            <div class="flex items-center gap-1.5 mt-1.5 text-2xs text-ink-500">
-                                @if($docCount > 0)
-                                    <span title="Certified True Copy available"><i class="fas fa-file-pdf text-brand-emerald-text"></i></span>
-                                @endif
-                                @if($state->policyStatus?->is_stalled)
-                                    <span title="Stalled status" class="text-rose-600 font-bold"><i class="fas fa-pause"></i></span>
-                                @endif
-                                @if($state->policyStatus?->is_expired)
-                                    <span title="Expired status" class="text-amber-600 font-bold"><i class="fas fa-clock-rotate-left"></i></span>
-                                @endif
-                            </div>
                         </button>
                     @endforeach
                 </div>
@@ -164,7 +215,7 @@
                           x-text="hoveredState.stage"></span>
                 </div>
                 <div class="text-ink-400 text-2xs">
-                    Zone: <span class="text-ink-200" x-text="hoveredState.zone"></span> | Cycle: <span class="text-ink-200" x-text="hoveredState.year"></span>
+                    Zone: <span class="text-ink-200" x-text="hoveredState.zone"></span> | Cycle: <span class="text-ink-200" x-text="hoveredState.cycle"></span>
                 </div>
                 <div class="text-2xs text-ink-300">
                     <strong class="text-ink-400 block">Leading Organisation:</strong>
@@ -185,7 +236,7 @@
                     </div>
                 </template>
                 <div class="text-2xs text-brand-blue pt-1 text-right font-medium">
-                    Click to view full state dossier <i class="fas fa-arrow-right ml-0.5"></i>
+                    Click to inspect full state dossier <i class="fas fa-arrow-right ml-0.5"></i>
                 </div>
             </div>
         </template>
@@ -208,5 +259,10 @@
                 </button>
             @endforeach
         </div>
+    </div>
+
+    <!-- Attribution Notice -->
+    <div class="mt-4 pt-3 border-t border-ink-100 text-right text-2xs text-ink-500">
+        State boundaries: geoBoundaries (www.geoboundaries.org), simplified for display.
     </div>
 </div>

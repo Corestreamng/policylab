@@ -18,6 +18,8 @@ class BulkImportValidationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected User $admin;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -25,12 +27,19 @@ class BulkImportValidationTest extends TestCase
         $this->seed(RoleAndPermissionSeeder::class);
         $this->seed(CountryAndStageSeeder::class);
         $this->seed(StateDataSeeder::class);
+
+        $this->admin = User::create([
+            'name' => 'Admin User',
+            'email' => 'admin-import-test@youthpolicytracker.ng',
+            'password' => \Illuminate\Support\Facades\Hash::make('Secret123!'),
+            'email_verified_at' => now(),
+        ]);
+        $this->admin->assignRole('Super Admin');
     }
 
     public function test_csv_import_validation_identifies_invalid_stages(): void
     {
-        $admin = User::where('email', 'superadmin@youthpolicytracker.ng')->first();
-        $this->actingAs($admin);
+        $this->actingAs($this->admin);
 
         $csvContent = "State,Zone,Stage,Policy_Cycle,Leading_Organizations,Funding_Partners,Is_Stalled,Stalled_Reason,Is_Expired,Expired_Reason,Verification_Date,Source_Notes,Objectives_Summary\n"
                     . "Kano,North West,NonExistentStage,2026,YAF,Caritas,0,,0,,,,\n";
@@ -46,8 +55,7 @@ class BulkImportValidationTest extends TestCase
 
     public function test_valid_csv_commits_successfully(): void
     {
-        $admin = User::where('email', 'superadmin@youthpolicytracker.ng')->first();
-        $this->actingAs($admin);
+        $this->actingAs($this->admin);
 
         $csvContent = "State,Zone,Stage,Policy_Cycle,Leading_Organizations,Funding_Partners,Is_Stalled,Stalled_Reason,Is_Expired,Expired_Reason,Verification_Date,Source_Notes,Objectives_Summary\n"
                     . "Kogi,North Central,Developing,2026,Kogi Youth Assembly,NYFF,0,,0,,2026-11-01,State Circular,Focus on vocational skills\n";

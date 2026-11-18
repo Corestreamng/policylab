@@ -36,6 +36,7 @@ class StateDataSeeder extends Seeder
             ],
             [
                 'name' => 'FCT (Abuja)',
+                'slug' => 'fct',
                 'zone' => 'North Central',
                 'iso_code' => 'NG-FC',
                 'grid_col' => 2,
@@ -523,7 +524,7 @@ class StateDataSeeder extends Seeder
                     'name' => $stateData['name'],
                 ],
                 [
-                    'slug' => Str::slug($stateData['name']),
+                    'slug' => $stateData['slug'] ?? Str::slug($stateData['name']),
                     'iso_code' => $stateData['iso_code'],
                     'zone' => $stateData['zone'],
                     'grid_col' => $stateData['grid_col'],

@@ -79,35 +79,37 @@ class RoleAndPermissionSeeder extends Seeder
             'export_data',
         ]);
 
-        // Default Users
-        $admin = User::firstOrCreate(
-            ['email' => 'superadmin@youthpolicytracker.ng'],
-            [
-                'name' => 'GMI Super Admin',
-                'password' => Hash::make('Password123!'),
-                'email_verified_at' => now(),
-            ]
-        );
-        $admin->syncRoles(['Super Admin']);
+        // Demo users seeded strictly in local environment only
+        if (app()->environment('local')) {
+            $admin = User::firstOrCreate(
+                ['email' => 'superadmin@youthpolicytracker.ng'],
+                [
+                    'name' => 'GMI Super Admin (Local Dev)',
+                    'password' => Hash::make('Password123!'),
+                    'email_verified_at' => now(),
+                ]
+            );
+            $admin->syncRoles(['Super Admin']);
 
-        $editor = User::firstOrCreate(
-            ['email' => 'editor@youthpolicytracker.ng'],
-            [
-                'name' => 'Policy Data Specialist',
-                'password' => Hash::make('Password123!'),
-                'email_verified_at' => now(),
-            ]
-        );
-        $editor->syncRoles(['Data Entry Manager']);
+            $editor = User::firstOrCreate(
+                ['email' => 'editor@youthpolicytracker.ng'],
+                [
+                    'name' => 'Data Entry Manager (Local Dev)',
+                    'password' => Hash::make('Password123!'),
+                    'email_verified_at' => now(),
+                ]
+            );
+            $editor->syncRoles(['Data Entry Manager']);
 
-        $viewer = User::firstOrCreate(
-            ['email' => 'viewer@youthpolicytracker.ng'],
-            [
-                'name' => 'Partner Reviewer',
-                'password' => Hash::make('Password123!'),
-                'email_verified_at' => now(),
-            ]
-        );
-        $viewer->syncRoles(['Viewer']);
+            $viewer = User::firstOrCreate(
+                ['email' => 'viewer@youthpolicytracker.ng'],
+                [
+                    'name' => 'Viewer Reviewer (Local Dev)',
+                    'password' => Hash::make('Password123!'),
+                    'email_verified_at' => now(),
+                ]
+            );
+            $viewer->syncRoles(['Viewer']);
+        }
     }
 }

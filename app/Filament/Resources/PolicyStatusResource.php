@@ -140,7 +140,7 @@ class PolicyStatusResource extends Resource
                 Tables\Columns\TextColumn::make('data_verified_at')
                     ->label('Verified')
                     ->date()
-                    ->default('Pending'),
+                    ->placeholder('Pending'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('policy_stage_id')

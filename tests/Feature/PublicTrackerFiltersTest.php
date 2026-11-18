@@ -37,48 +37,58 @@ class PublicTrackerFiltersTest extends TestCase
     {
         Livewire::test(PolicyTracker::class)
             ->set('selectedZone', 'North West')
-            ->assertSee('Kano')
-            ->assertSee('Kaduna')
-            ->assertSee('Sokoto')
-            ->assertDontSee('Lagos')
-            ->assertDontSee('Enugu');
+            ->assertViewHas('filteredStates', function ($states) {
+                $names = $states->pluck('name')->toArray();
+                return count($names) === 7
+                    && in_array('Kano', $names)
+                    && in_array('Kaduna', $names)
+                    && in_array('Sokoto', $names)
+                    && !in_array('Lagos', $names);
+            });
     }
 
     public function test_filter_by_stage_signed_returns_osun(): void
     {
         Livewire::test(PolicyTracker::class)
             ->set('selectedStage', '6')
-            ->assertSee('Osun')
-            ->assertDontSee('Lagos')
-            ->assertDontSee('Kano');
+            ->assertViewHas('filteredStates', function ($states) {
+                $names = $states->pluck('name')->toArray();
+                return count($names) === 1 && $names[0] === 'Osun';
+            });
     }
 
     public function test_filter_by_stalled_returns_edo(): void
     {
         Livewire::test(PolicyTracker::class)
             ->set('stalledOnly', true)
-            ->assertSee('Edo')
-            ->assertDontSee('Rivers')
-            ->assertDontSee('Kano');
+            ->assertViewHas('filteredStates', function ($states) {
+                $names = $states->pluck('name')->toArray();
+                return count($names) === 1 && $names[0] === 'Edo';
+            });
     }
 
     public function test_filter_by_expired_returns_rivers(): void
     {
         Livewire::test(PolicyTracker::class)
             ->set('expiredOnly', true)
-            ->assertSee('Rivers')
-            ->assertDontSee('Kano')
-            ->assertDontSee('Lagos');
+            ->assertViewHas('filteredStates', function ($states) {
+                $names = $states->pluck('name')->toArray();
+                return count($names) === 1 && $names[0] === 'Rivers';
+            });
     }
 
     public function test_free_text_search_for_partner(): void
     {
         Livewire::test(PolicyTracker::class)
             ->set('search', 'BCAI')
-            ->assertSee('Sokoto')
-            ->assertSee('Katsina')
-            ->assertSee('Kebbi')
-            ->assertSee('Zamfara');
+            ->assertViewHas('filteredStates', function ($states) {
+                $names = $states->pluck('name')->toArray();
+                return count($names) === 4
+                    && in_array('Sokoto', $names)
+                    && in_array('Katsina', $names)
+                    && in_array('Kebbi', $names)
+                    && in_array('Zamfara', $names);
+            });
     }
 
     public function test_state_deep_link_opens_drawer(): void
