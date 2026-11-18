@@ -42,28 +42,25 @@ class EnforceFilamentTwoFactor
             return $next($request);
         }
 
-        // 5. Intercept Livewire component updates
+        // 5. Intercept Livewire component updates (strict deny-by-default)
         if ($request->is('livewire/update')) {
             $components = $request->input('components', []);
 
-            if (is_array($components)) {
-                foreach ($components as $component) {
-                    $snapshot = json_decode($component['snapshot'] ?? '{}', true);
-                    $name = $snapshot['memo']['name'] ?? '';
+            if (!is_array($components) || empty($components)) {
+                abort(403, 'Two-factor authentication required for administrative components.');
+            }
 
-                    // 2FA challenge component is always permitted so user can authenticate
-                    if ($name === 'admin.two-factor-challenge') {
-                        continue;
-                    }
+            foreach ($components as $component) {
+                $snapshot = json_decode($component['snapshot'] ?? '{}', true);
+                $name = $snapshot['memo']['name'] ?? '';
 
-                    // Permitted public components are allowed for unverified admins browsing the public site
-                    if (in_array($name, self::ALLOWED_PUBLIC_COMPONENTS, true)) {
-                        continue;
-                    }
-
-                    // Any administrative, Filament, or unrecognized component is blocked with 403
-                    abort(403, 'Two-factor authentication required for administrative components.');
+                // Only 2FA challenge or explicit allowlisted public components are permitted
+                if ($name === 'admin.two-factor-challenge' || in_array($name, self::ALLOWED_PUBLIC_COMPONENTS, true)) {
+                    continue;
                 }
+
+                // Strict deny-by-default for any bundled or unapproved administrative component
+                abort(403, 'Two-factor authentication required for administrative components.');
             }
 
             return $next($request);

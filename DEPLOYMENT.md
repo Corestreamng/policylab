@@ -287,7 +287,29 @@ php artisan tracker:make-super-admin
 ```
 Follow prompts for Full Name, Email Address, and Secure Password (minimum 8 characters). Once created, sign in at `https://youthpolicytracker.ng/admin` and complete the mandatory TOTP 2FA enrollment.
 
-### 3.4 Production `.env` Required Security Settings
+### 3.4 Emergency Administrative 2FA Reset (Server Access Only)
+If an administrator loses their mobile authenticator device and exhausts all 8 emergency recovery codes, reset their 2FA credentials directly via the host terminal:
+```bash
+php artisan tracker:reset-2fa admin@youthpolicytracker.ng
+```
+This command clears the user's encrypted 2FA secret, wipes stored recovery hashes, and resets all failure rate-limiting and escalating lockout counters. The user will be required to scan a fresh QR code and enroll a new authenticator device upon their next login.
+
+---
+
+> [!CAUTION]
+> **CRITICAL SECURITY REQUIREMENT: APPLICATION ENCRYPTION KEY (`APP_KEY`)**
+> The `APP_KEY` in `.env` encrypts all TOTP 2FA secrets at rest (AES-256-CBC) and keys all emergency recovery code hashes (HMAC-SHA256).
+> - Back up `APP_KEY` securely in a corporate password manager or air-gapped secrets vault immediately upon generation.
+> - **NEVER rotate `APP_KEY` on a production instance without an orchestrated 2FA reset.** Rotating `APP_KEY` will render all existing 2FA secrets permanently unreadable, locking all administrative users out of the control panel until reset via `php artisan tracker:reset-2fa`.
+
+> [!WARNING]
+> **REVERSE PROXY FIREWALLING & CLOUDFLARE ORIGIN LOCKDOWN**
+> If routing production traffic through Cloudflare or an edge load balancer:
+> - Never leave port 80/443 open to the public internet on the origin server. Firewall the origin (via `ufw` or cloud security groups) to **strictly accept incoming traffic from Cloudflare's published IP blocks**.
+> - Regularly refresh trusted proxy ranges from the official Cloudflare directory: [https://www.cloudflare.com/ips/](https://www.cloudflare.com/ips/) (both IPv4 and IPv6 lists).
+> - Leaving the origin server exposed directly allows malicious actors to bypass Cloudflare WAF, spoof headers, and target the origin IP directly.
+
+### 3.5 Production `.env` Required Security Settings
 ```env
 APP_NAME="Youth Policy Tracker"
 APP_ENV=production

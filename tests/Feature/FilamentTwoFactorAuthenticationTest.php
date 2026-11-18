@@ -295,6 +295,52 @@ class FilamentTwoFactorAuthenticationTest extends TestCase
         $response->assertStatus(403);
     }
 
+    public function test_bundled_public_and_administrative_livewire_request_is_blocked(): void
+    {
+        $this->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class, \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class]);
+        $this->actingAs($this->admin);
+
+        // Attempt to bundle an allowlisted public component with an unauthorized administrative component
+        $response = $this->post('/livewire/update', [
+            'components' => [
+                [
+                    'snapshot' => json_encode(['memo' => ['name' => 'policy-tracker']]),
+                    'updates' => [],
+                ],
+                [
+                    'snapshot' => json_encode(['memo' => ['name' => 'filament.resources.documents.pages.list-documents']]),
+                    'updates' => [],
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    public function test_artisan_tracker_reset_2fa_clears_user_credentials_and_lockouts(): void
+    {
+        $this->admin->update([
+            'two_factor_secret' => $this->totpService->generateSecret(),
+            'two_factor_confirmed_at' => now(),
+            'two_factor_recovery_codes' => [$this->totpService->hashRecoveryCode('RECOVERY12')],
+        ]);
+
+        Cache::put('2fa-failures:' . $this->admin->id, 5);
+        Cache::put('2fa-lockout-until:' . $this->admin->id, time() + 300);
+
+        $this->artisan('tracker:reset-2fa', [
+            'email' => $this->admin->email,
+            '--force' => true,
+        ])->assertExitCode(0);
+
+        $this->admin->refresh();
+        $this->assertNull($this->admin->two_factor_secret);
+        $this->assertNull($this->admin->two_factor_confirmed_at);
+        $this->assertNull($this->admin->two_factor_recovery_codes);
+        $this->assertFalse(Cache::has('2fa-failures:' . $this->admin->id));
+        $this->assertFalse(Cache::has('2fa-lockout-until:' . $this->admin->id));
+    }
+
     public function test_admin_can_sign_out_from_two_factor_challenge(): void
     {
         $this->actingAs($this->admin);
