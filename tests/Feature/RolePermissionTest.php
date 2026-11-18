@@ -82,6 +82,7 @@ class RolePermissionTest extends TestCase
     public function test_super_admin_has_unrestricted_access_to_all_resources(): void
     {
         $this->actingAs($this->superAdmin);
+        session(['filament.mfa_verified' => true]);
 
         $allowedUrls = [
             '/admin',
@@ -108,6 +109,7 @@ class RolePermissionTest extends TestCase
     public function test_data_entry_manager_allowed_actions(): void
     {
         $this->actingAs($this->dataEntryManager);
+        session(['filament.mfa_verified' => true]);
 
         $allowedUrls = [
             '/admin',
@@ -131,6 +133,7 @@ class RolePermissionTest extends TestCase
     public function test_data_entry_manager_denied_security_and_user_governance(): void
     {
         $this->actingAs($this->dataEntryManager);
+        session(['filament.mfa_verified' => true]);
 
         $deniedUrls = [
             '/admin/users',
@@ -147,6 +150,7 @@ class RolePermissionTest extends TestCase
     public function test_viewer_allowed_read_only_access(): void
     {
         $this->actingAs($this->viewer);
+        session(['filament.mfa_verified' => true]);
 
         $allowedReadUrls = [
             '/admin',
@@ -165,6 +169,7 @@ class RolePermissionTest extends TestCase
     public function test_viewer_denied_mutation_and_management_actions(): void
     {
         $this->actingAs($this->viewer);
+        session(['filament.mfa_verified' => true]);
 
         $deniedActionUrls = [
             '/admin/policy-statuses/create',

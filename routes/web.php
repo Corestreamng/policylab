@@ -23,6 +23,12 @@ Route::get('/documents/{document:uuid}/download', [DocumentController::class, 'd
 Route::get('/documents/{document:uuid}/stream', [DocumentController::class, 'stream'])
     ->name('documents.stream');
 
+// Admin Two-Factor Authentication
+Route::middleware(['web', 'auth'])->group(function () {
+    Route::get('/admin/two-factor-challenge', \App\Livewire\Admin\TwoFactorChallenge::class)
+        ->name('filament.admin.auth.two-factor');
+});
+
 // SEO Routes
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');

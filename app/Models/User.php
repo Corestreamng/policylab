@@ -17,17 +17,24 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
     ];
 
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
+            'two_factor_confirmed_at' => 'datetime',
+            'two_factor_recovery_codes' => 'array',
             'password' => 'hashed',
         ];
     }
@@ -35,5 +42,10 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasAnyRole(['Super Admin', 'Data Entry Manager', 'Viewer']);
+    }
+
+    public function hasEnabledTwoFactor(): bool
+    {
+        return !is_null($this->two_factor_confirmed_at);
     }
 }

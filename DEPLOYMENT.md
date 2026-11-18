@@ -103,62 +103,162 @@ sudo systemctl reload nginx
 
 ---
 
-## 3. Application Deployment & Environment Setup
+## 3. Safe Zero-Downtime Deployment & Automated Rollback
+
+The production deployment script (`bin/deploy.sh`) ensures zero maintenance downtime residue: if any command fails (composer install, npm build, migration, or cache warm), an immediate automated rollback to the previous commit is triggered, caches are restored, and the application is brought out of maintenance mode on the previous release.
+
+### 3.1 Executable Deployment Script (`bin/deploy.sh`)
 
 ```bash
-cd /var/www
-git clone <repository_url> youthpolicytracker
-cd youthpolicytracker
+#!/usr/bin/env bash
+set -eo pipefail
 
-# Set storage and bootstrap permissions
-sudo chown -R www-data:www-data /var/www/youthpolicytracker
-sudo chmod -R 775 storage bootstrap/cache
+APP_DIR="${APP_DIR:-/var/www/youthpolicytracker}"
+cd "$APP_DIR"
 
-# Install dependencies (production optimized)
-composer install --no-dev --optimize-autoloader
+PREV_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo "HEAD")
+MAINTENANCE_ACTIVE=0
+
+cleanup_on_error() {
+    local exit_code=$?
+    echo "DEPLOYMENT FAILED AT LINE $1 (Exit Code: $exit_code). Initiating rollback..."
+
+    # Reset working tree to previous release
+    git reset --hard "$PREV_COMMIT" 2>/dev/null || true
+
+    # Clear and re-cache previous state
+    php artisan config:clear 2>/dev/null || true
+    php artisan route:clear 2>/dev/null || true
+    php artisan view:clear 2>/dev/null || true
+    php artisan event:clear 2>/dev/null || true
+    php artisan cache:clear 2>/dev/null || true
+
+    php artisan config:cache 2>/dev/null || true
+    php artisan route:cache 2>/dev/null || true
+    php artisan view:cache 2>/dev/null || true
+    php artisan event:cache 2>/dev/null || true
+
+    php artisan queue:restart 2>/dev/null || true
+
+    # Bring site out of maintenance mode on previous release
+    if [ "$MAINTENANCE_ACTIVE" -eq 1 ]; then
+        php artisan up 2>/dev/null || true
+    fi
+
+    echo "CRITICAL: System rolled back to previous commit ($PREV_COMMIT). Site is online."
+    exit "$exit_code"
+}
+
+trap 'cleanup_on_error $LINENO' ERR
+
+echo ">>> Deploying Youth Policy Tracker..."
+
+# 1. Engage maintenance mode
+php artisan down --render="public.offline" --retry=60 || true
+MAINTENANCE_ACTIVE=1
+
+# 2. Update dependencies
+composer install --no-dev --optimize-autoloader --no-interaction
 npm ci
 npm run build
 
-# Configure environment
-cp .env.example .env
-php artisan key:generate
-```
+# 3. Storage link
+php artisan storage:link || true
 
-### Production `.env` Settings
-```env
-APP_NAME="Youth Policy Tracker"
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://youthpolicytracker.ng
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=youth_policy_tracker
-DB_USERNAME=ypt_user
-DB_PASSWORD=<secure_database_password>
-
-CACHE_STORE=redis
-QUEUE_CONNECTION=redis
-SESSION_DRIVER=redis
-
-REDIS_CLIENT=phpredis
-REDIS_HOST=127.0.0.1
-REDIS_PASSWORD=null
-REDIS_PORT=6379
-
-# Google Analytics 4 (Only loaded after user cookie consent)
-GA_MEASUREMENT_ID=G-XXXXXXXXXX
-```
-
-Migrate and seed canonical taxonomy and dataset:
-```bash
+# 4. Database migrations
 php artisan migrate --force
-php artisan db:seed --force
+
+# 5. Clear and re-cache production artifacts
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan event:clear
+php artisan cache:clear
+
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+php artisan event:cache
+
+# 6. Restart queue workers
+php artisan queue:restart
+
+# 7. Take site out of maintenance mode only after all steps succeed
+php artisan up
+MAINTENANCE_ACTIVE=0
+
+echo ">>> SUCCESS: Deployment finished cleanly."
 ```
+
+### 3.2 Automated Git Deployment Command
+On the production server, simply run:
+```bash
+./bin/deploy.sh
+```
+
+---
+
+## 4. Production & Staging Hardening Checklist
+
+Do not measure performance from local development servers (`artisan serve` or local Vite HMR). Before launch, execute this verification on the staging VPS:
+
+### 4.1 Nginx Web Server Hardening
+- [ ] **HTTP/2 & TLS 1.3**: Confirm SSL cipher suite uses modern TLS 1.3 / TLS 1.2 with OCSP stapling (`ssl_stapling on; ssl_stapling_verify on;`).
+- [ ] **Gzip / Brotli Compression**: Enabled for `text/plain`, `text/css`, `text/xml`, `text/javascript`, `application/javascript`, `application/json`, `application/xml`, and `image/svg+xml`. Ensure SVG map (`public/maps/states.svg`) is delivered compressed (< 12 KB transfer size over wire).
+- [ ] **Static Asset Cache Headers**: Verify Vite fingerprint assets (`/build/assets/*`) return `Cache-Control: public, max-age=31536000, immutable`.
+- [ ] **Dynamic Document Headers**: Verify private document streams return `Cache-Control: private, no-cache, no-store, must-revalidate`.
+- [ ] **Client Max Body Size**: Set to `client_max_body_size 30M;` to support PDF uploads up to 25 MB without HTTP 413 errors.
+- [ ] **Security Headers**: Verify presence of `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and `Permissions-Policy`.
+
+### 4.2 PHP-FPM & OPcache Optimization
+- [ ] **OPcache Production Mode** (`/etc/php/8.4/fpm/conf.d/10-opcache.ini`):
+  ```ini
+  opcache.enable=1
+  opcache.memory_consumption=256
+  opcache.interned_strings_buffer=64
+  opcache.max_accelerated_files=30000
+  opcache.validate_timestamps=0
+  opcache.revalidate_freq=0
+  opcache.save_comments=1
+  ```
+  *(Note: `opcache.save_comments=1` is required for PHP 8 attributes used by Livewire and Filament).*
+- [ ] **PHP-FPM Process Pool** (`/etc/php/8.4/fpm/pool.d/www.conf`):
+  ```ini
+  pm = dynamic
+  pm.max_children = 50
+  pm.start_servers = 10
+  pm.min_spare_servers = 5
+  pm.max_spare_servers = 20
+  pm.max_requests = 1000
+  ```
+  *(Prevents memory leaks across prolonged worker lifetimes).*
+
+### 4.3 Redis Configuration
+- [ ] **Memory Limit & Eviction Policy** (`/etc/redis/redis.conf`):
+  ```ini
+  maxmemory 512mb
+  maxmemory-policy allkeys-lru
+  ```
+- [ ] Verify separate Redis database prefixes or indices for Cache, Session, and Queue (`CACHE_PREFIX=ypt_cache`).
+- [ ] Confirm persistence via RDB (`save 900 1`) or AOF for job queue resilience.
+
+### 4.4 What to Measure on Staging & Production
+Measure these exact production metrics under simulated load (using k6, autocannon, or Lighthouse):
+1. **Time to First Byte (TTFB)**:
+   - Target: `< 150ms` for cached landing page responses; `< 300ms` for authenticated Filament pages.
+2. **Largest Contentful Paint (LCP)**:
+   - Target: `< 2.0s` on mobile (Moto G4 4G simulation). Measure on landing page hero map.
+3. **Cumulative Layout Shift (CLS)**:
+   - Target: `0.00` (SVG map dimensions explicitly constrained by `viewBox="0 0 800 650"` and aspect-ratio CSS).
+4. **First Input Delay / Interaction to Next Paint (INP)**:
+   - Target: `< 100ms` for state drawer expansion and map hover interactions.
+5. **Database Query Efficiency**:
+   - Target: `< 12 queries` on the landing page (`PolicyTracker`) using eager loading (`with(['policyStatus.stage', 'policyStatus.leadingOrganizations'])`).
+   - Confirm zero N+1 query patterns when filtering by zone or lifecycle stage.
+6. **Worker Concurrency & Memory**:
+   - Monitor PHP-FPM RSS memory: target `< 35MB` per active child worker.
+   - Monitor Redis cache hit ratio: target `> 90%` (`redis-cli info stats | grep keyspace`).
+   - Monitor queue job execution latency: target `< 500ms` between job dispatch and execution.
 
 ---
 

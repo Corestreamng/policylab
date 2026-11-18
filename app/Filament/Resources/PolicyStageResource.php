@@ -92,6 +92,7 @@ class PolicyStageResource extends Resource
             ->defaultSort('sequence_order', 'asc')
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ]);
     }
 

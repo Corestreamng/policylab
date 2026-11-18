@@ -180,6 +180,7 @@ class PolicyStatusResource extends Resource
                             'user_agent' => request()->userAgent(),
                         ]);
                     }),
+                Tables\Actions\DeleteAction::make(),
             ]);
     }
 
