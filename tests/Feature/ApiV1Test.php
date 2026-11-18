@@ -82,4 +82,56 @@ class ApiV1Test extends TestCase
         $this->assertStringContainsString('text/csv', $response->headers->get('Content-Type'));
         $this->assertStringContainsString('youth_policy_tracker_nigeria', $response->headers->get('Content-Disposition'));
     }
+
+    public function test_browser_navigation_to_api_states_redirects_to_interactive_docs(): void
+    {
+        $response = $this->withHeaders([
+            'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'sec-fetch-dest' => 'document',
+        ])->get('/api/v1/states');
+
+        $response->assertRedirect('/api/docs?endpoint=states');
+    }
+
+    public function test_browser_navigation_with_format_json_returns_raw_json(): void
+    {
+        $response = $this->withHeaders([
+            'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'sec-fetch-dest' => 'document',
+        ])->get('/api/v1/states?format=json');
+
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'application/json');
+        $response->assertJsonPath('meta.total_states', 37);
+    }
+
+    public function test_browser_navigation_to_single_state_redirects_to_docs_with_state(): void
+    {
+        $response = $this->withHeaders([
+            'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'sec-fetch-dest' => 'document',
+        ])->get('/api/v1/states/kano');
+
+        $response->assertRedirect('/api/docs?endpoint=states-slug&state=kano');
+    }
+
+    public function test_api_documentation_page_loads_with_explorer_and_endpoints(): void
+    {
+        $response = $this->get('/api/docs');
+        $response->assertStatus(200);
+        $response->assertSee('Public REST API &amp; Developer Hub', false);
+        $response->assertSee('/api/v1/states');
+        $response->assertSee('/api/v1/states/{slug}');
+        $response->assertSee('/api/v1/stages');
+        $response->assertSee('/api/v1/kpis');
+        $response->assertSee('/api/v1/export/csv');
+        $response->assertSee('Glowing Minds Initiatives (GMI)');
+    }
+
+    public function test_api_shortcut_url_routes_to_docs(): void
+    {
+        $response = $this->get('/api');
+        $response->assertStatus(200);
+        $response->assertSee('Public REST API &amp; Developer Hub', false);
+    }
 }

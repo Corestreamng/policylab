@@ -10,16 +10,55 @@ use App\Models\PolicyStage;
 use App\Models\PolicyStatus;
 use App\Models\Region;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StateApiController extends Controller
 {
     /**
+     * Determine whether an incoming request is a human browser navigation
+     * rather than an explicit API/JSON client request.
+     */
+    protected function isBrowserNavigation(Request $request): bool
+    {
+        // 1. If format=json query parameter is explicitly provided, always deliver raw JSON
+        if ($request->query('format') === 'json') {
+            return false;
+        }
+
+        // 2. If client explicitly expects JSON (e.g. Accept: application/json, fetch(), $this->getJson())
+        if ($request->expectsJson()) {
+            return false;
+        }
+
+        // 3. Browser top-level document navigation (Fetch Metadata specification)
+        if ($request->header('sec-fetch-dest') === 'document') {
+            return true;
+        }
+
+        // 4. Browser navigation Accept header prioritizing text/html
+        $accept = $request->header('Accept', '');
+        if (str_contains($accept, 'text/html') && !str_starts_with(trim($accept), '*/*') && !str_starts_with(trim($accept), 'application/json')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * List all states with their current policy domestication status.
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResponse|RedirectResponse
     {
+        if ($this->isBrowserNavigation($request)) {
+            return redirect()->route('api.docs', array_filter([
+                'endpoint' => 'states',
+                'zone' => $request->query('zone'),
+                'stage' => $request->query('stage'),
+            ]));
+        }
+
         $query = Region::with(['policyStatus.stage', 'leadingOrganizations', 'funders', 'publicDocuments']);
 
         if ($zone = $request->query('zone')) {
@@ -70,8 +109,15 @@ class StateApiController extends Controller
     /**
      * Get single state dossier by slug.
      */
-    public function show(string $slug): JsonResponse
+    public function show(Request $request, string $slug): JsonResponse|RedirectResponse
     {
+        if ($this->isBrowserNavigation($request)) {
+            return redirect()->route('api.docs', [
+                'endpoint' => 'states-slug',
+                'state' => $slug,
+            ]);
+        }
+
         $state = Region::with([
             'policyStatus.stage',
             'statusHistories.stage',
@@ -134,8 +180,12 @@ class StateApiController extends Controller
     /**
      * Get 8-stage lifecycle taxonomy.
      */
-    public function stages(): JsonResponse
+    public function stages(Request $request): JsonResponse|RedirectResponse
     {
+        if ($this->isBrowserNavigation($request)) {
+            return redirect()->route('api.docs', ['endpoint' => 'stages']);
+        }
+
         $stages = PolicyStage::orderBy('sequence_order')->get()->map(fn($s) => [
             'sequence_order' => $s->sequence_order,
             'name' => $s->name,
@@ -150,8 +200,12 @@ class StateApiController extends Controller
     /**
      * Get live computed KPIs.
      */
-    public function kpis(): JsonResponse
+    public function kpis(Request $request): JsonResponse|RedirectResponse
     {
+        if ($this->isBrowserNavigation($request)) {
+            return redirect()->route('api.docs', ['endpoint' => 'kpis']);
+        }
+
         return response()->json([
             'data' => [
                 'total_states' => Region::count(),

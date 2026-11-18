@@ -8,6 +8,7 @@ const pagesToTest = [
     { name: 'Landing Page', path: '/' },
     { name: 'Analytics Dashboard', path: '/dashboard', checkCharts: true },
     { name: 'Document Vault', path: '/documents' },
+    { name: 'Open API Documentation', path: '/api/docs' },
     { name: 'State Drawer (Lagos)', path: '/states/lagos' },
     { name: 'Admin Login', path: '/admin/login' },
     { name: 'Admin Dashboard', path: '/admin', auth: true },

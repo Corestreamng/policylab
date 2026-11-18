@@ -73,7 +73,7 @@
                     <a href="/documents" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('documents*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
                         <i class="fas fa-box-archive mr-1.5 text-brand-teal"></i> {{ __('tracker.nav_vault') }}
                     </a>
-                    <a href="/api/v1/states" target="_blank" class="px-3 py-2 rounded text-sm font-medium transition text-ink-300 hover:text-white hover:bg-ink-800">
+                    <a href="/api/docs" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('api*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
                         <i class="fas fa-code mr-1.5 text-brand-violet"></i> {{ __('tracker.nav_api') }}
                     </a>
                 </nav>
@@ -147,7 +147,7 @@
             <a href="/documents" class="block px-3 py-2 rounded text-base font-medium {{ request()->is('documents*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:bg-ink-800' }}">
                 <i class="fas fa-box-archive mr-2 text-brand-teal"></i> Document Vault
             </a>
-            <a href="/api/v1/states" target="_blank" class="block px-3 py-2 rounded text-base font-medium text-ink-300 hover:bg-ink-800">
+            <a href="/api/docs" class="block px-3 py-2 rounded text-base font-medium {{ request()->is('api*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:bg-ink-800' }}">
                 <i class="fas fa-code mr-2 text-brand-violet"></i> Open API
             </a>
             <a href="/admin" class="block px-3 py-2 rounded text-base font-medium bg-ink-800 text-ink-200 mt-2">
@@ -186,7 +186,8 @@
                         <li><a href="/" class="hover:text-white transition">Interactive National Map</a></li>
                         <li><a href="/dashboard" class="hover:text-white transition">Analytics & KPI Dashboard</a></li>
                         <li><a href="/documents" class="hover:text-white transition">Certified True Copies (CTC) Vault</a></li>
-                        <li><a href="/api/v1/states" target="_blank" class="hover:text-white transition">Public REST API (v1)</a></li>
+                        <li><a href="/api/docs" class="hover:text-white transition">Public REST API (v1 Docs &amp; Explorer)</a></li>
+                        <li><a href="/api/v1/states?format=json" target="_blank" rel="noopener noreferrer" class="hover:text-white transition text-ink-400">Raw JSON Feed (v1)</a></li>
                         <li><a href="/api/v1/export/csv" class="hover:text-white transition">Download Dataset (CSV)</a></li>
                     </ul>
                 </div>

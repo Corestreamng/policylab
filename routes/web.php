@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiDocsController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\SeoController;
 use App\Livewire\AnalyticsDashboard;
@@ -12,6 +13,8 @@ Route::get('/', PolicyTracker::class)->name('home');
 Route::get('/states/{slug}', PolicyTracker::class)->name('states.show');
 Route::get('/dashboard', AnalyticsDashboard::class)->name('dashboard');
 Route::get('/documents', DocumentVault::class)->name('documents');
+Route::get('/api/docs', [ApiDocsController::class, 'index'])->name('api.docs');
+Route::get('/api', [ApiDocsController::class, 'index']);
 Route::get('/privacy-policy', function () {
     return view('privacy-policy');
 })->name('privacy');

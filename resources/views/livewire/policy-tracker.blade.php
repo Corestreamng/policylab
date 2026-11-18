@@ -875,11 +875,18 @@
                             Close Dossier
                         </button>
                         <a
-                            href="/api/v1/states/{{ $selectedRegion->slug }}"
+                            href="/api/v1/states/{{ $selectedRegion->slug }}?format=json"
                             target="_blank"
+                            rel="noopener noreferrer"
                             class="inline-flex items-center text-xs font-semibold text-brand-blue hover:underline"
                         >
-                            <i class="fas fa-code mr-1"></i> View JSON API Record
+                            <i class="fas fa-code mr-1"></i> View Raw JSON
+                        </a>
+                        <a
+                            href="/api/docs?state={{ $selectedRegion->slug }}"
+                            class="inline-flex items-center text-xs font-semibold text-emerald-800 hover:underline"
+                        >
+                            <i class="fas fa-book-open mr-1"></i> API Docs
                         </a>
                     </div>
                 </div>

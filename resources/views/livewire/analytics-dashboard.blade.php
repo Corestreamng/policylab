@@ -20,7 +20,10 @@
             <x-button href="/api/v1/export/csv" variant="secondary" size="sm" icon="fa-file-csv">
                 {{ __('tracker.export_csv') }}
             </x-button>
-            <x-button href="/api/v1/states" target="_blank" variant="secondary" size="sm" icon="fa-code">
+            <x-button href="/api/docs" variant="secondary" size="sm" icon="fa-book-open">
+                {{ __('tracker.nav_api') }}
+            </x-button>
+            <x-button href="/api/v1/states?format=json" target="_blank" variant="secondary" size="sm" icon="fa-code">
                 {{ __('tracker.export_json') }}
             </x-button>
             <x-button href="/" variant="primary" size="sm" icon="fa-map-location-dot">
