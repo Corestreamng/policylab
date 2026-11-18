@@ -29,6 +29,6 @@ class PolicyStagePolicy
 
     public function delete(User $user, PolicyStage $model): bool
     {
-        return $user->hasRole('Super Admin');
+        return $user->hasRole('Super Admin') && !$model->policyStatuses()->exists();
     }
 }

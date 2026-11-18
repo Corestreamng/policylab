@@ -92,6 +92,31 @@ class TotpService
     }
 
     /**
+     * Hash a recovery code with SHA-256 for secure storage at rest.
+     */
+    public function hashRecoveryCode(string $code): string
+    {
+        return hash('sha256', strtoupper(trim($code)));
+    }
+
+    /**
+     * Verify a recovery code against stored hashes in constant time.
+     * Returns matching index or false.
+     */
+    public function verifyRecoveryCode(string $code, array $storedHashes): int|false
+    {
+        $targetHash = $this->hashRecoveryCode($code);
+
+        foreach ($storedHashes as $index => $storedHash) {
+            if (hash_equals($storedHash, $targetHash)) {
+                return $index;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Decode a Base32 string to raw binary.
      */
     private function base32Decode(string $b32): string

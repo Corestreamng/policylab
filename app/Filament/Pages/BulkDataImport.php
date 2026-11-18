@@ -35,6 +35,16 @@ class BulkDataImport extends Page implements HasForms
 
     protected static string $view = 'filament.pages.bulk-data-import';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyPermission(['import_data', 'manage_users']) ?? false;
+    }
+
+    public function mount(): void
+    {
+        abort_unless(auth()->user()?->hasAnyPermission(['import_data', 'manage_users']), 403);
+    }
+
     public $csvFile;
     public array $previewRows = [];
     public array $validationErrors = [];
@@ -185,7 +195,10 @@ class BulkDataImport extends Page implements HasForms
 
     public function commitImport(): void
     {
-        if (!$this->isValidated || empty($this->previewRows)) {
+        abort_unless(auth()->user()?->hasAnyPermission(['import_data', 'manage_users']), 403);
+
+        if (!$this->isValidated || empty($this->previewRows) || $this->totalInvalid > 0 || $this->totalValid === 0) {
+            $this->addError('csvFile', 'Cannot commit import: resolve all validation errors first.');
             return;
         }
 

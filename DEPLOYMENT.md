@@ -103,9 +103,15 @@ sudo systemctl reload nginx
 
 ---
 
-## 3. Safe Zero-Downtime Deployment & Automated Rollback
+## 3. Safe Production Deployment & Rollback Architecture
 
-The production deployment script (`bin/deploy.sh`) ensures zero maintenance downtime residue: if any command fails (composer install, npm build, migration, or cache warm), an immediate automated rollback to the previous commit is triggered, caches are restored, and the application is brought out of maintenance mode on the previous release.
+The production deployment script (`bin/deploy.sh`) safeguards site availability:
+1. Engages custom maintenance mode (`public.offline`).
+2. Warns instead of performing a destructive `git reset --hard` if the working tree has local modifications.
+3. Compiles frontend assets if Node/npm is available; otherwise verifies pre-compiled artifacts in `public/build` from CI/staging.
+4. Takes an automated `mysqldump` snapshot before migrations are executed.
+5. Notes that database migrations are not rolled back automatically on error (to avoid accidental data loss).
+6. Restores code, clears/re-caches framework artifacts, and ensures the site comes out of maintenance mode on the previous release if any step fails.
 
 ### 3.1 Executable Deployment Script (`bin/deploy.sh`)
 
@@ -113,26 +119,37 @@ The production deployment script (`bin/deploy.sh`) ensures zero maintenance down
 #!/usr/bin/env bash
 set -eo pipefail
 
-APP_DIR="${APP_DIR:-/var/www/youthpolicytracker}"
+APP_DIR="${APP_DIR:-$(pwd)}"
 cd "$APP_DIR"
 
 PREV_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo "HEAD")
 MAINTENANCE_ACTIVE=0
+LATEST_BACKUP_FILE=""
 
 cleanup_on_error() {
     local exit_code=$?
-    echo "DEPLOYMENT FAILED AT LINE $1 (Exit Code: $exit_code). Initiating rollback..."
+    echo "======================================================================"
+    echo "DEPLOYMENT FAILED AT LINE $1 (Exit Code: $exit_code)"
+    echo "======================================================================"
 
-    # Reset working tree to previous release
-    git reset --hard "$PREV_COMMIT" 2>/dev/null || true
+    # Warn instead of destructive reset if working tree has local modifications
+    if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
+        echo "WARNING: Working tree contains local uncommitted modifications."
+        echo "Skipping destructive 'git reset --hard' to prevent irreversible data loss."
+        echo "Please inspect git status and resolve modified files manually."
+    else
+        echo "Resetting code to previous commit ($PREV_COMMIT)..."
+        git reset --hard "$PREV_COMMIT" 2>/dev/null || true
+    fi
 
-    # Clear and re-cache previous state
+    # Clear potentially corrupted runtime caches
     php artisan config:clear 2>/dev/null || true
     php artisan route:clear 2>/dev/null || true
     php artisan view:clear 2>/dev/null || true
     php artisan event:clear 2>/dev/null || true
     php artisan cache:clear 2>/dev/null || true
 
+    # Re-cache previous state
     php artisan config:cache 2>/dev/null || true
     php artisan route:cache 2>/dev/null || true
     php artisan view:cache 2>/dev/null || true
@@ -142,10 +159,20 @@ cleanup_on_error() {
 
     # Bring site out of maintenance mode on previous release
     if [ "$MAINTENANCE_ACTIVE" -eq 1 ]; then
+        echo "Deactivating maintenance mode on previous release..."
         php artisan up 2>/dev/null || true
     fi
 
-    echo "CRITICAL: System rolled back to previous commit ($PREV_COMMIT). Site is online."
+    echo ""
+    echo "CRITICAL NOTICE: Code and framework caches have been restored."
+    if [ -n "$LATEST_BACKUP_FILE" ]; then
+        echo "NOTE: Database migrations are NOT rolled back automatically."
+        echo "A pre-migration database snapshot was created at:"
+        echo "  $LATEST_BACKUP_FILE"
+        echo "To restore the database to its pre-deployment state, run:"
+        echo "  gzip -dc \"$LATEST_BACKUP_FILE\" | mysql -u <username> -p <database_name>"
+    fi
+    echo "======================================================================"
     exit "$exit_code"
 }
 
@@ -154,21 +181,64 @@ trap 'cleanup_on_error $LINENO' ERR
 echo ">>> Deploying Youth Policy Tracker..."
 
 # 1. Engage maintenance mode
+echo ">>> Engaging maintenance mode..."
 php artisan down --render="public.offline" --retry=60 || true
 MAINTENANCE_ACTIVE=1
 
 # 2. Update dependencies
+echo ">>> Installing production PHP dependencies (composer)..."
 composer install --no-dev --optimize-autoloader --no-interaction
-npm ci
-npm run build
+
+# Frontend build: build locally if npm is present; otherwise verify pre-compiled assets from CI/staging
+if command -v npm >/dev/null 2>&1; then
+    echo ">>> Compiling frontend assets via npm..."
+    npm ci
+    npm run build
+else
+    echo ">>> INFO: npm is not installed on this host."
+    echo ">>> Verifying pre-compiled build assets from CI/staging in public/build..."
+    if [ ! -f "public/build/manifest.json" ]; then
+        echo "ERROR: public/build/manifest.json not found! Assets must be pre-built on CI/staging before deploying."
+        exit 1
+    fi
+    echo ">>> Pre-compiled assets verified successfully."
+fi
 
 # 3. Storage link
+echo ">>> Verifying storage symlink..."
 php artisan storage:link || true
 
-# 4. Database migrations
+# 4. Database snapshot before migration
+echo ">>> Taking pre-migration database snapshot..."
+BACKUP_DIR="${APP_DIR}/storage/app/backups"
+mkdir -p "$BACKUP_DIR"
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+LATEST_BACKUP_FILE="${BACKUP_DIR}/db_pre_migrate_${TIMESTAMP}.sql.gz"
+
+DB_CONN=$(php -r "echo config('database.default');" 2>/dev/null || echo "mysql")
+if [ "$DB_CONN" = "mysql" ]; then
+    DB_HOST=$(php -r "echo config('database.connections.mysql.host');" 2>/dev/null)
+    DB_PORT=$(php -r "echo config('database.connections.mysql.port');" 2>/dev/null)
+    DB_NAME=$(php -r "echo config('database.connections.mysql.database');" 2>/dev/null)
+    DB_USER=$(php -r "echo config('database.connections.mysql.username');" 2>/dev/null)
+    DB_PASS=$(php -r "echo config('database.connections.mysql.password');" 2>/dev/null)
+
+    if command -v mysqldump >/dev/null 2>&1 && [ -n "$DB_NAME" ]; then
+        MYSQL_PWD="$DB_PASS" mysqldump -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" "$DB_NAME" | gzip > "$LATEST_BACKUP_FILE"
+        echo ">>> Database snapshot created: $LATEST_BACKUP_FILE"
+    else
+        echo ">>> NOTICE: mysqldump binary not in PATH or database name unset. Proceeding without automated dump."
+    fi
+else
+    echo ">>> INFO: Active connection is '$DB_CONN'. mysqldump snapshot skipped."
+fi
+
+# 5. Database migrations
+echo ">>> Running database migrations..."
 php artisan migrate --force
 
-# 5. Clear and re-cache production artifacts
+# 6. Optimize framework caches
+echo ">>> Optimizing production framework caches..."
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
@@ -180,20 +250,55 @@ php artisan route:cache
 php artisan view:cache
 php artisan event:cache
 
-# 6. Restart queue workers
+# 7. Restart queue workers
+echo ">>> Restarting background queue workers..."
 php artisan queue:restart
 
-# 7. Take site out of maintenance mode only after all steps succeed
+# 8. Deactivate maintenance mode
+echo ">>> Deactivating maintenance mode..."
 php artisan up
 MAINTENANCE_ACTIVE=0
 
-echo ">>> SUCCESS: Deployment finished cleanly."
+echo ">>> SUCCESS: Youth Policy Tracker deployment completed cleanly."
 ```
 
-### 3.2 Automated Git Deployment Command
-On the production server, simply run:
+### 3.2 Restoring Pre-Deployment Database Snapshot
+Migrations are intentionally **not rolled back automatically** by `deploy.sh` to prevent data loss on destructive changes. If a deploy fails and database rollback is necessary:
+1. Locate the snapshot listed in the deployment failure output under `storage/app/backups/`.
+2. Restore via MySQL CLI:
+   ```bash
+   gzip -dc storage/app/backups/db_pre_migrate_YYYYMMDD_HHMMSS.sql.gz | mysql -u ypt_user -p youth_policy_tracker
+   ```
+
+### 3.3 Provisioning the First Super Admin
+In production, no default accounts or passwords exist. Provision the first administrative user using the secure interactive command:
 ```bash
-./bin/deploy.sh
+php artisan tracker:make-super-admin
+```
+Follow prompts for Full Name, Email Address, and Secure Password (minimum 8 characters). Once created, sign in at `https://youthpolicytracker.ng/admin` and complete the mandatory TOTP 2FA enrollment.
+
+### 3.4 Production `.env` Required Security Settings
+```env
+APP_NAME="Youth Policy Tracker"
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://youthpolicytracker.ng
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=youth_policy_tracker
+DB_USERNAME=ypt_user
+DB_PASSWORD=<secure_password>
+
+# Session Security & Cookie Protection
+SESSION_DRIVER=redis
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=true
+SESSION_SECURE_COOKIE=true
+
+# Reverse Proxy Trust (Nginx / Cloudflare)
+TRUSTED_PROXIES=*
 ```
 
 ---
@@ -243,28 +348,19 @@ Do not measure performance from local development servers (`artisan serve` or lo
 - [ ] Confirm persistence via RDB (`save 900 1`) or AOF for job queue resilience.
 
 ### 4.4 What to Measure on Staging & Production
-Measure these exact production metrics under simulated load (using k6, autocannon, or Lighthouse):
-1. **Time to First Byte (TTFB)**:
-   - Target: `< 150ms` for cached landing page responses; `< 300ms` for authenticated Filament pages.
-2. **Largest Contentful Paint (LCP)**:
-   - Target: `< 2.0s` on mobile (Moto G4 4G simulation). Measure on landing page hero map.
-3. **Cumulative Layout Shift (CLS)**:
-   - Target: `0.00` (SVG map dimensions explicitly constrained by `viewBox="0 0 800 650"` and aspect-ratio CSS).
-4. **First Input Delay / Interaction to Next Paint (INP)**:
-   - Target: `< 100ms` for state drawer expansion and map hover interactions.
-5. **Database Query Efficiency**:
-   - Target: `< 12 queries` on the landing page (`PolicyTracker`) using eager loading (`with(['policyStatus.stage', 'policyStatus.leadingOrganizations'])`).
-   - Confirm zero N+1 query patterns when filtering by zone or lifecycle stage.
-6. **Worker Concurrency & Memory**:
-   - Monitor PHP-FPM RSS memory: target `< 35MB` per active child worker.
-   - Monitor Redis cache hit ratio: target `> 90%` (`redis-cli info stats | grep keyspace`).
-   - Monitor queue job execution latency: target `< 500ms` between job dispatch and execution.
+Measure these exact production metrics under simulated load (using k6, autocannon, or Lighthouse on staging):
+1. **Time to First Byte (TTFB)**: Target `< 150ms` on public cached landing routes; `< 300ms` on authenticated Filament requests.
+2. **Largest Contentful Paint (LCP)**: Target `< 2.0s` on mobile (Moto G4 4G simulation). Measure on landing page hero map.
+3. **Cumulative Layout Shift (CLS)**: Target `0.00` (SVG map dimensions explicitly constrained by `viewBox="0 0 800 650"` and aspect-ratio CSS).
+4. **Interaction to Next Paint (INP)**: Target `< 100ms` for state drawer expansion and map hover interactions.
+5. **Database Query Efficiency**: Target `< 12 queries` on the landing page (`PolicyTracker`) using eager loading (`with(['policyStatus.stage', 'policyStatus.leadingOrganizations'])`). Confirm zero N+1 query patterns when filtering by zone or lifecycle stage.
+6. **Worker Concurrency & Memory**: Monitor PHP-FPM RSS memory: target `< 35MB` per active child worker; monitor Redis cache hit ratio: target `> 90%`; monitor queue job latency: target `< 500ms`.
 
 ---
 
-## 4. Systemd Daemons: Queue Worker & Scheduler
+## 5. Systemd Daemons: Queue Worker & Scheduler
 
-### 4.1 Queue Worker (`/etc/systemd/system/ypt-worker.service`)
+### 5.1 Queue Worker (`/etc/systemd/system/ypt-worker.service`)
 ```ini
 [Unit]
 Description=Youth Policy Tracker Queue Worker
@@ -286,14 +382,14 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now ypt-worker.service
 ```
 
-### 4.2 Laravel Scheduler Cron (`/etc/cron.d/ypt-scheduler`)
+### 5.2 Laravel Scheduler Cron (`/etc/cron.d/ypt-scheduler`)
 ```cron
 * * * * * www-data /usr/bin/php /var/www/youthpolicytracker/artisan schedule:run >> /dev/null 2>&1
 ```
 
 ---
 
-## 5. Automated Backups & Disaster Recovery
+## 6. Automated Backups & Disaster Recovery
 
 ### Database & Private Document Vault Backup Script (`/usr/local/bin/ypt-backup.sh`)
 ```bash
@@ -321,7 +417,7 @@ echo "0 2 * * * root /usr/local/bin/ypt-backup.sh" | sudo tee /etc/cron.d/ypt-ba
 
 ---
 
-## 6. Staff Training & Administrative Handover Outline
+## 7. Staff Training & Administrative Handover Outline
 
 ### Target Audience: Glowing Minds Initiatives (GMI) Data Officers & Partner Analysts
 - **Portal URL**: `https://youthpolicytracker.ng/admin`
