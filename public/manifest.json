@@ -1,0 +1,16 @@
+{
+  "name": "Youth Policy Tracker",
+  "short_name": "PolicyTracker",
+  "description": "National Youth Policy Domestication Tracker across Nigeria's 36 States + FCT",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#0F172A",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

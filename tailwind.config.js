@@ -1,0 +1,88 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./resources/**/*.blade.php",
+    "./resources/**/*.js",
+    "./app/Livewire/**/*.php",
+    "./app/Filament/**/*.php",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        ink: {
+          50: '#F8FAFC',
+          100: '#F1F5F9',
+          200: '#E2E8F0',
+          300: '#CBD5E1',
+          400: '#94A3B8',
+          500: '#64748B',
+          600: '#475569',
+          700: '#334155',
+          800: '#1E293B',
+          900: '#0F172A',
+          950: '#0B132B',
+        },
+        brand: {
+          blue: '#2563EB',
+          'blue-text': '#1D4ED8',
+          orange: '#EA580C',
+          'orange-text': '#C2410C',
+          emerald: '#059669',
+          'emerald-text': '#047857',
+          sunflower: '#D97706',
+          'sunflower-text': '#92400E',
+          teal: '#0D9488',
+          'teal-text': '#0F766E',
+          violet: '#7C3AED',
+          'violet-text': '#6D28D9',
+          rose: '#E11D48',
+          'rose-text': '#BE123C',
+          slate: '#64748B',
+          'slate-text': '#334155',
+        },
+        stage: {
+          0: '#64748B',
+          '0-text': '#334155',
+          '0-bg': '#F1F5F9',
+          1: '#E11D48',
+          '1-text': '#BE123C',
+          '1-bg': '#FFE4E6',
+          2: '#D97706',
+          '2-text': '#92400E',
+          '2-bg': '#FEF3C7',
+          3: '#7C3AED',
+          '3-text': '#6D28D9',
+          '3-bg': '#EDE9FE',
+          4: '#2563EB',
+          '4-text': '#1D4ED8',
+          '4-bg': '#DBEAFE',
+          5: '#0D9488',
+          '5-text': '#0F766E',
+          '5-bg': '#CCFBF1',
+          6: '#EA580C',
+          '6-text': '#C2410C',
+          '6-bg': '#FFEDD5',
+          7: '#059669',
+          '7-text': '#047857',
+          '7-bg': '#D1FAE5',
+        }
+      },
+      fontFamily: {
+        display: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Figtree', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+      boxShadow: {
+        'card': '0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.04)',
+        'card-hover': '0 8px 20px -4px rgba(15, 23, 42, 0.12), 0 4px 8px -2px rgba(15, 23, 42, 0.06)',
+        'drawer': '-8px 0 24px -4px rgba(15, 23, 42, 0.16)',
+      },
+      minHeight: {
+        'touch': '44px',
+      },
+      minWidth: {
+        'touch': '44px',
+      }
+    },
+  },
+  plugins: [],
+}
