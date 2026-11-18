@@ -1,0 +1,40 @@
+/* Youth Policy Tracker Filament Custom Theme & Icon Normalization */
+
+/* Prevent icon blowup on initial load or SSR */
+svg.fi-icon,
+svg.filament-icon,
+svg.fi-btn-icon,
+svg.fi-wi-stats-overview-stat-icon {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    max-width: 1.5rem !important;
+    max-height: 1.5rem !important;
+    display: inline-block !important;
+    flex-shrink: 0 !important;
+}
+
+i.fa, i.fas, i.far, i.fab {
+    display: inline-block;
+    max-width: 2rem;
+    max-height: 2rem;
+    line-height: 1;
+}
+
+/* Hide redundant standalone topbar signout button to prevent duplicate signout buttons */
+.fi-topbar-item-logout,
+.fi-topbar .fi-btn:has(svg.fi-btn-icon):has(span:contains("Sign out")),
+.fi-topbar button.fi-icon-btn[title*="Sign out"],
+.fi-topbar button.fi-icon-btn[aria-label*="Sign out"] {
+    display: none !important;
+}
+
+/* Branded login page styling */
+.fi-simple-main {
+    border-radius: 1rem !important;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Ensure wire:loading state hides elements until active */
+[wire\:loading]:not([wire\:loading\.remove]) {
+    display: none !important;
+}

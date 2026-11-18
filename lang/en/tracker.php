@@ -64,6 +64,7 @@ return [
 
     // Data Statuses
     'not_documented' => 'Not yet documented',
+    'not_yet_verified' => 'Not yet verified',
     'ctc_verified' => 'CTC Document Available',
     'ctc_pending' => 'Document Pending Verification',
     'no_documents_found' => 'No documents published for this jurisdiction yet.',

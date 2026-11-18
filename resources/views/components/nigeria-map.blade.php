@@ -34,97 +34,10 @@
 @endphp
 
 <div
-    x-data="{
-        hoveredState: null,
-        tooltipX: 0,
-        tooltipY: 0,
-        stateData: @js($stateMap),
-        selectedSlug: @js($selectedSlug),
-        init() {
-            this.hydrateSvg();
-        },
-        setHover(state, event) {
-            this.hoveredState = state;
-            const container = this.$el.getBoundingClientRect();
-            this.tooltipX = event.clientX - container.left;
-            this.tooltipY = event.clientY - container.top;
-        },
-        clearHover() {
-            this.hoveredState = null;
-        },
-        hydrateSvg() {
-            const svgContainer = this.$refs.svgContainer;
-            if (!svgContainer) return;
-
-            const paths = svgContainer.querySelectorAll('path[id^=\"state-\"]');
-            paths.forEach(path => {
-                const slug = path.id.replace('state-', '');
-                const info = this.stateData[slug];
-
-                if (info) {
-                    path.setAttribute('fill', info.color);
-                    path.setAttribute('stroke', '#FFFFFF');
-                    path.setAttribute('stroke-width', '1.2');
-                    path.style.cursor = 'pointer';
-                    path.style.transition = 'fill 0.15s ease, stroke 0.15s ease, stroke-width 0.15s ease';
-
-                    // Selection highlight
-                    if (this.selectedSlug === slug) {
-                        path.setAttribute('stroke', '#0F172A');
-                        path.setAttribute('stroke-width', '3');
-                    }
-
-                    // Mouse events
-                    path.addEventListener('mouseenter', (e) => {
-                        path.setAttribute('stroke', '#0F172A');
-                        path.setAttribute('stroke-width', '2.5');
-                        path.parentNode.appendChild(path);
-                        this.setHover(info, e);
-                    });
-
-                    path.addEventListener('mousemove', (e) => {
-                        this.setHover(info, e);
-                    });
-
-                    path.addEventListener('mouseleave', () => {
-                        if (this.selectedSlug !== slug) {
-                            path.setAttribute('stroke', '#FFFFFF');
-                            path.setAttribute('stroke-width', '1.2');
-                        }
-                        this.clearHover();
-                    });
-
-                    // Click event to open drawer
-                    path.addEventListener('click', () => {
-                        $wire.openDrawer(slug);
-                    });
-
-                    // Keyboard accessibility
-                    path.addEventListener('focus', (e) => {
-                        path.setAttribute('stroke', '#0F172A');
-                        path.setAttribute('stroke-width', '2.5');
-                        path.parentNode.appendChild(path);
-                        this.setHover(info, e);
-                    });
-
-                    path.addEventListener('blur', () => {
-                        if (this.selectedSlug !== slug) {
-                            path.setAttribute('stroke', '#FFFFFF');
-                            path.setAttribute('stroke-width', '1.2');
-                        }
-                        this.clearHover();
-                    });
-
-                    path.addEventListener('keydown', (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            $wire.openDrawer(slug);
-                        }
-                    });
-                }
-            });
-        }
-    }"
+    x-data="nigeriaMap({
+        stateData: {{ json_encode($stateMap, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) }},
+        selectedSlug: @js($selectedSlug)
+    })"
     class="relative bg-white rounded-xl border border-ink-200 shadow-card p-4 sm:p-6"
 >
     <!-- Map Header with Accessible View Toggle -->

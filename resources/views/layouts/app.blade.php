@@ -44,8 +44,6 @@
             </div>
             <div class="flex items-center gap-4 text-ink-400">
                 <span>{{ __('tracker.footer_built_by') }}</span>
-                <span class="hidden md:inline">|</span>
-                <span class="hidden md:inline">{{ __('tracker.footer_launch_date') }}</span>
             </div>
         </div>
     </div>
@@ -176,9 +174,9 @@
                     </p>
                     <div class="pt-2 text-2xs text-ink-500">
                         @php
-                            $verifiedDate = \App\Models\PolicyStatus::max('data_verified_at');
+                            $verifiedDate = \App\Models\PolicyStatus::whereNotNull('data_verified_at')->max('data_verified_at');
                         @endphp
-                        <span>{{ __('tracker.footer_last_updated') }} <strong>{{ $verifiedDate ? \Carbon\Carbon::parse($verifiedDate)->format('d F Y') : '18 November 2026' }}</strong></span>
+                        <span>{{ __('tracker.footer_last_updated') }} <strong>{{ $verifiedDate ? \Carbon\Carbon::parse($verifiedDate)->format('d F Y') : __('tracker.not_yet_verified') }}</strong></span>
                     </div>
                 </div>
 
