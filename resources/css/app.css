@@ -60,6 +60,11 @@
   --color-brand-slate: #64748B;
   --color-brand-slate-text: #334155;
 
+  --color-navy-royal: #1E3A8A;
+  --color-navy-royal-hover: #1D4ED8;
+  --color-navy-royal-active: #172554;
+  --color-navy-royal-border: #1E40AF;
+
   --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-sans: 'Figtree', system-ui, -apple-system, sans-serif;
 }

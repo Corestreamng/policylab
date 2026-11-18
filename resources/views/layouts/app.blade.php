@@ -45,36 +45,36 @@
         </div>
     </div>
 
-    <!-- Main Navigation Header -->
-    <header class="bg-ink-900 text-white sticky top-0 z-40 border-b border-ink-800 shadow-sm" x-data="{ mobileMenuOpen: false, langOpen: false, megaOpen: false, mobileZonesOpen: false, mobileStagesOpen: false }">
+    <!-- Main Navigation Header (Mature Royal Blue Option A) -->
+    <header class="bg-navy-royal text-white sticky top-0 z-40 border-b border-white/10 shadow-sm" x-data="{ mobileMenuOpen: false, langOpen: false, megaOpen: false, mobileZonesOpen: false, mobileStagesOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Brand / Logo -->
                 <div class="flex items-center gap-3">
-                    <a href="/" class="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-brand-blue rounded p-1">
-                        <div class="w-10 h-10 rounded bg-brand-blue flex items-center justify-center text-white shadow font-bold text-lg">
-                            <i class="fas fa-landmark-flag"></i>
+                    <a href="/" class="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded p-1">
+                        <div class="w-10 h-10 rounded bg-white/10 border border-white/20 flex items-center justify-center text-white shadow font-bold text-lg">
+                            <i class="fas fa-landmark-flag text-white"></i>
                         </div>
                         <div>
                             <span class="block text-base font-bold tracking-tight text-white font-heading">{{ __('tracker.app_name') }}</span>
-                            <span class="block text-2xs uppercase tracking-wider text-ink-400">{{ __('tracker.tagline') }}</span>
+                            <span class="block text-2xs uppercase tracking-wider text-blue-100/90">{{ __('tracker.tagline') }}</span>
                         </div>
                     </a>
                 </div>
 
                 <!-- Desktop Navigation Links -->
                 <nav class="hidden md:flex items-center space-x-1" aria-label="Main Navigation">
-                    <a href="/" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('/') && !request()->has('view') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
-                        <i class="fas fa-map-location-dot mr-1.5 text-brand-blue"></i> {{ __('tracker.nav_map') }}
+                    <a href="/" class="px-3 py-2 rounded text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-royal {{ request()->is('/') && !request()->has('view') ? 'bg-white/15 text-white ring-1 ring-white/20 shadow-2xs' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
+                        <i class="fas fa-map-location-dot mr-1.5 text-blue-200"></i> {{ __('tracker.nav_map') }}
                     </a>
-                    <a href="/dashboard" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('dashboard*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
-                        <i class="fas fa-chart-pie mr-1.5 text-brand-orange"></i> {{ __('tracker.nav_analytics') }}
+                    <a href="/dashboard" class="px-3 py-2 rounded text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-royal {{ request()->is('dashboard*') ? 'bg-white/15 text-white ring-1 ring-white/20 shadow-2xs' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
+                        <i class="fas fa-chart-pie mr-1.5 text-orange-300"></i> {{ __('tracker.nav_analytics') }}
                     </a>
-                    <a href="/documents" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('documents*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
-                        <i class="fas fa-box-archive mr-1.5 text-brand-teal"></i> {{ __('tracker.nav_vault') }}
+                    <a href="/documents" class="px-3 py-2 rounded text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-royal {{ request()->is('documents*') ? 'bg-white/15 text-white ring-1 ring-white/20 shadow-2xs' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
+                        <i class="fas fa-box-archive mr-1.5 text-teal-300"></i> {{ __('tracker.nav_vault') }}
                     </a>
-                    <a href="/api/docs" class="px-3 py-2 rounded text-sm font-medium transition {{ request()->is('api*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:text-white hover:bg-ink-800' }}">
-                        <i class="fas fa-code mr-1.5 text-brand-violet"></i> {{ __('tracker.nav_api') }}
+                    <a href="/api/docs" class="px-3 py-2 rounded text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-royal {{ request()->is('api*') ? 'bg-white/15 text-white ring-1 ring-white/20 shadow-2xs' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
+                        <i class="fas fa-code mr-1.5 text-violet-300"></i> {{ __('tracker.nav_api') }}
                     </a>
 
                     <!-- Mega Menu Dropdown Trigger -->
@@ -83,15 +83,15 @@
                             type="button"
                             @click="megaOpen = !megaOpen"
                             @click.outside="megaOpen = false"
-                            class="px-3 py-2 rounded text-sm font-medium transition flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald"
-                            :class="megaOpen ? 'bg-white text-ink-950 shadow-md' : 'text-ink-300 hover:text-white hover:bg-ink-800'"
+                            class="px-3 py-2 rounded text-sm font-semibold transition flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-royal"
+                            :class="megaOpen ? 'bg-white text-ink-950 shadow-md ring-1 ring-white/30' : 'text-blue-100 hover:text-white hover:bg-white/10'"
                             :aria-expanded="megaOpen.toString()"
                             aria-haspopup="true"
                             aria-label="Explore Tracker Mega Menu"
                         >
-                            <i class="fas fa-bars-staggered text-brand-emerald"></i>
+                            <i class="fas fa-bars-staggered" :class="megaOpen ? 'text-brand-emerald' : 'text-emerald-300'"></i>
                             <span>Explore Tracker</span>
-                            <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" :class="megaOpen ? 'rotate-180 text-brand-emerald' : 'text-ink-400'"></i>
+                            <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" :class="megaOpen ? 'rotate-180 text-brand-emerald' : 'text-blue-200'"></i>
                         </button>
 
                         <!-- Mega Menu Panel (Bright Scheme) -->
@@ -336,14 +336,14 @@
                     @endif
 
                     <!-- Admin CMS Portal Button -->
-                    <x-button href="/admin" variant="outline" size="sm" icon="fa-lock">
+                    <x-button href="/admin" variant="outline" size="sm" icon="fa-lock" class="!bg-white/10 hover:!bg-white/20 !text-white !border-white/20 focus-visible:!ring-white">
                         {{ __('tracker.nav_admin') }}
                     </x-button>
                 </div>
 
                 <!-- Mobile Menu Button -->
                 <div class="flex items-center md:hidden">
-                    <button type="button" @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded text-ink-400 hover:text-white hover:bg-ink-800 focus:outline-none focus:ring-2 focus:ring-brand-blue" aria-expanded="false">
+                    <button type="button" @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded text-blue-100 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white" aria-expanded="false" aria-label="Toggle navigation menu">
                         <span class="sr-only">Open main menu</span>
                         <i class="fas" :class="mobileMenuOpen ? 'fa-xmark' : 'fa-bars'"></i>
                     </button>
@@ -351,68 +351,68 @@
             </div>
         </div>
 
-        <!-- Mobile Menu Dropdown -->
-        <div x-show="mobileMenuOpen" x-cloak class="md:hidden bg-ink-950 border-b border-ink-800 px-4 pt-2 pb-4 space-y-2">
-            <a href="/" class="block px-3 py-2 rounded text-base font-medium {{ request()->is('/') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:bg-ink-800' }}">
-                <i class="fas fa-map-location-dot mr-2 text-brand-blue"></i> Policy Map
+        <!-- Mobile Menu Dropdown (Royal Blue Theme) -->
+        <div x-show="mobileMenuOpen" x-cloak class="md:hidden bg-navy-royal border-b border-white/10 px-4 pt-2 pb-4 space-y-2">
+            <a href="/" class="block px-3 py-2 rounded text-base font-semibold transition {{ request()->is('/') ? 'bg-white/15 text-white ring-1 ring-white/20 shadow-2xs' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <i class="fas fa-map-location-dot mr-2 text-blue-200"></i> Policy Map
             </a>
-            <a href="/dashboard" class="block px-3 py-2 rounded text-base font-medium {{ request()->is('dashboard*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:bg-ink-800' }}">
-                <i class="fas fa-chart-pie mr-2 text-brand-orange"></i> Analytics
+            <a href="/dashboard" class="block px-3 py-2 rounded text-base font-semibold transition {{ request()->is('dashboard*') ? 'bg-white/15 text-white ring-1 ring-white/20 shadow-2xs' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <i class="fas fa-chart-pie mr-2 text-orange-300"></i> Analytics
             </a>
-            <a href="/documents" class="block px-3 py-2 rounded text-base font-medium {{ request()->is('documents*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:bg-ink-800' }}">
-                <i class="fas fa-box-archive mr-2 text-brand-teal"></i> Document Vault
+            <a href="/documents" class="block px-3 py-2 rounded text-base font-semibold transition {{ request()->is('documents*') ? 'bg-white/15 text-white ring-1 ring-white/20 shadow-2xs' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <i class="fas fa-box-archive mr-2 text-teal-300"></i> Document Vault
             </a>
-            <a href="/api/docs" class="block px-3 py-2 rounded text-base font-medium {{ request()->is('api*') ? 'bg-ink-800 text-white' : 'text-ink-300 hover:bg-ink-800' }}">
-                <i class="fas fa-code mr-2 text-brand-violet"></i> Open API
+            <a href="/api/docs" class="block px-3 py-2 rounded text-base font-semibold transition {{ request()->is('api*') ? 'bg-white/15 text-white ring-1 ring-white/20 shadow-2xs' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <i class="fas fa-code mr-2 text-violet-300"></i> Open API
             </a>
 
             <!-- Mobile Geopolitical Zones Accordion -->
-            <div class="border-t border-ink-800 pt-2">
+            <div class="border-t border-white/10 pt-2">
                 <button
                     type="button"
                     @click="mobileZonesOpen = !mobileZonesOpen"
-                    class="w-full flex items-center justify-between px-3 py-2 rounded text-sm font-semibold text-ink-200 hover:bg-ink-800"
+                    class="w-full flex items-center justify-between px-3 py-2 rounded text-sm font-semibold text-blue-100 hover:bg-white/10 hover:text-white"
                 >
                     <span class="flex items-center gap-2">
-                        <i class="fas fa-map-location-dot text-brand-blue"></i> Browse by Zone (6)
+                        <i class="fas fa-map-location-dot text-blue-200"></i> Browse by Zone (6)
                     </span>
-                    <i class="fas text-xs" :class="mobileZonesOpen ? 'fa-chevron-up text-brand-emerald' : 'fa-chevron-down text-ink-500'"></i>
+                    <i class="fas text-xs" :class="mobileZonesOpen ? 'fa-chevron-up text-emerald-300' : 'fa-chevron-down text-blue-200'"></i>
                 </button>
                 <div x-show="mobileZonesOpen" x-cloak class="pl-6 pr-2 py-1 space-y-1 text-xs">
-                    <a href="/?zone=North+Central#coverage" class="block py-1 text-ink-300 hover:text-white">North Central</a>
-                    <a href="/?zone=North+East#coverage" class="block py-1 text-ink-300 hover:text-white">North East</a>
-                    <a href="/?zone=North+West#coverage" class="block py-1 text-ink-300 hover:text-white">North West</a>
-                    <a href="/?zone=South+East#coverage" class="block py-1 text-ink-300 hover:text-white">South East</a>
-                    <a href="/?zone=South+South#coverage" class="block py-1 text-ink-300 hover:text-white">South South</a>
-                    <a href="/?zone=South+West#coverage" class="block py-1 text-ink-300 hover:text-white">South West</a>
+                    <a href="/?zone=North+Central#coverage" class="block py-1 text-blue-100/90 hover:text-white">North Central</a>
+                    <a href="/?zone=North+East#coverage" class="block py-1 text-blue-100/90 hover:text-white">North East</a>
+                    <a href="/?zone=North+West#coverage" class="block py-1 text-blue-100/90 hover:text-white">North West</a>
+                    <a href="/?zone=South+East#coverage" class="block py-1 text-blue-100/90 hover:text-white">South East</a>
+                    <a href="/?zone=South+South#coverage" class="block py-1 text-blue-100/90 hover:text-white">South South</a>
+                    <a href="/?zone=South+West#coverage" class="block py-1 text-blue-100/90 hover:text-white">South West</a>
                 </div>
             </div>
 
             <!-- Mobile Stages Accordion -->
-            <div class="border-t border-ink-800 pt-1">
+            <div class="border-t border-white/10 pt-1">
                 <button
                     type="button"
                     @click="mobileStagesOpen = !mobileStagesOpen"
-                    class="w-full flex items-center justify-between px-3 py-2 rounded text-sm font-semibold text-ink-200 hover:bg-ink-800"
+                    class="w-full flex items-center justify-between px-3 py-2 rounded text-sm font-semibold text-blue-100 hover:bg-white/10 hover:text-white"
                 >
                     <span class="flex items-center gap-2">
-                        <i class="fas fa-stairs text-brand-emerald"></i> Lifecycle Stages (8)
+                        <i class="fas fa-stairs text-emerald-300"></i> Lifecycle Stages (8)
                     </span>
-                    <i class="fas text-xs" :class="mobileStagesOpen ? 'fa-chevron-up text-brand-emerald' : 'fa-chevron-down text-ink-500'"></i>
+                    <i class="fas text-xs" :class="mobileStagesOpen ? 'fa-chevron-up text-emerald-300' : 'fa-chevron-down text-blue-200'"></i>
                 </button>
                 <div x-show="mobileStagesOpen" x-cloak class="pl-6 pr-2 py-1 space-y-1 text-xs">
-                    <a href="/?stage=6#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-orange"></span> Stage 6: Signed</a>
-                    <a href="/?stage=7#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-emerald"></span> Stage 7: Implementing</a>
-                    <a href="/?stage=5#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-violet"></span> Stage 5: Validated</a>
-                    <a href="/?stage=4#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-teal"></span> Stage 4: Validating</a>
-                    <a href="/?stage=3#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-blue"></span> Stage 3: Developing</a>
-                    <a href="/?stage=2#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-sunflower"></span> Stage 2: Consultation</a>
-                    <a href="/?stage=0#coverage" class="flex items-center gap-2 py-1 text-ink-300 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-slate"></span> Stage 0: No Data</a>
+                    <a href="/?stage=6#coverage" class="flex items-center gap-2 py-1 text-blue-100/90 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-orange"></span> Stage 6: Signed</a>
+                    <a href="/?stage=7#coverage" class="flex items-center gap-2 py-1 text-blue-100/90 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-emerald"></span> Stage 7: Implementing</a>
+                    <a href="/?stage=5#coverage" class="flex items-center gap-2 py-1 text-blue-100/90 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-violet"></span> Stage 5: Validated</a>
+                    <a href="/?stage=4#coverage" class="flex items-center gap-2 py-1 text-blue-100/90 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-teal"></span> Stage 4: Validating</a>
+                    <a href="/?stage=3#coverage" class="flex items-center gap-2 py-1 text-blue-100/90 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-blue"></span> Stage 3: Developing</a>
+                    <a href="/?stage=2#coverage" class="flex items-center gap-2 py-1 text-blue-100/90 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-sunflower"></span> Stage 2: Consultation</a>
+                    <a href="/?stage=0#coverage" class="flex items-center gap-2 py-1 text-blue-100/90 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-slate"></span> Stage 0: No Data</a>
                 </div>
             </div>
 
-            <div class="border-t border-ink-800 pt-2">
-                <a href="/admin" class="block px-3 py-2 rounded text-base font-medium bg-ink-800 text-ink-200">
+            <div class="border-t border-white/10 pt-2">
+                <a href="/admin" class="block px-3 py-2 rounded text-base font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition">
                     <i class="fas fa-lock mr-2"></i> Admin Portal
                 </a>
             </div>

@@ -132,23 +132,66 @@
                     </p>
                 </div>
 
-                <!-- View Toggle Buttons -->
-                <div class="flex items-center gap-2 shrink-0">
+                <!-- Desktop View Toggle Buttons (>= md) -->
+                <div class="hidden md:flex items-center gap-2 shrink-0" role="tablist" aria-label="Coverage View Switcher">
                     <button
                         type="button"
+                        role="tab"
+                        aria-selected="{{ $mapView === 'visual' ? 'true' : 'false' }}"
+                        aria-controls="coverage-map-panel"
                         wire:click="toggleMapView('visual')"
-                        class="px-3 py-1.5 rounded-md text-xs font-semibold transition border {{ $mapView === 'visual' ? 'bg-emerald-50 text-emerald-900 border-brand-emerald shadow-2xs' : 'bg-white text-ink-600 border-ink-200 hover:bg-ink-50' }}"
+                        class="px-3 py-1.5 rounded-md text-xs font-semibold transition border touch-target {{ $mapView === 'visual' ? 'bg-emerald-50 text-emerald-900 border-brand-emerald shadow-2xs font-bold' : 'bg-white text-ink-600 border-ink-200 hover:bg-ink-50' }}"
+                        id="desktop-tab-visual"
                     >
-                        <i class="fas fa-map mr-1.5"></i> Visual Map
+                        <i class="fas fa-map mr-1.5 text-brand-emerald"></i> Visual Map
                     </button>
                     <button
                         type="button"
+                        role="tab"
+                        aria-selected="{{ $mapView === 'accessible_table' ? 'true' : 'false' }}"
+                        aria-controls="coverage-table-panel"
                         wire:click="toggleMapView('accessible_table')"
-                        class="px-3 py-1.5 rounded-md text-xs font-semibold transition border {{ $mapView === 'accessible_table' ? 'bg-emerald-50 text-emerald-900 border-brand-emerald shadow-2xs' : 'bg-white text-ink-600 border-ink-200 hover:bg-ink-50' }}"
+                        class="px-3 py-1.5 rounded-md text-xs font-semibold transition border touch-target {{ $mapView === 'accessible_table' ? 'bg-emerald-50 text-emerald-900 border-brand-emerald shadow-2xs font-bold' : 'bg-white text-ink-600 border-ink-200 hover:bg-ink-50' }}"
+                        id="desktop-tab-table"
                     >
-                        <i class="fas fa-table mr-1.5"></i> Accessible Table View
+                        <i class="fas fa-table mr-1.5 text-brand-blue"></i> Accessible Table View
                     </button>
                 </div>
+            </div>
+
+            <!-- Mobile Segmented View Control (< md) Prominent Map / Table Switcher -->
+            <div class="block md:hidden pb-1" role="tablist" aria-label="Coverage View Switcher">
+                <div class="grid grid-cols-2 p-1 bg-ink-100 rounded-lg border border-ink-200/80 text-center">
+                    <button
+                        type="button"
+                        role="tab"
+                        aria-selected="{{ $mapView === 'visual' ? 'true' : 'false' }}"
+                        aria-controls="coverage-map-panel"
+                        wire:click="toggleMapView('visual')"
+                        class="py-2.5 px-3 rounded-md text-xs font-bold transition flex items-center justify-center gap-1.5 touch-target {{ $mapView === 'visual' ? 'bg-white text-emerald-900 shadow-sm border border-emerald-200' : 'text-ink-600 hover:text-ink-900' }}"
+                        id="mobile-tab-visual"
+                    >
+                        <i class="fas fa-map text-brand-emerald"></i>
+                        <span>Visual Map</span>
+                    </button>
+                    <button
+                        type="button"
+                        role="tab"
+                        aria-selected="{{ $mapView === 'accessible_table' ? 'true' : 'false' }}"
+                        aria-controls="coverage-table-panel"
+                        wire:click="toggleMapView('accessible_table')"
+                        class="py-2.5 px-3 rounded-md text-xs font-bold transition flex items-center justify-center gap-1.5 touch-target {{ $mapView === 'accessible_table' ? 'bg-white text-emerald-900 shadow-sm border border-emerald-200' : 'text-ink-600 hover:text-ink-900' }}"
+                        id="mobile-tab-table"
+                    >
+                        <i class="fas fa-table text-brand-blue"></i>
+                        <span>Accessible Table</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Screen reader live region announcing view switches -->
+            <div class="sr-only" aria-live="polite">
+                Current coverage view: {{ $mapView === 'visual' ? 'Interactive Visual Map loaded' : 'Accessible Table view loaded' }}
             </div>
 
             <!-- Filter Bar Component -->
@@ -355,14 +398,16 @@
 
             <!-- National Map Visual Anchor -->
             @if($mapView === 'visual')
-                <x-nigeria-map
-                    :states="$filteredStates"
-                    :stages="$stages"
-                    :selectedSlug="$stateDrawerSlug"
-                />
+                <div id="coverage-map-panel" role="tabpanel" aria-labelledby="desktop-tab-visual mobile-tab-visual">
+                    <x-nigeria-map
+                        :states="$filteredStates"
+                        :stages="$stages"
+                        :selectedSlug="$stateDrawerSlug"
+                    />
+                </div>
             @else
                 <!-- Accessible Tabular Alternative for the Map -->
-                <div class="bg-white rounded-xl border border-ink-200 shadow-card p-4 sm:p-6 text-ink-900">
+                <div id="coverage-table-panel" role="tabpanel" aria-labelledby="desktop-tab-table mobile-tab-table" class="bg-white rounded-xl border border-ink-200 shadow-card p-4 sm:p-6 text-ink-900">
                     <div class="flex justify-between items-center mb-4 pb-3 border-b border-ink-100">
                         <div>
                             <h3 class="text-base font-bold text-ink-900 font-heading">Accessible State Policy Summary Table</h3>
@@ -1155,4 +1200,55 @@
             </div>
         </div>
     @endif
+
+    <!-- MOBILE QUICK-JUMP: BACK TO MAP PILL (< md viewport only) -->
+    <div
+        x-data="{
+            visible: false,
+            init() {
+                const target = document.getElementById('coverage');
+                if (!target || typeof IntersectionObserver === 'undefined') return;
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        // Visible when user has scrolled past the coverage/map section
+                        this.visible = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+                    });
+                }, { threshold: 0.05 });
+                observer.observe(target);
+            },
+            scrollToMap() {
+                const target = document.getElementById('coverage');
+                if (!target) return;
+                const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                const y = target.getBoundingClientRect().top + window.pageYOffset;
+                window.scrollTo({ top: y, behavior: prefersReduced ? 'auto' : 'smooth' });
+                target.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth' });
+                const focusable = target.querySelector('button, input, a');
+                if (focusable) {
+                    focusable.focus({ preventScroll: true });
+                }
+            }
+        }"
+        x-show="visible"
+        x-cloak
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 translate-y-3 scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+        x-transition:leave-end="opacity-0 translate-y-3 scale-95"
+        class="md:hidden fixed bottom-6 right-4 z-40 pb-[env(safe-area-inset-bottom)]"
+        aria-live="polite"
+    >
+        <button
+            type="button"
+            @click="scrollToMap()"
+            class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-full bg-navy-royal text-white text-xs font-bold shadow-xl border border-white/20 active:scale-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-royal touch-target"
+            aria-label="Back to the policy map"
+            id="mobile-back-to-map"
+        >
+            <i class="fas fa-arrow-up text-xs"></i>
+            <span>Back to Map</span>
+        </button>
+    </div>
 </div>

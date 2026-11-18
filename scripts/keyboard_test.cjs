@@ -168,8 +168,92 @@ async function runKeyboardTests() {
         assert.ok(linkAudit.corestream.rel.includes('noreferrer'), 'Corestream link must have rel="noreferrer"');
         console.log(`   Corestream link verified: ${linkAudit.corestream.href} [${linkAudit.corestream.text}]`);
 
+        // 8. Test Royal-Blue Navigation & Focus Ring Verification
+        console.log('\n8. Testing Royal-Blue Navigation & Focus-Visible Ring...');
+        const navAudit = await page.evaluate(() => {
+            const header = document.querySelector('header');
+            const nav = header.querySelector('nav');
+            const activeLink = nav.querySelector('a.bg-white\\/15, a[class*="bg-white/15"]');
+            const megaTrigger = document.querySelector('button[aria-label="Explore Tracker Mega Menu"]');
+            return {
+                headerBg: window.getComputedStyle(header).backgroundColor,
+                activeLinkText: activeLink ? activeLink.textContent.trim() : null,
+                hasActiveRing: activeLink ? activeLink.className.includes('ring-white') : false,
+                megaTriggerExists: !!megaTrigger
+            };
+        });
+        console.log(`   Nav header background: ${navAudit.headerBg}`);
+        console.log(`   Nav active link: "${navAudit.activeLinkText}" (has ring-white: ${navAudit.hasActiveRing})`);
+        assert.ok(navAudit.activeLinkText, 'Nav active link must be present');
+        assert.ok(navAudit.megaTriggerExists, 'Mega menu trigger button must be present in royal-blue header');
+
+        // 9. Test Mobile Segmented Map/Table Control (Width: 360px)
+        console.log('\n9. Testing Mobile Segmented Map/Table Control (360px viewport)...');
+        const mobilePage = await browser.newPage();
+        await mobilePage.setViewport({ width: 360, height: 800 });
+        await mobilePage.goto(BASE_URL, { waitUntil: 'networkidle2' });
+
+        const segmentedControl = await mobilePage.evaluate(() => {
+            const tablist = document.querySelector('[role="tablist"][aria-label="Coverage View Switcher"]');
+            const visualTab = document.querySelector('#mobile-tab-visual');
+            const tableTab = document.querySelector('#mobile-tab-table');
+            return {
+                tablistExists: !!tablist,
+                visualSelected: visualTab ? visualTab.getAttribute('aria-selected') : null,
+                tableSelected: tableTab ? tableTab.getAttribute('aria-selected') : null
+            };
+        });
+        console.log(`   Mobile tablist present: ${segmentedControl.tablistExists}, Visual selected: ${segmentedControl.visualSelected}, Table selected: ${segmentedControl.tableSelected}`);
+        assert.ok(segmentedControl.tablistExists, 'Mobile segmented tablist must exist at 360px');
+        assert.strictEqual(segmentedControl.visualSelected, 'true', 'Visual tab should be selected by default');
+
+        // Toggle to Accessible Table via keyboard on mobile
+        console.log('   Toggling mobile view to Accessible Table via keyboard Enter...');
+        await mobilePage.focus('#mobile-tab-table');
+        await mobilePage.keyboard.press('Enter');
+        await new Promise(r => setTimeout(r, 600));
+
+        const tableActiveOnMobile = await mobilePage.evaluate(() => {
+            const tableTab = document.querySelector('#mobile-tab-table');
+            const tableEl = document.querySelector('#coverage-table-panel table');
+            return {
+                tableSelected: tableTab ? tableTab.getAttribute('aria-selected') : null,
+                tableVisible: !!tableEl
+            };
+        });
+        console.log(`   After Enter: Table selected: ${tableActiveOnMobile.tableSelected}, Table element visible: ${tableActiveOnMobile.tableVisible}`);
+        assert.strictEqual(tableActiveOnMobile.tableSelected, 'true', 'Table tab aria-selected must be true after click');
+        assert.ok(tableActiveOnMobile.tableVisible, 'Table should be rendered inside #coverage-table-panel');
+
+        // 10. Test Mobile "Back to Map" Quick-Jump Pill
+        console.log('\n10. Testing Mobile "Back to Map" Quick-Jump Pill...');
+        // Scroll down past coverage section
+        await mobilePage.evaluate(() => window.scrollTo(0, 3200));
+        await new Promise(r => setTimeout(r, 800));
+
+        const pillVisible = await mobilePage.evaluate(() => {
+            const pill = document.querySelector('#mobile-back-to-map');
+            if (!pill) return false;
+            const style = window.getComputedStyle(pill);
+            return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+        });
+        console.log(`   Back-to-Map pill visible after scroll: ${pillVisible}`);
+        assert.ok(pillVisible, 'Back-to-Map floating pill should be visible after scrolling past map');
+
+        // Click pill and verify scroll back to coverage
+        console.log('   Clicking Back-to-Map pill...');
+        await mobilePage.evaluate(() => document.querySelector('#mobile-back-to-map').click());
+        await new Promise(r => setTimeout(r, 800));
+
+        const scrollYAfterJump = await mobilePage.evaluate(() => window.scrollY);
+        const coverageTop = await mobilePage.evaluate(() => document.getElementById('coverage').getBoundingClientRect().top);
+        console.log(`   Scroll position after jump: scrollY=${scrollYAfterJump}, coverageTop=${coverageTop}`);
+        assert.ok(scrollYAfterJump < 2500, 'Viewport should have scrolled back up to coverage section');
+
+        await mobilePage.close();
+
         console.log('\n======================================================');
-        console.log('ALL KEYBOARD NAVIGATION & RTL TESTS PASSED (7/7)');
+        console.log('ALL KEYBOARD NAVIGATION, MOBILE & RTL TESTS PASSED (10/10)');
         console.log('======================================================');
 
     } finally {
