@@ -1,7 +1,19 @@
 <div class="space-y-12 pb-16">
     <!-- HERO SECTION (BudgIT-Inspired Editorial Layout: Single Clear Action, Bright Warm Palette, No AI Tells) -->
-    <section class="bg-gradient-to-b from-[#FAF9F5] via-[#F6F8F5] to-[#EEF3EA] text-ink-900 pt-10 pb-12 px-4 sm:px-6 lg:px-8 border-b border-ink-200">
-        <div class="max-w-7xl mx-auto">
+    <section class="relative bg-gradient-to-b from-[#FAF9F5] via-[#F6F8F5] to-[#EEF3EA] text-ink-900 pt-10 pb-12 px-4 sm:px-6 lg:px-8 border-b border-ink-200 overflow-hidden">
+        <!-- Hero Background Image & 0.5 Opacity Overlay -->
+        <div class="absolute inset-0 z-0 pointer-events-none select-none">
+            <img
+                src="{{ asset('img/Policy_img.webp') }}"
+                alt=""
+                class="w-full h-full object-cover object-center"
+                aria-hidden="true"
+            />
+            <div class="absolute inset-0 bg-white/50 backdrop-blur-[0.5px]" aria-hidden="true"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-[#FAF9F5]/95 via-[#FAF9F5]/85 to-transparent" aria-hidden="true"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto">
             <div class="max-w-3xl space-y-4">
                 <!-- Institutional Header Badge & Trustee Credit -->
                 <div class="flex flex-wrap items-center gap-2">
