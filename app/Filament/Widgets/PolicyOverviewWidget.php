@@ -15,10 +15,29 @@ class PolicyOverviewWidget extends BaseWidget
     protected function getStats(): array
     {
         $totalStates = Region::count();
-        $domesticated = PolicyStatus::whereHas('stage', fn($q) => $q->whereIn('sequence_order', [6, 7]))->count();
+        $signedCount = PolicyStatus::whereHas('stage', fn($q) => $q->where('sequence_order', 6))->count();
+        $implementingCount = PolicyStatus::whereHas('stage', fn($q) => $q->where('sequence_order', 7))->count();
+        $domesticated = $signedCount + $implementingCount;
+
         $inDevelopment = PolicyStatus::whereHas('stage', fn($q) => $q->whereBetween('sequence_order', [1, 5]))->count();
         $noData = PolicyStatus::whereHas('stage', fn($q) => $q->where('sequence_order', 0))->count();
+
+        $stalledCount = PolicyStatus::where('is_stalled', true)->count();
+        $expiredCount = PolicyStatus::where('is_expired', true)->count();
         $stalledOrExpired = PolicyStatus::where('is_stalled', true)->orWhere('is_expired', true)->count();
+
+        $stalledStates = PolicyStatus::where('is_stalled', true)->with('region')->get()->pluck('region.name')->filter()->join(', ');
+        $expiredStates = PolicyStatus::where('is_expired', true)->with('region')->get()->pluck('region.name')->filter()->join(', ');
+
+        $flaggedParts = [];
+        if ($stalledCount > 0) {
+            $flaggedParts[] = "{$stalledCount} Stalled" . ($stalledStates ? " ({$stalledStates})" : '');
+        }
+        if ($expiredCount > 0) {
+            $flaggedParts[] = "{$expiredCount} Expired" . ($expiredStates ? " ({$expiredStates})" : '');
+        }
+        $flaggedDescription = !empty($flaggedParts) ? implode(', ', $flaggedParts) : 'None currently flagged';
+
         $documents = Document::count();
 
         return [
@@ -28,7 +47,7 @@ class PolicyOverviewWidget extends BaseWidget
                 ->color('primary'),
 
             Stat::make('Domesticated Policies', (string) $domesticated)
-                ->description('Signed (1) or Implementing (6)')
+                ->description("Signed ({$signedCount}) or Implementing ({$implementingCount})")
                 ->descriptionIcon('heroicon-m-check-badge')
                 ->color('success'),
 
@@ -43,12 +62,12 @@ class PolicyOverviewWidget extends BaseWidget
                 ->color('gray'),
 
             Stat::make('Stalled or Expired', (string) $stalledOrExpired)
-                ->description('1 Stalled (Edo), 1 Expired (Rivers)')
+                ->description($flaggedDescription)
                 ->descriptionIcon('heroicon-m-exclamation-triangle')
                 ->color('danger'),
 
             Stat::make('Certified Documents', (string) $documents)
-                ->description('Official Gazettes & Certified True Copies')
+                ->description($documents === 1 ? '1 Official Gazette / Certified Copy' : "{$documents} Official Gazettes & Certified Copies")
                 ->descriptionIcon('heroicon-m-document-text')
                 ->color('info'),
         ];

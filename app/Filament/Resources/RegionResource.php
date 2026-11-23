@@ -26,41 +26,61 @@ class RegionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('State Name')
-                    ->required()
-                    ->maxLength(100),
+                Forms\Components\Section::make('General State Details')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('State Name')
+                            ->required()
+                            ->maxLength(100),
 
-                Forms\Components\TextInput::make('iso_code')
-                    ->label('ISO 3166-2 Code')
-                    ->placeholder('e.g. NG-LA')
-                    ->maxLength(10),
+                        Forms\Components\TextInput::make('iso_code')
+                            ->label('ISO 3166-2 Code')
+                            ->placeholder('e.g. NG-LA')
+                            ->maxLength(10),
 
-                Forms\Components\Select::make('zone')
-                    ->label('Geopolitical Zone')
-                    ->options([
-                        'North Central' => 'North Central',
-                        'North East' => 'North East',
-                        'North West' => 'North West',
-                        'South East' => 'South East',
-                        'South South' => 'South South',
-                        'South West' => 'South West',
-                    ])
-                    ->required(),
+                        Forms\Components\Select::make('zone')
+                            ->label('Geopolitical Zone')
+                            ->options([
+                                'North Central' => 'North Central',
+                                'North East' => 'North East',
+                                'North West' => 'North West',
+                                'South East' => 'South East',
+                                'South South' => 'South South',
+                                'South West' => 'South West',
+                            ])
+                            ->required(),
 
-                Forms\Components\TextInput::make('grid_col')
-                    ->label('Cartogram Column (0-5)')
-                    ->numeric(),
+                        Forms\Components\TextInput::make('grid_col')
+                            ->label('Cartogram Column (0-5)')
+                            ->numeric(),
 
-                Forms\Components\TextInput::make('grid_row')
-                    ->label('Cartogram Row (0-6)')
-                    ->numeric(),
+                        Forms\Components\TextInput::make('grid_row')
+                            ->label('Cartogram Row (0-6)')
+                            ->numeric(),
 
-                Forms\Components\Textarea::make('svg_path_d')
-                    ->label('SVG Boundary Path Data')
-                    ->placeholder('d="..." path data from GeoJSON conversion')
-                    ->columnSpanFull(),
-            ])->columns(3);
+                        Forms\Components\Textarea::make('svg_path_d')
+                            ->label('SVG Boundary Path Data')
+                            ->placeholder('d="..." path data from GeoJSON conversion')
+                            ->columnSpanFull(),
+                    ])->columns(3),
+
+                Forms\Components\Section::make('Stakeholders & Partners')
+                    ->schema([
+                        Forms\Components\Select::make('organizations')
+                            ->relationship('organizations', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->label('Active Youth Partner Organizations'),
+
+                        Forms\Components\Select::make('funders')
+                            ->relationship('funders', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->label('Supporting Funders / Donors'),
+                    ])->columns(2),
+            ]);
     }
 
     public static function table(Table $table): Table

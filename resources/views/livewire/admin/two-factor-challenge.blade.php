@@ -1,9 +1,7 @@
 <div class="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <div class="text-center">
-            <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-100 text-blue-700">
-                <i class="fa-solid fa-shield-halved text-xl"></i>
-            </span>
+            <img src="{{ asset('img/Policy_Lab_logo.png') }}" alt="Policy Lab Logo" class="mx-auto w-14 h-14 object-contain rounded-xl shadow-xs" />
             <h2 class="mt-4 text-2xl font-bold tracking-tight text-slate-900">
                 {{ $isSetup ? 'Setup Two-Factor Authentication' : 'Two-Factor Authentication' }}
             </h2>

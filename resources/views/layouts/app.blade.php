@@ -52,9 +52,7 @@
                 <!-- Brand / Logo -->
                 <div class="flex items-center gap-3">
                     <a href="/" class="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded p-1">
-                        <div class="w-10 h-10 rounded bg-white/10 border border-white/20 flex items-center justify-center text-white shadow font-bold text-lg">
-                            <i class="fas fa-landmark-flag text-white"></i>
-                        </div>
+                        <img src="{{ asset('img/Policy_Lab_logo.png') }}" alt="Policy Lab Logo" class="w-10 h-10 object-contain rounded-lg bg-white/10 p-0.5 border border-white/20 shadow-sm" />
                         <div>
                             <span class="block text-base font-bold tracking-tight text-white font-heading">{{ __('tracker.app_name') }}</span>
                             <span class="block text-2xs uppercase tracking-wider text-blue-100/90">{{ __('tracker.tagline') }}</span>
@@ -282,9 +280,6 @@
                                             <a href="/api/docs" @click="megaOpen = false" class="block text-ink-700 hover:text-brand-emerald transition">
                                                 &bull; Citation &amp; License (PDDL)
                                             </a>
-                                            <a href="/admin" @click="megaOpen = false" class="block text-ink-700 hover:text-brand-emerald transition">
-                                                &bull; Administrator Portal
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -334,11 +329,6 @@
                         </div>
                     </div>
                     @endif
-
-                    <!-- Admin CMS Portal Button -->
-                    <x-button href="/admin" variant="outline" size="sm" icon="fa-lock" class="!bg-white/10 hover:!bg-white/20 !text-white !border-white/20 focus-visible:!ring-white">
-                        {{ __('tracker.nav_admin') }}
-                    </x-button>
                 </div>
 
                 <!-- Mobile Menu Button -->
@@ -410,12 +400,6 @@
                     <a href="/?stage=0#coverage" class="flex items-center gap-2 py-1 text-blue-100/90 hover:text-white"><span class="w-2 h-2 rounded-full bg-brand-slate"></span> Stage 0: No Data</a>
                 </div>
             </div>
-
-            <div class="border-t border-white/10 pt-2">
-                <a href="/admin" class="block px-3 py-2 rounded text-base font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition">
-                    <i class="fas fa-lock mr-2"></i> Admin Portal
-                </a>
-            </div>
         </div>
     </header>
 
@@ -430,7 +414,10 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <!-- Column 1: Initiative Overview -->
                 <div class="md:col-span-1 space-y-3">
-                    <span class="text-base font-bold text-white tracking-tight font-heading block">YOUTH POLICY TRACKER</span>
+                    <div class="flex items-center gap-3">
+                        <img src="{{ asset('img/Policy_Lab_logo.png') }}" alt="Policy Lab Logo" class="w-10 h-10 object-contain rounded-lg bg-white/10 p-0.5 border border-white/20 shadow-xs" />
+                        <span class="text-base font-bold text-white tracking-tight font-heading block">YOUTH POLICY TRACKER</span>
+                    </div>
                     <p class="text-xs text-ink-400 leading-relaxed">
                         A rigorous, open-access intelligence system monitoring the domestication, gazetting, and implementation of youth policies across sub-national governments.
                     </p>
@@ -458,8 +445,14 @@
                 <!-- Column 3: Governance & Partners -->
                 <div>
                     <h2 class="text-xs font-semibold text-white uppercase tracking-wider mb-3">Governance & Partners</h2>
-                    <ul class="space-y-2 text-xs">
-                        <li><span class="text-ink-300">Client:</span> <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="hover:text-white underline underline-offset-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs">Glowing Minds Initiatives (GMI)</a></li>
+                    <ul class="space-y-2.5 text-xs">
+                        <li class="flex items-center gap-2">
+                            <img src="{{ asset('img/GMI_logo.png') }}" alt="Glowing Minds Initiatives Logo" class="w-7 h-7 object-contain rounded bg-white/10 p-0.5 shrink-0" />
+                            <div>
+                                <span class="text-ink-300 block text-2xs uppercase tracking-wider">Convening Body:</span>
+                                <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="hover:text-white underline underline-offset-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs font-medium">Glowing Minds Initiatives (GMI)</a>
+                            </div>
+                        </li>
                         <li><span class="text-ink-300">Scope:</span> 36 States + Federal Capital Territory</li>
                         <li><a href="/privacy-policy" class="hover:text-white transition">Privacy & Data Governance Policy</a></li>
                     </ul>
@@ -471,11 +464,6 @@
                     <p class="text-xs text-ink-400 leading-relaxed">
                         All policy milestones reflect formal evidence from official state gazettes, verified consultative drafts, or authorized stakeholder communiques. Missing data is explicitly marked as "Not yet documented".
                     </p>
-                    <div class="mt-3">
-                        <a href="/admin" class="inline-flex items-center text-xs text-brand-blue hover:text-blue-400 font-medium">
-                            <i class="fas fa-arrow-right-to-bracket mr-1.5"></i> Authorized Staff Sign In
-                        </a>
-                    </div>
                 </div>
             </div>
 
