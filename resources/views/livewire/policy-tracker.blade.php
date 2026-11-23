@@ -20,8 +20,10 @@
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold uppercase tracking-wider border border-emerald-200 shadow-2xs">
                         <i class="fas fa-landmark text-brand-emerald"></i> Sub-National Civic Intelligence
                     </span>
-                    <span class="text-xs text-ink-600 font-medium inline-flex items-center gap-1.5">
-                        <img src="{{ asset('img/GMI_logo.png') }}" alt="GMI Logo" class="w-4 h-4 object-contain rounded-xs" />
+                    <span class="text-xs text-ink-600 font-medium inline-flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-md bg-white p-0.5 inline-flex items-center justify-center shadow-2xs border border-ink-200 shrink-0">
+                            <img src="{{ asset('img/GMI_logo.png') }}" alt="GMI Logo" class="w-full h-full object-contain" />
+                        </span>
                         <span>An initiative by <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="text-emerald-900 hover:text-emerald-700 font-bold underline underline-offset-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs" aria-label="Glowing Minds Initiatives (GMI) — opens in a new tab">Glowing Minds Initiatives (GMI)</a></span>
                     </span>
                 </div>

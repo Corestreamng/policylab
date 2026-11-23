@@ -52,7 +52,9 @@
                 <!-- Brand / Logo -->
                 <div class="flex items-center gap-3">
                     <a href="/" class="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded p-1">
-                        <img src="{{ asset('img/Policy_Lab_logo.png') }}" alt="Policy Lab Logo" class="w-10 h-10 object-contain rounded-lg bg-white/10 p-0.5 border border-white/20 shadow-sm" />
+                        <div class="w-11 h-11 rounded-xl bg-white p-1.5 flex items-center justify-center shadow-md ring-1 ring-black/10 shrink-0">
+                            <img src="{{ asset('img/Policy_Lab_logo.png') }}" alt="Policy Lab Logo" class="w-full h-full object-contain" />
+                        </div>
                         <div>
                             <span class="block text-base font-bold tracking-tight text-white font-heading">{{ __('tracker.app_name') }}</span>
                             <span class="block text-2xs uppercase tracking-wider text-blue-100/90">{{ __('tracker.tagline') }}</span>
@@ -415,7 +417,9 @@
                 <!-- Column 1: Initiative Overview -->
                 <div class="md:col-span-1 space-y-3">
                     <div class="flex items-center gap-3">
-                        <img src="{{ asset('img/Policy_Lab_logo.png') }}" alt="Policy Lab Logo" class="w-10 h-10 object-contain rounded-lg bg-white/10 p-0.5 border border-white/20 shadow-xs" />
+                        <div class="w-11 h-11 rounded-xl bg-white p-1.5 flex items-center justify-center shadow-md ring-1 ring-black/10 shrink-0">
+                            <img src="{{ asset('img/Policy_Lab_logo.png') }}" alt="Policy Lab Logo" class="w-full h-full object-contain" />
+                        </div>
                         <span class="text-base font-bold text-white tracking-tight font-heading block">YOUTH POLICY TRACKER</span>
                     </div>
                     <p class="text-xs text-ink-400 leading-relaxed">
@@ -446,8 +450,10 @@
                 <div>
                     <h2 class="text-xs font-semibold text-white uppercase tracking-wider mb-3">Governance & Partners</h2>
                     <ul class="space-y-2.5 text-xs">
-                        <li class="flex items-center gap-2">
-                            <img src="{{ asset('img/GMI_logo.png') }}" alt="Glowing Minds Initiatives Logo" class="w-7 h-7 object-contain rounded bg-white/10 p-0.5 shrink-0" />
+                        <li class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-white p-1 flex items-center justify-center shadow-sm ring-1 ring-black/10 shrink-0">
+                                <img src="{{ asset('img/GMI_logo.png') }}" alt="Glowing Minds Initiatives Logo" class="w-full h-full object-contain" />
+                            </div>
                             <div>
                                 <span class="text-ink-300 block text-2xs uppercase tracking-wider">Convening Body:</span>
                                 <a href="https://glowingmindsinitiatives.org/" target="_blank" rel="noopener noreferrer" class="hover:text-white underline underline-offset-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald rounded-xs font-medium">Glowing Minds Initiatives (GMI)</a>

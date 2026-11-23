@@ -1,5 +1,7 @@
 <div class="flex items-center gap-3">
-    <img src="{{ asset('img/Policy_Lab_logo.png') }}" alt="Policy Lab Logo" class="w-9 h-9 object-contain rounded-lg shadow-xs bg-white/10 p-0.5" />
+    <div class="w-9 h-9 rounded-lg bg-white p-1 flex items-center justify-center shadow-xs ring-1 ring-black/10 shrink-0">
+        <img src="{{ asset('img/Policy_Lab_logo.png') }}" alt="Policy Lab Logo" class="w-full h-full object-contain" />
+    </div>
     <div class="text-left">
         <span class="block text-sm font-bold tracking-tight text-white font-heading leading-tight" style="color: #FFFFFF;">
             YOUTH POLICY TRACKER
