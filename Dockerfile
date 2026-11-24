@@ -54,6 +54,12 @@ RUN mkdir -p /app/storage/framework/sessions \
     && chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/database \
     && chmod -R 775 /app/storage /app/bootstrap/cache /app/database
 
-# Configure FrankenPHP
+# Configure entrypoint and FrankenPHP
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 ENV SERVER_NAME=":80"
 ENV APP_ENV=production
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
